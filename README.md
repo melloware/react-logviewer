@@ -18,6 +18,14 @@ Forked from [mozilla-frontend-infra/react-lazylog](https://github.com/mozilla-fr
 -   Works in latest browser versions, including iOS Safari and Android Chrome
 -   TypeScript support
 
+## Installation
+
+Install the plugin with npm or yarn:
+
+```shell
+$ npm i --save @melloware/react-logviewer
+```
+
 ## Getting started
 
 The core component from react-logviewer is `LazyLog`. There is also a higher-order component (HOC) for
@@ -159,7 +167,7 @@ own `LinePart` and styled separately (colors, text formatting, etc.) from the re
 
 -   Fork and clone this repo.
 -   Install the dependencies with `npm`.
--   Start the development server with `npm run dev`. This will launch a styleguide instance.
-    Open a browser to http://localhost:6060 to preview the React components.
--   Use CTRL-C to exit the styleguide.
+-   Start the development server with `npm run dev`. This will launch a StoryBook instance.
+    Open a browser to http://localhost:6006 to preview the React components.
+-   Use CTRL-C to exit the StoryBook.
 -   Use `npm run build` to generate the compiled component for publishing to npm.
