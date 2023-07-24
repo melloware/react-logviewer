@@ -36,7 +36,7 @@
         "storybook": "npm run dev",
         "build-storybook": "storybook build",
         "prepack": "npm run build",
-        "build": "rollup -c"
+        "build": "rimraf dist && rollup -c"
     },
     "dependencies": {
         "hotkeys-js": "^3.11.2",
