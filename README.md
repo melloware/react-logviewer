@@ -1,4 +1,4 @@
-[![License: MPL 2.0](https://img.shields.io/badge/License-MPL_2.0-brightyellow.svg?style=for-the-badge)](https://opensource.org/licenses/MPL-2.0)
+[![License: MPL 2.0](https://img.shields.io/badge/License-MPL_2.0-yellow.svg?style=for-the-badge)](https://opensource.org/licenses/MPL-2.0)
 ![React.js](https://img.shields.io/badge/react-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB)
 
 # React LogViewer
