@@ -1,7 +1,7 @@
 [![License: MPL 2.0](https://img.shields.io/badge/License-MPL_2.0-brightyellow.svg?style=for-the-badge)](https://opensource.org/licenses/MPL-2.0)
 ![React.js](https://img.shields.io/badge/react-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB)
 
-# React Lazylog
+# React LogViewer
 
 React component that loads and views remote text in the browser lazily and efficiently.  
 Forked from [mozilla-frontend-infra/react-lazylog](https://github.com/mozilla-frontend-infra/react-lazylog).
@@ -54,7 +54,7 @@ If you are going to be requesting a streaming or chunked response, use the `<Laz
 `stream` prop of `true` for quicker upfront rendering as content can be decoded as it arrives.
 
 In addition to the props listed for `LazyLog`, most of the properties available to
-[react-virtualized List](https://github.com/bvaughn/react-virtualized/blob/master/docs/List.md)
+[react-window List](https://github.com/bvaughn/react-virtualized/blob/master/docs/List.md)
 can be provided and will be passed through to the component. _Here are a few useful props:_
 
 | Property            | Type     | Required? | Description                                                                                                                                                                                                                                                                                                  |
