@@ -248,7 +248,7 @@ type LazyLogState = {
  * Logs can be loaded from static text, a URL, or a WebSocket and including ANSI highlighting.
  */
 export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
-    static defaultProps = {
+    static defaultProps: LazyLogProps = {
         containerStyle: {
             width: "auto",
             maxWidth: "initial",
@@ -275,7 +275,7 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
         overscanRowCount: 100,
         rowHeight: 19,
         scrollToLine: 0,
-        searchLikeBrowser: true,
+        enableSearchNavigation: true,
         selectableLines: false,
         stream: false,
         style: {},
