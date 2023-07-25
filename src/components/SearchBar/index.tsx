@@ -14,7 +14,7 @@ export interface SearchBarProps {
      * If true, capture system hotkeys for searching the page (Cmd-F, Ctrl-F,
      * etc.)
      */
-    captureHotKeys?: boolean | undefined;
+    enableHotKeys?: boolean | undefined;
     /**
      * The current result the browser search is highlighting.
      * Only applicable if searchLikeBrowser is true.
@@ -61,7 +61,7 @@ export interface SearchBarProps {
      * "onEnter" and the up arrow calls "onShiftEnter"
      * Defaults to false, which does not add the arrows.
      */
-    searchLikeBrowser?: boolean | undefined;
+    enableSearchNavigation?: boolean | undefined;
 }
 type SearchBarState = {
     keywords?: string;
@@ -78,7 +78,7 @@ export default class SearchBar extends Component<
         resultsCount: 0,
         filterActive: false,
         disabled: false,
-        captureHotKeys: false,
+        enableHotKeys: false,
         currentResultsPosition: 0,
     };
 
@@ -134,14 +134,14 @@ export default class SearchBar extends Component<
     };
 
     componentDidMount() {
-        if (this.props.captureHotKeys) {
+        if (this.props.enableHotKeys) {
             hotkeys("ctrl+f,command+f", this.handleSearchHotkey);
             hotkeys.filter = () => true;
         }
     }
 
     componentWillUnmount() {
-        if (this.props.captureHotKeys) {
+        if (this.props.enableHotKeys) {
             hotkeys.deleteScope("all");
         }
     }
@@ -151,7 +151,7 @@ export default class SearchBar extends Component<
             resultsCount,
             filterActive,
             disabled,
-            searchLikeBrowser,
+            enableSearchNavigation,
             currentResultsPosition,
             onEnter,
             onShiftEnter,
@@ -168,7 +168,7 @@ export default class SearchBar extends Component<
                     } ${resultsCount ? styles.active : styles.inactive}`}
                     style={{ marginRight: "10px" }}
                 >
-                    {searchLikeBrowser && resultsCount
+                    {enableSearchNavigation && resultsCount
                         ? `${
                               currentResultsPosition + 1
                           } of ${resultsCount} ${matchesLabel}`
@@ -196,7 +196,7 @@ export default class SearchBar extends Component<
                 >
                     <FilterLinesIcon />
                 </button>
-                {searchLikeBrowser && (
+                {enableSearchNavigation && (
                     <Fragment>
                         <button
                             disabled={disabled}

@@ -45,6 +45,9 @@ export interface LineNumberClickEvent {
     highlightRange?: Immutable.Seq.Indexed<number>;
 }
 
+/**
+ * React component that loads and views remote text in the browser lazily and efficiently.
+ */
 export interface LazyLogProps {
     /**
      * Flag to enable/disable case insensitive search
@@ -54,16 +57,33 @@ export interface LazyLogProps {
      * If true, capture system hotkeys for searching the page (Cmd-F, Ctrl-F,
      * etc.)
      */
-    captureHotKeys?: boolean | undefined;
+    enableHotKeys?: boolean | undefined;
     /**
      * Optional custom inline style to attach to element which contains
      * the interior scrolling container.
      */
     containerStyle?: CSSProperties | undefined;
     /**
+     * Enable the line gutters to be displayed. Default is false
+     */
+    enableGutters?: boolean | undefined;
+    /**
+     * Enable the line numbers to be displayed. Default is true.
+     */
+    enableLineNumbers?: boolean | undefined;
+    /**
      * Enable the search feature.
      */
     enableSearch?: boolean | undefined;
+    /**
+     * If true, search like a browser search - enter jumps to the next line
+     * with the searched term, shift + enter goes backwards.
+     * Also adds up and down arrows to search bar to jump
+     * to the next and previous result.
+     * If false, enter toggles the filter instead.
+     * Defaults to true.
+     */
+    enableSearchNavigation?: boolean | undefined;
     /**
      * Enable the ability to select multiple lines using shift + click.
      * Defaults to true.
@@ -162,15 +182,6 @@ export interface LazyLogProps {
      */
     scrollToLine?: number | undefined;
     /**
-     * If true, search like a browser search - enter jumps to the next line
-     * with the searched term, shift + enter goes backwards.
-     * Also adds up and down arrows to search bar to jump
-     * to the next and previous result.
-     * If false, enter toggles the filter instead.
-     * Defaults to true.
-     */
-    searchLikeBrowser?: boolean | undefined;
-    /**
      * Make the text selectable, allowing to copy & paste. Defaults to `false`.
      */
     selectableLines?: boolean | undefined;
@@ -232,6 +243,9 @@ type LazyLogState = {
     url?: string;
 };
 
+/**
+ * React component that loads and views remote text in the browser lazily and efficiently.
+ */
 export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
     static defaultProps = {
         containerStyle: {
@@ -239,10 +253,12 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
             maxWidth: "initial",
             overflow: "initial",
         },
-        captureHotKeys: false,
+        enableHotKeys: false,
         caseInsensitive: false,
         enableMultilineHighlight: true,
         enableSearch: false,
+        enableGutters: false,
+        enableLineNumbers: true,
         extraLines: 0,
         fetchOptions: { credentials: "omit" as RequestCredentials },
         follow: false,
@@ -251,7 +267,6 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
         highlight: undefined,
         highlightLineClassName: "",
         lineClassName: "",
-        loadingComponent: <Loading />,
         onError: undefined,
         onHighlight: undefined,
         onLineNumberClick: undefined,
@@ -557,7 +572,7 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
             isFilteringLinesWithMatches,
         } = this.state;
 
-        if (!this.props.searchLikeBrowser) {
+        if (!this.props.enableSearchNavigation) {
             this.handleFilterLinesWithMatches(!isFilteringLinesWithMatches);
 
             return;
@@ -591,7 +606,7 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
         const { resultLines, scrollToLine, currentResultsPosition } =
             this.state;
 
-        if (!this.props.searchLikeBrowser) {
+        if (!this.props.enableSearchNavigation) {
             return;
         }
 
@@ -694,13 +709,13 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
             resultLines,
             currentResultsPosition,
         } = this.state;
-        const { searchLikeBrowser } = this.props;
+        const { enableSearchNavigation } = this.props;
 
         if (isSearching) {
             // If browser-search has started and we're on the line
             // that has the search term that is selected
             if (
-                searchLikeBrowser &&
+                enableSearchNavigation &&
                 resultLines &&
                 currentResultsPosition !== undefined &&
                 resultLines[currentResultsPosition] === lineNumber
@@ -848,6 +863,8 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
             highlightLineClassName,
             onLineNumberClick,
             gutter,
+            enableGutters,
+            enableLineNumbers,
         } = this.props;
         const {
             highlight,
@@ -876,6 +893,8 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
                 style={options.style}
                 key={options.index}
                 number={number}
+                enableLineNumbers={enableLineNumbers}
+                enableGutters={enableGutters}
                 formatPart={this.handleFormatPart(number)}
                 selectable={selectableLines}
                 highlight={highlight?.includes(number)}
@@ -917,7 +936,7 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
             );
         }
 
-        return this.props.loadingComponent;
+        return this.props.loadingComponent || <Loading />;
     };
 
     calculateListHeight = (autoSizerHeight: number) => {
@@ -959,10 +978,12 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
                         }
                         resultsCount={resultLines.length}
                         disabled={count === 0}
-                        captureHotKeys={this.props.captureHotKeys}
+                        enableHotKeys={this.props.enableHotKeys}
                         onEnter={this.handleEnterPressed}
                         onShiftEnter={this.handleShiftEnterPressed}
-                        searchLikeBrowser={this.props.searchLikeBrowser}
+                        enableSearchNavigation={
+                            this.props.enableSearchNavigation
+                        }
                         currentResultsPosition={currentResultsPosition}
                     />
                 )}

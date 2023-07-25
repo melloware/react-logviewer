@@ -20,6 +20,14 @@ export interface LineProps {
     className?: string;
     gutter?: React.ReactNode;
     highlightClassName?: string;
+    /**
+     * Enable the line numbers to be displayed. Default is true.
+     */
+    enableLineNumbers?: boolean | undefined;
+    /**
+     * Enable the line gutters to be displayed. Default is false
+     */
+    enableGutters?: boolean | undefined;
     formatPart?: ((text: string) => ReactNode) | undefined;
     onLineNumberClick?: MouseEventHandler<HTMLAnchorElement> | undefined;
 }
@@ -38,6 +46,7 @@ export default class Line extends Component<LineProps, any> {
         onRowClick: null,
         className: "",
         highlightClassName: "",
+        enableLineNumbers: true,
     };
 
     render() {
@@ -68,12 +77,16 @@ export default class Line extends Component<LineProps, any> {
 
         return (
             <div className={classes} style={lineStyle}>
-                <LineNumber
-                    number={number}
-                    highlight={highlight}
-                    onClick={onLineNumberClick}
-                />
-                <LineGutter gutter={gutter} />
+                {this.props.enableLineNumbers ? (
+                    <LineNumber
+                        number={number}
+                        highlight={highlight}
+                        onClick={onLineNumberClick}
+                    />
+                ) : null}
+                {this.props.enableGutters ? (
+                    <LineGutter gutter={gutter} />
+                ) : null}
                 <LineContent
                     number={number}
                     formatPart={formatPart}
