@@ -176,3 +176,21 @@ own `LinePart` and styled separately (colors, text formatting, etc.) from the re
     Open a browser to http://localhost:6006 to preview the React components.
 -   Use CTRL-C to exit the StoryBook.
 -   Use `npm run build` to generate the compiled component for publishing to npm.
+  
+## Publishing
+
+Adjust the version in the `package.json` if necessary, then
+
+```bash
+npm login
+# This will run npm run build automatically
+npm publish --access public
+```
+
+Then upload code to github, create tag & release.
+
+## License
+
+Licensed under the [Mozilla Public License 2.0](https://opensource.org/license/mpl-2-0/) license.
+
+`SPDX-License-Identifier: Mozilla Public License 2.0`
