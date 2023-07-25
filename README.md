@@ -1,4 +1,4 @@
-[![npm](https://img.shields.io/npm/v/%40melloware%2Freact-logviewer?style=for-the-badge&color=green)](https://www.npmjs.com/package/@melloware/react-logviewer)
+[![npm](https://img.shields.io/npm/v/%40melloware%2Freact-logviewer?style=for-the-badge&color=green)](https://www.npmjs.com/package/%40melloware/react-logviewer)
 [![License: MPL 2.0](https://img.shields.io/badge/License-MPL_2.0-yellow.svg?style=for-the-badge)](https://opensource.org/licenses/MPL-2.0)
 ![React.js](https://img.shields.io/badge/react-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB)
 ![Typescript](https://img.shields.io/badge/typescript-%23323330.svg?style=for-the-badge&logo=typescript&logoColor=%23F7DF1E) 
