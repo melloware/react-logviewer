@@ -65,18 +65,7 @@ If you are going to be rendering a complete file, or an endpoint which can be do
 `<LazyLog />` component as-is for better overall performance at the expense of slightly longer upfront load time.
 
 If you are going to be requesting a streaming or chunked response, use the `<LazyLog stream />` component with the
-`stream` prop of `true` for quicker upfront rendering as content can be decoded as it arrives.
-
-In addition to the props listed for `LazyLog`, most of the properties available to
-[react-window List](https://github.com/bvaughn/react-virtualized/blob/master/docs/List.md)
-can be provided and will be passed through to the component. _Here are a few useful props:_
-
-| Property            | Type     | Required? | Description                                                                                                                                                                                                                                                                                                  |
-| :------------------ | :------- | :-------: | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `rowHeight`         | Number   |           | A fixed row height in pixels. Controls how tall a line is, as well as the `lineHeight` style of the line's text. Defaults to `19`.                                                                                                                                                                           |
-| `overscanRowCount`  | Number   |           | Number of rows to render above/below the visible bounds of the list. This can help reduce flickering during scrolling on certain browsers/devices. Defaults to `100`.                                                                                                                                        |
-| `scrollToAlignment` | String   |           | Controls the alignment of scrolled-to-rows. The default (`'auto'`) scrolls the least amount possible to ensure that the specified row is fully visible. Use `'start'` to always align rows to the top of the list and `'end'` to align them bottom. Use `'center'` to align them in the middle of container. |
-| `onScroll`          | Function |           | Callback invoked whenever the scroll offset changes within the inner scrollable region: `({ clientHeight: number, scrollHeight: number, scrollTop: number }): void`                                                                                                                                          |
+`stream` prop of `true` for quicker upfront rendering as content can be decoded as it arrives.                                                                                                                     |
 
 ## `<ScrollFollow />`
 
