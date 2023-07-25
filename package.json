@@ -34,7 +34,7 @@
         "test": "jest",
         "dev": "storybook dev -p 6006",
         "storybook": "npm run dev",
-        "build-storybook": "storybook build",
+        "build-storybook": "storybook build -o docs/",
         "prepack": "npm run build",
         "build": "rimraf dist && rollup -c"
     },
