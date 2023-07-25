@@ -3,7 +3,7 @@
 
 # React LogViewer
 
-React component that loads and views remote text in the browser lazily and efficiently.  
+React component that loads and views remote text in the browser lazily and efficiently. Logs can be loaded from static text, a URL, or a WebSocket and including ANSI highlighting.
 Forked from [mozilla-frontend-infra/react-lazylog](https://github.com/mozilla-frontend-infra/react-lazylog).
 
 ## Features
@@ -17,6 +17,10 @@ Forked from [mozilla-frontend-infra/react-lazylog](https://github.com/mozilla-fr
 -   Searching through log
 -   Works in latest browser versions, including iOS Safari and Android Chrome
 -   TypeScript support
+
+## Demo
+
+You can see a running demonstration at https://melloware.github.io/react-logviewer/ which is built from StoryBook.
 
 ## Installation
 
