@@ -245,6 +245,7 @@ type LazyLogState = {
 
 /**
  * React component that loads and views remote text in the browser lazily and efficiently.
+ * Logs can be loaded from static text, a URL, or a WebSocket and including ANSI highlighting.
  */
 export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
     static defaultProps = {
