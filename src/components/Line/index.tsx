@@ -28,6 +28,10 @@ export interface LineProps {
      * Enable the line gutters to be displayed. Default is false
      */
     enableGutters?: boolean | undefined;
+    /**
+     * Enable hyperlinks to be discovered in log text and made clickable links. Default is false.
+     */
+    enableLinks?: boolean;
     formatPart?: ((text: string) => ReactNode) | undefined;
     onLineNumberClick?: MouseEventHandler<HTMLAnchorElement> | undefined;
     /**
@@ -52,6 +56,7 @@ export default class Line extends Component<LineProps, any> {
         className: "",
         highlightClassName: "",
         enableLineNumbers: true,
+        enableLinks: false,
     };
 
     render() {
@@ -98,6 +103,7 @@ export default class Line extends Component<LineProps, any> {
                     formatPart={formatPart}
                     data={data}
                     onClick={onLineContentClick}
+                    enableLinks={this.props.enableLinks}
                 />
             </div>
         );

@@ -37,6 +37,18 @@ export interface SearchBarProps {
      */
     filterActive: boolean;
     /**
+     * Icon for the Filter Lines button in the Search Bar. Defaults to FilterLineIcon SVG.
+     */
+    iconFilterLines?: React.ReactNode;
+    /**
+     * Icon for the Find Next button in the Search Bar. Defaults to ArrowDownIcon SVG.
+     */
+    iconFindNext?: React.ReactNode;
+    /**
+     * Icon for the Find Previous button in the Search Bar. Defaults to ArrowUpIcon SVG.
+     */
+    iconFindPrevious?: React.ReactNode;
+    /**
      * Executes a function when the search input has been cleared.
      */
     onClearSearch?: (() => void) | undefined;
@@ -185,8 +197,10 @@ export default class SearchBar extends Component<
                     value={this.state.keywords}
                     disabled={disabled}
                     ref={this.inputRef}
+                    aria-label="Search Log"
                 />
                 <button
+                    title="Filter Lines"
                     disabled={disabled}
                     className={`react-lazylog-searchbar-filter ${
                         filterActive ? "active" : "inactive"
@@ -194,11 +208,12 @@ export default class SearchBar extends Component<
                     onKeyUp={this.handleKeyPress}
                     onMouseUp={this.handleFilterToggle}
                 >
-                    <FilterLinesIcon />
+                    {this.props.iconFilterLines || <FilterLinesIcon />}
                 </button>
                 {enableSearchNavigation && (
                     <Fragment>
                         <button
+                            title="Previous"
                             disabled={disabled}
                             className={`react-lazylog-searchbar-up-arrow ${
                                 resultsCount
@@ -207,9 +222,10 @@ export default class SearchBar extends Component<
                             } ${styles.button} ${arrowIcon}`}
                             onClick={onShiftEnter}
                         >
-                            <UpArrowIcon />
+                            {this.props.iconFindPrevious || <UpArrowIcon />}
                         </button>
                         <button
+                            title="Next"
                             disabled={disabled}
                             className={`react-lazylog-searchbar-down-arrow ${
                                 resultsCount
@@ -218,7 +234,7 @@ export default class SearchBar extends Component<
                             } ${styles.button} ${arrowIcon}`}
                             onClick={onEnter}
                         >
-                            <DownArrowIcon />
+                            {this.props.iconFindNext || <DownArrowIcon />}
                         </button>
                     </Fragment>
                 )}

@@ -51,47 +51,45 @@ export const URLLog: Story = {
     },
 };
 
-const clearMethodRef = React.createRef<LazyLog>();
-
 export const ClearMethod: Story = {
     args: {
         ...BaseStory,
         height: 100,
         text: `Press the Clear button to test clearing the log!`,
     },
-    render: (args) => (
-        <>
-            <button
-                onClick={() => clearMethodRef.current?.clear()}
-                style={{ marginBottom: "6px" }}
-            >
-                Clear Log
-            </button>
-            <br></br>
-            <LazyLog ref={clearMethodRef} {...args} />
-        </>
-    ),
+    render: (args) => {
+        const ref = React.createRef<LazyLog>();
+        return (
+            <>
+                <button
+                    onClick={() => ref.current?.clear()}
+                    style={{ marginBottom: "6px" }}
+                >
+                    Clear Log
+                </button>
+                <br></br>
+                <LazyLog ref={ref} {...args} />
+            </>
+        );
+    },
 };
 
 export const ClickEvents: Story = {
     args: {
         ...BaseStory,
         height: 150,
-        text: `Click me!\nClick me2!\nClick me3!\n`,
+        text: `Click me 100!\nClick me 200!\nClick me 300!\n`,
     },
     render: (args) => (
-        <>
-            <br></br>
-            <LazyLog
-                {...args}
-                onLineNumberClick={(e) =>
-                    alert(`Line No: ${e.lineNumber} - ${e.highlightRange}`)
-                }
-                onLineContentClick={(e) =>
-                    alert(`Line Content: ${e.currentTarget.textContent}`)
-                }
-            />
-        </>
+        <LazyLog
+            {...args}
+            onLineNumberClick={(e) =>
+                alert(`Line No: ${e.lineNumber} - ${e.highlightRange}`)
+            }
+            onLineContentClick={(e) =>
+                alert(`Line Content: ${e.currentTarget.textContent}`)
+            }
+        />
     ),
 };
 

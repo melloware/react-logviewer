@@ -29,6 +29,10 @@ export interface LineContentProps {
      * CSS Style of the LineContent.
      */
     style?: CSSProperties | undefined;
+    /**
+     * Enable hyperlinks to be discovered in log text and made clickable links. Default is false.
+     */
+    enableLinks?: boolean;
 }
 
 /**
@@ -69,6 +73,7 @@ export default class LineContent extends Component<LineContentProps, any> {
                             part={part}
                             format={formatPart}
                             key={`line-${number}-${n}`}
+                            enableLinks={this.props.enableLinks}
                         />
                     ))}
             </span>

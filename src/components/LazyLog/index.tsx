@@ -145,6 +145,18 @@ export interface LazyLogProps {
      */
     highlightLineClassName?: string;
     /**
+     * Icon for the Filter Lines button in the Search Bar. Defaults to FilterLineIcon SVG.
+     */
+    iconFilterLines?: React.ReactNode;
+    /**
+     * Icon for the Find Next button in the Search Bar. Defaults to ArrowDownIcon SVG.
+     */
+    iconFindNext?: React.ReactNode;
+    /**
+     * Icon for the Find Previous button in the Search Bar. Defaults to ArrowUpIcon SVG.
+     */
+    iconFindPrevious?: React.ReactNode;
+    /**
      * Specify an additional className to append to lines.
      */
     lineClassName?: string;
@@ -808,8 +820,13 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
     };
 
     renderError() {
-        const { url, lineClassName, selectableLines, highlightLineClassName } =
-            this.props;
+        const {
+            url,
+            lineClassName,
+            selectableLines,
+            highlightLineClassName,
+            enableLinks,
+        } = this.props;
         const { error } = this.state;
 
         return (
@@ -818,6 +835,7 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
                     selectable={selectableLines}
                     className={lineClassName}
                     highlightClassName={highlightLineClassName}
+                    enableLinks={enableLinks}
                     number="Error"
                     key="error-line-0"
                     data={[
@@ -835,6 +853,7 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
                     key="error-line-1"
                     className={lineClassName}
                     highlightClassName={highlightLineClassName}
+                    enableLinks={enableLinks}
                     data={[
                         {
                             bold: true,
@@ -847,6 +866,7 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
                     key="error-line-2"
                     className={lineClassName}
                     highlightClassName={highlightLineClassName}
+                    enableLinks={enableLinks}
                     data={[
                         {
                             bold: true,
@@ -859,6 +879,7 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
                     key="error-line-3"
                     className={lineClassName}
                     highlightClassName={highlightLineClassName}
+                    enableLinks={enableLinks}
                     data={[]}
                 />
                 <Line
@@ -866,6 +887,7 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
                     key="error-line-4"
                     className={lineClassName}
                     highlightClassName={highlightLineClassName}
+                    enableLinks={enableLinks}
                     data={[
                         {
                             foreground: "blue",
@@ -920,6 +942,7 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
                 data={parsedData}
                 enableGutters={enableGutters}
                 enableLineNumbers={enableLineNumbers}
+                enableLinks={enableLinks}
                 formatPart={this.handleFormatPart(number)}
                 gutter={gutter ? gutter[number] : undefined}
                 highlight={highlight?.includes(number)}
@@ -1014,21 +1037,21 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
                 {enableSearch && (
                     <SearchBar
                         ref={this.searchBarRef}
+                        disabled={count === 0}
+                        currentResultsPosition={currentResultsPosition}
+                        resultsCount={resultLines.length}
+                        enableHotKeys={this.props.enableHotKeys}
                         filterActive={isFilteringLinesWithMatches}
                         onSearch={this.handleSearch}
                         onClearSearch={this.handleClearSearch}
                         onFilterLinesWithMatches={
                             this.handleFilterLinesWithMatches
                         }
-                        resultsCount={resultLines.length}
-                        disabled={count === 0}
-                        enableHotKeys={this.props.enableHotKeys}
                         onEnter={this.handleEnterPressed}
                         onShiftEnter={this.handleShiftEnterPressed}
                         enableSearchNavigation={
                             this.props.enableSearchNavigation
                         }
-                        currentResultsPosition={currentResultsPosition}
                     />
                 )}
 

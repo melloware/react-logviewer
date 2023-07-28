@@ -46,15 +46,19 @@ export interface LinePartProps {
      */
     part: LinePartCss;
     /**
+     * Style for the line Part
+     */
+    style?: CSSProperties | undefined;
+    /**
+     * Enable hyperlinks to be discovered in log text and made clickable links. Default is false.
+     */
+    enableLinks?: boolean;
+    /**
      * Execute a function against each line part's
      * `text` property in `data` to process and
      * return a new value to render for the part.
      */
     format?: ((text: string) => ReactNode) | undefined;
-    /**
-     * Style for the line Part
-     */
-    style?: CSSProperties | undefined;
 }
 
 /**
@@ -67,41 +71,49 @@ export default class LinePart extends Component<LinePartProps, any> {
     static defaultProps = {
         format: null,
         style: null,
+        enableLinks: false,
     };
 
     render() {
         const { format, part, style } = this.props;
         const partText = part.text;
         const partClassName = getClassName(part);
+        const renderedText = format ? format(partText) : partText;
 
-        if (part.link) {
-            return (
-                <span>
-                    <a
-                        className={partClassName}
-                        href={partText}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                    >
-                        {format ? format(partText) : partText}
-                    </a>{" "}
-                </span>
-            );
-        }
+        if (this.props.enableLinks) {
+            if (part.link) {
+                return (
+                    <span>
+                        <a
+                            className={partClassName}
+                            href={partText}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
+                            {renderedText}
+                        </a>{" "}
+                    </span>
+                );
+            }
 
-        if (part.email) {
-            return (
-                <span>
-                    <a className={partClassName} href={`mailto:${partText}`}>
-                        {format ? format(partText) : partText}
-                    </a>{" "}
-                </span>
-            );
+            if (part.email) {
+                return (
+                    <span>
+                        <a
+                            className={partClassName}
+                            href={`mailto:${partText}`}
+                        >
+                            {renderedText}
+                        </a>{" "}
+                    </span>
+                );
+            }
         }
 
         return (
             <span className={partClassName} style={style}>
-                {format ? format(partText) : partText}{" "}
+                {renderedText}
+                {this.props.enableLinks ? " " : null}
             </span>
         );
     }
