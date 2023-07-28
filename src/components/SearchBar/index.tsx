@@ -11,6 +11,13 @@ import styles from "./index.module.css";
 
 export interface SearchBarProps {
     /**
+     * If true, adds up and down arrows to search bar to jump
+     * to the next and previous result. The down arrow calls
+     * "onEnter" and the up arrow calls "onShiftEnter"
+     * Defaults to false, which does not add the arrows.
+     */
+    enableSearchNavigation?: boolean | undefined;
+    /**
      * If true, capture system hotkeys for searching the page (Cmd-F, Ctrl-F,
      * etc.)
      */
@@ -55,13 +62,6 @@ export interface SearchBarProps {
      * executing the search algorithm.
      */
     resultsCount?: number | undefined;
-    /**
-     * If true, adds up and down arrows to search bar to jump
-     * to the next and previous result. The down arrow calls
-     * "onEnter" and the up arrow calls "onShiftEnter"
-     * Defaults to false, which does not add the arrows.
-     */
-    enableSearchNavigation?: boolean | undefined;
 }
 type SearchBarState = {
     keywords?: string;
