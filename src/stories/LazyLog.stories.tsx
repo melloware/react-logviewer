@@ -98,7 +98,7 @@ export const HtmlLinks: Story = {
         ...BaseStory,
         height: 200,
         enableLinks: true,
-        text: `It does not care about secure http://www.mozilla.org or unsecure https://www.mozilla.org
+        text: `Can be secure https://www.mozilla.org or unsecure http://www.mozilla.org
 We want to upload data to ftp://www.mozilla.org or ftps://www.mozilla.org
 We just need to write documents for www.mozilla.org
 And at the end send a mail to react-lazylog@mozilla.org
