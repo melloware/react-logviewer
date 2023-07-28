@@ -171,6 +171,11 @@ export interface LazyLogProps {
      */
     onLineNumberClick?: (event: LineNumberClickEvent) => any;
     /**
+     * Callback to invoke on click of line contents.
+     * @param {React.MouseEvent<HTMLElement>} event - Browser event.
+     */
+    onLineContentClick?(event: React.MouseEvent<HTMLSpanElement>): void;
+    /**
      * Number of rows to render above/below the visible bounds of the list.
      * This can help reduce flickering during scrolling on
      * certain browsers/devices. Defaults to `100`.
@@ -873,6 +878,7 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
             lineClassName,
             highlightLineClassName,
             onLineNumberClick,
+            onLineContentClick,
             gutter,
             enableGutters,
             enableLineNumbers,
@@ -916,6 +922,7 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
                         highlightRange: highlighted,
                     });
                 }}
+                onLineContentClick={onLineContentClick}
                 gutter={gutter ? gutter[number] : undefined}
                 data={ansiparse(decode(linesToRender?.get(options.index)))}
             />

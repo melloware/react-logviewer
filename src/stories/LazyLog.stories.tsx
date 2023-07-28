@@ -50,7 +50,7 @@ export const URLLog: Story = {
     },
 };
 
-const ref = React.createRef<LazyLog>();
+const clearMethodRef = React.createRef<LazyLog>();
 
 export const ClearMethod: Story = {
     args: {
@@ -60,9 +60,36 @@ export const ClearMethod: Story = {
     },
     render: (args) => (
         <>
-            <button onClick={() => ref.current?.clear()}>Clear Log</button>
+            <button
+                onClick={() => clearMethodRef.current?.clear()}
+                style={{ marginBottom: "6px" }}
+            >
+                Clear Log
+            </button>
             <br></br>
-            <LazyLog ref={ref} {...args} />
+            <LazyLog ref={clearMethodRef} {...args} />
+        </>
+    ),
+};
+
+export const ClickEvents: Story = {
+    args: {
+        ...BaseStory,
+        height: 150,
+        text: `Click me!\nClick me2!\nClick me3!\n`,
+    },
+    render: (args) => (
+        <>
+            <br></br>
+            <LazyLog
+                {...args}
+                onLineNumberClick={(e) =>
+                    alert(`Line No: ${e.lineNumber} - ${e.highlightRange}`)
+                }
+                onLineContentClick={(e) =>
+                    alert(`Line Content: ${e.currentTarget.textContent}`)
+                }
+            />
         </>
     ),
 };

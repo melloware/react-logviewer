@@ -22,6 +22,10 @@ export interface LineContentProps {
      */
     formatPart?: ((text: string) => ReactNode) | undefined;
     /**
+     * Execute a function when the line is clicked.
+     */
+    onClick?(event: React.MouseEvent<HTMLSpanElement>): void;
+    /**
      * CSS Style of the LineContent.
      */
     style?: CSSProperties | undefined;
@@ -39,7 +43,7 @@ export default class LineContent extends Component<LineContentProps, any> {
     };
 
     render() {
-        const { data, formatPart, number, style } = this.props;
+        const { data, formatPart, onClick, number, style } = this.props;
 
         if (data) {
             const last = data[data.length - 1];
@@ -54,7 +58,11 @@ export default class LineContent extends Component<LineContentProps, any> {
         }
 
         return (
-            <span className={`log-content ${styles.lineContent}`} style={style}>
+            <span
+                className={`log-content ${styles.lineContent}`}
+                style={style}
+                onClick={onClick}
+            >
                 {data &&
                     data.map((part: any, n: number) => (
                         <LinePart

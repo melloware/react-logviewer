@@ -30,6 +30,11 @@ export interface LineProps {
     enableGutters?: boolean | undefined;
     formatPart?: ((text: string) => ReactNode) | undefined;
     onLineNumberClick?: MouseEventHandler<HTMLAnchorElement> | undefined;
+    /**
+     * Callback to invoke on click of line contents.
+     * @param {React.MouseEvent<HTMLElement>} event - Browser event.
+     */
+    onLineContentClick?(event: React.MouseEvent<HTMLSpanElement>): void;
 }
 
 /**
@@ -37,13 +42,13 @@ export interface LineProps {
  * and any text content within the line.
  */
 export default class Line extends Component<LineProps, any> {
-    static defaultProps = {
+    static defaultProps: LineProps = {
         highlight: false,
         selectable: false,
         style: {},
-        formatPart: null,
-        onLineNumberClick: null,
-        onRowClick: null,
+        formatPart: undefined,
+        onLineNumberClick: undefined,
+        onLineContentClick: undefined,
         className: "",
         highlightClassName: "",
         enableLineNumbers: true,
@@ -56,6 +61,7 @@ export default class Line extends Component<LineProps, any> {
             highlight,
             selectable,
             onLineNumberClick,
+            onLineContentClick,
             number,
             rowHeight,
             style,
@@ -91,6 +97,7 @@ export default class Line extends Component<LineProps, any> {
                     number={number}
                     formatPart={formatPart}
                     data={data}
+                    onClick={onLineContentClick}
                 />
             </div>
         );
