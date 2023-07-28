@@ -9,6 +9,9 @@ __webpack_require__.r(__webpack_exports__);
 
 // EXPORTS
 __webpack_require__.d(__webpack_exports__, {
+  "ClearMethod": () => (/* binding */ ClearMethod),
+  "ClickEvents": () => (/* binding */ ClickEvents),
+  "HtmlLinks": () => (/* binding */ HtmlLinks),
   "TextLog": () => (/* binding */ TextLog),
   "URLLog": () => (/* binding */ URLLog),
   "__namedExportsOrder": () => (/* binding */ __namedExportsOrder),
@@ -92,6 +95,7 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
 
 
 
+
 var getClassName = function getClassName(part) {
   var className = ["log-part"];
   if (part.foreground && part.bold) {
@@ -132,10 +136,35 @@ var LinePart = /*#__PURE__*/function (_Component) {
         format = _this$props.format,
         part = _this$props.part,
         style = _this$props.style;
-      return /*#__PURE__*/(0,jsx_runtime.jsx)("span", {
-        className: getClassName(part),
+      var partText = part.text;
+      var partClassName = getClassName(part);
+      var renderedText = format ? format(partText) : partText;
+      if (this.props.enableLinks) {
+        if (part.link) {
+          return /*#__PURE__*/(0,jsx_runtime.jsxs)("span", {
+            children: [/*#__PURE__*/(0,jsx_runtime.jsx)("a", {
+              className: partClassName,
+              href: partText,
+              target: "_blank",
+              rel: "noopener noreferrer",
+              children: renderedText
+            }), " "]
+          });
+        }
+        if (part.email) {
+          return /*#__PURE__*/(0,jsx_runtime.jsxs)("span", {
+            children: [/*#__PURE__*/(0,jsx_runtime.jsx)("a", {
+              className: partClassName,
+              href: "mailto:".concat(partText),
+              children: renderedText
+            }), " "]
+          });
+        }
+      }
+      return /*#__PURE__*/(0,jsx_runtime.jsxs)("span", {
+        className: partClassName,
         style: style,
-        children: format ? format(part.text) : part.text
+        children: [renderedText, this.props.enableLinks ? " " : null]
       });
     }
   }]);
@@ -143,7 +172,8 @@ var LinePart = /*#__PURE__*/function (_Component) {
 }(react.Component);
 _defineProperty(LinePart, "defaultProps", {
   format: null,
-  style: null
+  style: null,
+  enableLinks: false
 });
 LinePart.displayName = "LinePart";
 
@@ -151,7 +181,7 @@ try {
     // @ts-ignore
     LinePart.displayName = "LinePart";
     // @ts-ignore
-    LinePart.__docgenInfo = { "description": "An individual segment of text within a line. When the text content\nis ANSI-parsed, each boundary is placed within its own `LinePart`\nand styled separately (colors, text formatting, etc.) from the\nrest of the line's content.", "displayName": "LinePart", "props": { "part": { "defaultValue": null, "description": "The pieces of data to render in a line. Will typically\nbe multiple items in the array if ANSI parsed prior.", "name": "part", "required": true, "type": { "name": "LinePartCss" } }, "format": { "defaultValue": { value: "null" }, "description": "Execute a function against each line part's\n`text` property in `data` to process and\nreturn a new value to render for the part.", "name": "format", "required": false, "type": { "name": "((text: string) => ReactNode)" } }, "style": { "defaultValue": { value: "null" }, "description": "Style for the line Part", "name": "style", "required": false, "type": { "name": "CSSProperties" } } } };
+    LinePart.__docgenInfo = { "description": "An individual segment of text within a line. When the text content\nis ANSI-parsed, each boundary is placed within its own `LinePart`\nand styled separately (colors, text formatting, etc.) from the\nrest of the line's content.", "displayName": "LinePart", "props": { "part": { "defaultValue": null, "description": "The pieces of data to render in a line. Will typically\nbe multiple items in the array if ANSI parsed prior.", "name": "part", "required": true, "type": { "name": "LinePartCss" } }, "style": { "defaultValue": { value: "null" }, "description": "Style for the line Part", "name": "style", "required": false, "type": { "name": "CSSProperties" } }, "enableLinks": { "defaultValue": { value: "false" }, "description": "Enable hyperlinks to be discovered in log text and made clickable links. Default is false.", "name": "enableLinks", "required": false, "type": { "name": "boolean" } }, "format": { "defaultValue": { value: "null" }, "description": "Execute a function against each line part's\n`text` property in `data` to process and\nreturn a new value to render for the part.", "name": "format", "required": false, "type": { "name": "((text: string) => ReactNode)" } } } };
     // @ts-ignore
     if (typeof STORYBOOK_REACT_CLASSES !== "undefined")
         // @ts-ignore
@@ -225,9 +255,11 @@ var LineContent = /*#__PURE__*/function (_Component) {
   LineContent_createClass(LineContent, [{
     key: "render",
     value: function render() {
+      var _this = this;
       var _this$props = this.props,
         data = _this$props.data,
         formatPart = _this$props.formatPart,
+        onClick = _this$props.onClick,
         number = _this$props.number,
         style = _this$props.style;
       if (data) {
@@ -239,10 +271,12 @@ var LineContent = /*#__PURE__*/function (_Component) {
       return /*#__PURE__*/(0,jsx_runtime.jsx)("span", {
         className: "log-content ".concat(components_LineContent_index_module.lineContent),
         style: style,
+        onClick: onClick,
         children: data && data.map(function (part, n) {
           return /*#__PURE__*/(0,jsx_runtime.jsx)(LinePart, {
             part: part,
-            format: formatPart
+            format: formatPart,
+            enableLinks: _this.props.enableLinks
           }, "line-".concat(number, "-").concat(n));
         })
       });
@@ -260,7 +294,7 @@ try {
     // @ts-ignore
     LineContent.displayName = "LineContent";
     // @ts-ignore
-    LineContent.__docgenInfo = { "description": "The container of all the individual pieces of content that\nis on a single line. May contain one or more `LinePart`s\ndepending on ANSI parsing.", "displayName": "LineContent", "props": { "data": { "defaultValue": null, "description": "The pieces of data to render in a line. Will typically\nbe multiple items in the array if ANSI parsed prior.", "name": "data", "required": false, "type": { "name": "any[]" } }, "number": { "defaultValue": null, "description": "The line number being rendered.", "name": "number", "required": true, "type": { "name": "string | number | undefined" } }, "formatPart": { "defaultValue": { value: "null" }, "description": "Execute a function against each line part's\n`text` property in `data` to process and\nreturn a new value to render for the part.", "name": "formatPart", "required": false, "type": { "name": "((text: string) => ReactNode)" } }, "style": { "defaultValue": { value: "null" }, "description": "CSS Style of the LineContent.", "name": "style", "required": false, "type": { "name": "CSSProperties" } } } };
+    LineContent.__docgenInfo = { "description": "The container of all the individual pieces of content that\nis on a single line. May contain one or more `LinePart`s\ndepending on ANSI parsing.", "displayName": "LineContent", "props": { "data": { "defaultValue": null, "description": "The pieces of data to render in a line. Will typically\nbe multiple items in the array if ANSI parsed prior.", "name": "data", "required": false, "type": { "name": "any[]" } }, "number": { "defaultValue": null, "description": "The line number being rendered.", "name": "number", "required": true, "type": { "name": "string | number | undefined" } }, "formatPart": { "defaultValue": { value: "null" }, "description": "Execute a function against each line part's\n`text` property in `data` to process and\nreturn a new value to render for the part.", "name": "formatPart", "required": false, "type": { "name": "((text: string) => ReactNode)" } }, "onClick": { "defaultValue": null, "description": "Execute a function when the line is clicked.", "name": "onClick", "required": false, "type": { "name": "((event: MouseEvent<HTMLSpanElement, MouseEvent>) => void)" } }, "style": { "defaultValue": { value: "null" }, "description": "CSS Style of the LineContent.", "name": "style", "required": false, "type": { "name": "CSSProperties" } }, "enableLinks": { "defaultValue": null, "description": "Enable hyperlinks to be discovered in log text and made clickable links. Default is false.", "name": "enableLinks", "required": false, "type": { "name": "boolean" } } } };
     // @ts-ignore
     if (typeof STORYBOOK_REACT_CLASSES !== "undefined")
         // @ts-ignore
@@ -533,6 +567,7 @@ var Line = /*#__PURE__*/function (_Component) {
         highlight = _this$props.highlight,
         selectable = _this$props.selectable,
         onLineNumberClick = _this$props.onLineNumberClick,
+        onLineContentClick = _this$props.onLineContentClick,
         number = _this$props.number,
         rowHeight = _this$props.rowHeight,
         style = _this$props.style,
@@ -559,7 +594,9 @@ var Line = /*#__PURE__*/function (_Component) {
         }) : null, /*#__PURE__*/(0,jsx_runtime.jsx)(LineContent, {
           number: number,
           formatPart: formatPart,
-          data: data
+          data: data,
+          onClick: onLineContentClick,
+          enableLinks: this.props.enableLinks
         })]
       });
     }
@@ -570,12 +607,13 @@ Line_defineProperty(Line, "defaultProps", {
   highlight: false,
   selectable: false,
   style: {},
-  formatPart: null,
-  onLineNumberClick: null,
-  onRowClick: null,
+  formatPart: undefined,
+  onLineNumberClick: undefined,
+  onLineContentClick: undefined,
   className: "",
   highlightClassName: "",
-  enableLineNumbers: true
+  enableLineNumbers: true,
+  enableLinks: false
 });
 Line.displayName = "Line";
 
@@ -583,7 +621,7 @@ try {
     // @ts-ignore
     Line.displayName = "Line";
     // @ts-ignore
-    Line.__docgenInfo = { "description": "A single row of content, containing both the line number\nand any text content within the line.", "displayName": "Line", "props": { "data": { "defaultValue": null, "description": "", "name": "data", "required": false, "type": { "name": "any[]" } }, "number": { "defaultValue": null, "description": "", "name": "number", "required": false, "type": { "name": "string | number" } }, "rowHeight": { "defaultValue": null, "description": "", "name": "rowHeight", "required": false, "type": { "name": "number" } }, "highlight": { "defaultValue": { value: "false" }, "description": "", "name": "highlight", "required": false, "type": { "name": "boolean" } }, "selectable": { "defaultValue": { value: "false" }, "description": "", "name": "selectable", "required": false, "type": { "name": "boolean" } }, "style": { "defaultValue": { value: "{}" }, "description": "", "name": "style", "required": false, "type": { "name": "CSSProperties" } }, "className": { "defaultValue": { value: "" }, "description": "", "name": "className", "required": false, "type": { "name": "string" } }, "gutter": { "defaultValue": null, "description": "", "name": "gutter", "required": false, "type": { "name": "ReactNode" } }, "highlightClassName": { "defaultValue": { value: "" }, "description": "", "name": "highlightClassName", "required": false, "type": { "name": "string" } }, "enableLineNumbers": { "defaultValue": { value: "true" }, "description": "Enable the line numbers to be displayed. Default is true.", "name": "enableLineNumbers", "required": false, "type": { "name": "boolean" } }, "enableGutters": { "defaultValue": null, "description": "Enable the line gutters to be displayed. Default is false", "name": "enableGutters", "required": false, "type": { "name": "boolean" } }, "formatPart": { "defaultValue": { value: "null" }, "description": "", "name": "formatPart", "required": false, "type": { "name": "((text: string) => ReactNode)" } }, "onLineNumberClick": { "defaultValue": { value: "null" }, "description": "", "name": "onLineNumberClick", "required": false, "type": { "name": "MouseEventHandler<HTMLAnchorElement>" } } } };
+    Line.__docgenInfo = { "description": "A single row of content, containing both the line number\nand any text content within the line.", "displayName": "Line", "props": { "data": { "defaultValue": null, "description": "", "name": "data", "required": false, "type": { "name": "any[]" } }, "number": { "defaultValue": null, "description": "", "name": "number", "required": false, "type": { "name": "string | number" } }, "rowHeight": { "defaultValue": null, "description": "", "name": "rowHeight", "required": false, "type": { "name": "number" } }, "highlight": { "defaultValue": { value: "false" }, "description": "", "name": "highlight", "required": false, "type": { "name": "boolean" } }, "selectable": { "defaultValue": { value: "false" }, "description": "", "name": "selectable", "required": false, "type": { "name": "boolean" } }, "style": { "defaultValue": { value: "{}" }, "description": "", "name": "style", "required": false, "type": { "name": "CSSProperties" } }, "className": { "defaultValue": { value: "" }, "description": "", "name": "className", "required": false, "type": { "name": "string" } }, "gutter": { "defaultValue": null, "description": "", "name": "gutter", "required": false, "type": { "name": "ReactNode" } }, "highlightClassName": { "defaultValue": { value: "" }, "description": "", "name": "highlightClassName", "required": false, "type": { "name": "string" } }, "enableLineNumbers": { "defaultValue": { value: "true" }, "description": "Enable the line numbers to be displayed. Default is true.", "name": "enableLineNumbers", "required": false, "type": { "name": "boolean" } }, "enableGutters": { "defaultValue": null, "description": "Enable the line gutters to be displayed. Default is false", "name": "enableGutters", "required": false, "type": { "name": "boolean" } }, "enableLinks": { "defaultValue": { value: "false" }, "description": "Enable hyperlinks to be discovered in log text and made clickable links. Default is false.", "name": "enableLinks", "required": false, "type": { "name": "boolean" } }, "formatPart": { "defaultValue": { value: "undefined" }, "description": "", "name": "formatPart", "required": false, "type": { "name": "((text: string) => ReactNode)" } }, "onLineNumberClick": { "defaultValue": { value: "undefined" }, "description": "", "name": "onLineNumberClick", "required": false, "type": { "name": "MouseEventHandler<HTMLAnchorElement>" } }, "onLineContentClick": { "defaultValue": { value: "undefined" }, "description": "Callback to invoke on click of line contents.\n@param event - Browser event.", "name": "onLineContentClick", "required": false, "type": { "name": "((event: MouseEvent<HTMLSpanElement, MouseEvent>) => void)" } } } };
     // @ts-ignore
     if (typeof STORYBOOK_REACT_CLASSES !== "undefined")
         // @ts-ignore
@@ -871,6 +909,67 @@ var searchFormatPart = function searchFormatPart(_ref2) {
     }
     return formattedPart;
   };
+};
+
+// General Email Regex (RFC 5322 Official Standard)
+var emailPattern = '^(?:(?!.*?[.]{2})[a-zA-Z0-9](?:[a-zA-Z0-9.+!%-]{1,64}|)|"[a-zA-Z0-9.+!% -]{1,64}")';
+var emailDomainPattern = "[a-zA-Z0-9][a-zA-Z0-9.-]+(.[a-z]{2,}|.[0-9]{1,})$";
+var emailRegex = new RegExp("".concat(emailPattern, "@").concat(emailDomainPattern));
+// Add some RegEx magic from xterm.js | xterm-addon-web-links
+// https://github.com/xtermjs/xterm.js/blob/581272ee51129ee2431718b03e90755aed63d8ba/addons/xterm-addon-web-links/src/WebLinksAddon.ts
+var protocolClause = "(((http|ftp)?s?s?)(:)(/{2}))";
+var domainCharacterSet = "[\\da-z\\.-]+";
+var negatedDomainCharacterSet = "[^\\da-z\\.-]+";
+var domainBodyClause = "(".concat(domainCharacterSet, ")");
+var tldClause = "([a-z\\.]{2,6})";
+var ipClause = "((\\d{1,3}\\.){3}\\d{1,3})";
+var localHostClause = "(localhost)";
+var portClause = "(:\\d{1,5})";
+var hostClause = "((".concat(domainBodyClause, "\\.").concat(tldClause, ")|").concat(ipClause, "|").concat(localHostClause, ")").concat(portClause, "?");
+var pathCharacterSet = "(\\/[\\/\\w\\.\\-%~:+@]*)*([^:\"'\\s])";
+var pathClause = "(".concat(pathCharacterSet, ")?");
+var queryStringHashFragmentCharacterSet = "[0-9\\w\\[\\]\\(\\)\\/\\?\\!#@$%&'*+,:;~\\=\\.\\-]*";
+var queryStringClause = "(\\?".concat(queryStringHashFragmentCharacterSet, ")?");
+var hashFragmentClause = "(#".concat(queryStringHashFragmentCharacterSet, ")?");
+var negatedPathCharacterSet = "[^\\/\\w\\.\\-%]+";
+var bodyClause = hostClause + pathClause + queryStringClause + hashFragmentClause;
+var start = "(?:^|".concat(negatedDomainCharacterSet, ")(");
+var end = ")($|".concat(negatedPathCharacterSet, ")");
+var strictUrlRegex = new RegExp("".concat(start + protocolClause, "?").concat(bodyClause).concat(end), "gim");
+var parseLinks = function parseLinks(lines) {
+  var result = [];
+  lines.forEach(function (line) {
+    var arr = line.text.split(" ");
+    arr.forEach(function (text) {
+      if (text.search(strictUrlRegex) > -1) {
+        var email = true;
+        var link = true;
+        if (text.search(emailRegex) > -1) {
+          result.push({
+            text: text,
+            email: email
+          });
+          return;
+        }
+        if (text.search(protocolClause) === -1) {
+          result.push({
+            text: "https://".concat(text),
+            link: link
+          });
+          return;
+        }
+        result.push({
+          text: text,
+          link: link
+        });
+        return;
+      }
+      result.push({
+        text: text
+      });
+    });
+  });
+  return result;
 };
 // EXTERNAL MODULE: ./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[8].use[1]!./src/components/SearchBar/ArrowIcons/DownArrowIcon/index.module.css
 var DownArrowIcon_index_module = __webpack_require__("./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[8].use[1]!./src/components/SearchBar/ArrowIcons/DownArrowIcon/index.module.css");
@@ -1217,24 +1316,28 @@ var SearchBar = /*#__PURE__*/function (_Component) {
           onKeyUp: this.handleKeyPress,
           value: this.state.keywords,
           disabled: disabled,
-          ref: this.inputRef
+          ref: this.inputRef,
+          "aria-label": "Search Log"
         }), /*#__PURE__*/(0,jsx_runtime.jsx)("button", {
+          title: "Filter Lines",
           disabled: disabled,
           className: "react-lazylog-searchbar-filter ".concat(filterActive ? "active" : "inactive", " ").concat(components_SearchBar_index_module.button, " ").concat(filterIcon, " ").concat(components_SearchBar_index_module.clickable),
           onKeyUp: this.handleKeyPress,
           onMouseUp: this.handleFilterToggle,
-          children: /*#__PURE__*/(0,jsx_runtime.jsx)(FilterLinesIcon, {})
+          children: this.props.iconFilterLines || /*#__PURE__*/(0,jsx_runtime.jsx)(FilterLinesIcon, {})
         }), enableSearchNavigation && /*#__PURE__*/(0,jsx_runtime.jsxs)(react.Fragment, {
           children: [/*#__PURE__*/(0,jsx_runtime.jsx)("button", {
+            title: "Previous",
             disabled: disabled,
             className: "react-lazylog-searchbar-up-arrow ".concat(resultsCount ? "active ".concat(components_SearchBar_index_module.clickable) : "inactive", " ").concat(components_SearchBar_index_module.button, " ").concat(arrowIcon),
             onClick: onShiftEnter,
-            children: /*#__PURE__*/(0,jsx_runtime.jsx)(UpArrowIcon, {})
+            children: this.props.iconFindPrevious || /*#__PURE__*/(0,jsx_runtime.jsx)(UpArrowIcon, {})
           }), /*#__PURE__*/(0,jsx_runtime.jsx)("button", {
+            title: "Next",
             disabled: disabled,
             className: "react-lazylog-searchbar-down-arrow ".concat(resultsCount ? "active ".concat(components_SearchBar_index_module.clickable) : "inactive", " ").concat(components_SearchBar_index_module.button, " ").concat(arrowIcon),
             onClick: onEnter,
-            children: /*#__PURE__*/(0,jsx_runtime.jsx)(DownArrowIcon, {})
+            children: this.props.iconFindNext || /*#__PURE__*/(0,jsx_runtime.jsx)(DownArrowIcon, {})
           })]
         })]
       });
@@ -1258,7 +1361,7 @@ try {
     // @ts-ignore
     SearchBar.displayName = "SearchBar";
     // @ts-ignore
-    SearchBar.__docgenInfo = { "description": "", "displayName": "SearchBar", "props": { "enableHotKeys": { "defaultValue": { value: "false" }, "description": "If true, capture system hotkeys for searching the page (Cmd-F, Ctrl-F,\netc.)", "name": "enableHotKeys", "required": false, "type": { "name": "boolean" } }, "currentResultsPosition": { "defaultValue": { value: "0" }, "description": "The current result the browser search is highlighting.\nOnly applicable if searchLikeBrowser is true.\nDefaults to 0.", "name": "currentResultsPosition", "required": false, "type": { "name": "number" } }, "disabled": { "defaultValue": { value: "false" }, "description": "If true, the input field and filter button will be disabled.", "name": "disabled", "required": false, "type": { "name": "boolean" } }, "filterActive": { "defaultValue": { value: "false" }, "description": "If true, then only lines that match the search term will be displayed.", "name": "filterActive", "required": false, "type": { "name": "boolean" } }, "onClearSearch": { "defaultValue": { value: "() => {}" }, "description": "Executes a function when the search input has been cleared.", "name": "onClearSearch", "required": false, "type": { "name": "(() => void)" } }, "onFilterLinesWithMatches": { "defaultValue": { value: "() => {}" }, "description": "Executes a function when the option `Filter Lines With Matches`\nis enable.", "name": "onFilterLinesWithMatches", "required": false, "type": { "name": "((isFiltered: boolean) => void)" } }, "onSearch": { "defaultValue": { value: "() => {}" }, "description": "Executes a function when the user starts typing.", "name": "onSearch", "required": false, "type": { "name": "((keyword: string) => void)" } }, "onEnter": { "defaultValue": null, "description": "Exectues a function when enter is pressed.", "name": "onEnter", "required": false, "type": { "name": "((e: UIEvent<HTMLElement, UIEvent>) => void)" } }, "onShiftEnter": { "defaultValue": null, "description": "Exectues a function when shift + enter is pressed.", "name": "onShiftEnter", "required": false, "type": { "name": "((e: UIEvent<HTMLElement, UIEvent>) => void)" } }, "resultsCount": { "defaultValue": { value: "0" }, "description": "Number of search results. Should come from the component\nexecuting the search algorithm.", "name": "resultsCount", "required": false, "type": { "name": "number" } }, "enableSearchNavigation": { "defaultValue": null, "description": "If true, adds up and down arrows to search bar to jump\nto the next and previous result. The down arrow calls\n\"onEnter\" and the up arrow calls \"onShiftEnter\"\nDefaults to false, which does not add the arrows.", "name": "enableSearchNavigation", "required": false, "type": { "name": "boolean" } } } };
+    SearchBar.__docgenInfo = { "description": "", "displayName": "SearchBar", "props": { "enableSearchNavigation": { "defaultValue": null, "description": "If true, adds up and down arrows to search bar to jump\nto the next and previous result. The down arrow calls\n\"onEnter\" and the up arrow calls \"onShiftEnter\"\nDefaults to false, which does not add the arrows.", "name": "enableSearchNavigation", "required": false, "type": { "name": "boolean" } }, "enableHotKeys": { "defaultValue": { value: "false" }, "description": "If true, capture system hotkeys for searching the page (Cmd-F, Ctrl-F,\netc.)", "name": "enableHotKeys", "required": false, "type": { "name": "boolean" } }, "currentResultsPosition": { "defaultValue": { value: "0" }, "description": "The current result the browser search is highlighting.\nOnly applicable if searchLikeBrowser is true.\nDefaults to 0.", "name": "currentResultsPosition", "required": false, "type": { "name": "number" } }, "disabled": { "defaultValue": { value: "false" }, "description": "If true, the input field and filter button will be disabled.", "name": "disabled", "required": false, "type": { "name": "boolean" } }, "filterActive": { "defaultValue": { value: "false" }, "description": "If true, then only lines that match the search term will be displayed.", "name": "filterActive", "required": false, "type": { "name": "boolean" } }, "iconFilterLines": { "defaultValue": null, "description": "Icon for the Filter Lines button in the Search Bar. Defaults to FilterLineIcon SVG.", "name": "iconFilterLines", "required": false, "type": { "name": "ReactNode" } }, "iconFindNext": { "defaultValue": null, "description": "Icon for the Find Next button in the Search Bar. Defaults to ArrowDownIcon SVG.", "name": "iconFindNext", "required": false, "type": { "name": "ReactNode" } }, "iconFindPrevious": { "defaultValue": null, "description": "Icon for the Find Previous button in the Search Bar. Defaults to ArrowUpIcon SVG.", "name": "iconFindPrevious", "required": false, "type": { "name": "ReactNode" } }, "onClearSearch": { "defaultValue": { value: "() => {}" }, "description": "Executes a function when the search input has been cleared.", "name": "onClearSearch", "required": false, "type": { "name": "(() => void)" } }, "onFilterLinesWithMatches": { "defaultValue": { value: "() => {}" }, "description": "Executes a function when the option `Filter Lines With Matches`\nis enable.", "name": "onFilterLinesWithMatches", "required": false, "type": { "name": "((isFiltered: boolean) => void)" } }, "onSearch": { "defaultValue": { value: "() => {}" }, "description": "Executes a function when the user starts typing.", "name": "onSearch", "required": false, "type": { "name": "((keyword: string) => void)" } }, "onEnter": { "defaultValue": null, "description": "Exectues a function when enter is pressed.", "name": "onEnter", "required": false, "type": { "name": "((e: UIEvent<HTMLElement, UIEvent>) => void)" } }, "onShiftEnter": { "defaultValue": null, "description": "Exectues a function when shift + enter is pressed.", "name": "onShiftEnter", "required": false, "type": { "name": "((e: UIEvent<HTMLElement, UIEvent>) => void)" } }, "resultsCount": { "defaultValue": { value: "0" }, "description": "Number of search results. Should come from the component\nexecuting the search algorithm.", "name": "resultsCount", "required": false, "type": { "name": "number" } } } };
     // @ts-ignore
     if (typeof STORYBOOK_REACT_CLASSES !== "undefined")
         // @ts-ignore
@@ -1825,10 +1928,12 @@ var LazyLog = /*#__PURE__*/function (_Component) {
       resultLineUniqueIndexes: [],
       scrollOffset: 0,
       scrollToIndex: 0,
-      scrollToLine: 0
+      scrollToLine: 0,
+      lines: (0,immutable_es/* List */.aV)()
     });
     LazyLog_defineProperty(LazyLog_assertThisInitialized(_this), "emitter", undefined);
     LazyLog_defineProperty(LazyLog_assertThisInitialized(_this), "encodedLog", undefined);
+    LazyLog_defineProperty(LazyLog_assertThisInitialized(_this), "searchBarRef", /*#__PURE__*/react.createRef());
     LazyLog_defineProperty(LazyLog_assertThisInitialized(_this), "handleUpdate", function (_ref) {
       var moreLines = _ref.lines,
         encodedLog = _ref.encodedLog;
@@ -1882,10 +1987,10 @@ var LazyLog = /*#__PURE__*/function (_Component) {
         onHighlight = _this$props2.onHighlight,
         enableMultilineHighlight = _this$props2.enableMultilineHighlight;
       var isFilteringLinesWithMatches = _this.state.isFilteringLinesWithMatches;
-      if (!e.target.id) {
+      if (!e.currentTarget.id) {
         return;
       }
-      var lineNumber = +e.target.id;
+      var lineNumber = +e.currentTarget.id;
       if (!lineNumber) {
         return;
       }
@@ -2115,9 +2220,11 @@ var LazyLog = /*#__PURE__*/function (_Component) {
         lineClassName = _this$props4.lineClassName,
         highlightLineClassName = _this$props4.highlightLineClassName,
         _onLineNumberClick = _this$props4.onLineNumberClick,
+        onLineContentClick = _this$props4.onLineContentClick,
         gutter = _this$props4.gutter,
         enableGutters = _this$props4.enableGutters,
-        enableLineNumbers = _this$props4.enableLineNumbers;
+        enableLineNumbers = _this$props4.enableLineNumbers,
+        enableLinks = _this$props4.enableLinks;
       var _ref2 = _this.state,
         highlight = _ref2.highlight,
         lines = _ref2.lines,
@@ -2130,17 +2237,22 @@ var LazyLog = /*#__PURE__*/function (_Component) {
       if ((linesToRender === null || linesToRender === void 0 ? void 0 : linesToRender.size) <= 0) {
         return _this.renderNoRows();
       }
+      var decodedLine = decode(linesToRender === null || linesToRender === void 0 ? void 0 : linesToRender.get(options.index));
+      var parsedData = enableLinks ? parseLinks(Utils_ansiparse(decodedLine)) : Utils_ansiparse(decodedLine);
       return /*#__PURE__*/(0,jsx_runtime.jsx)(Line, {
         className: "log-line ".concat(lineClassName),
-        highlightClassName: "log-highlight ".concat(highlightLineClassName),
-        rowHeight: rowHeight,
-        style: options.style,
-        number: number,
-        enableLineNumbers: enableLineNumbers,
+        data: parsedData,
         enableGutters: enableGutters,
+        enableLineNumbers: enableLineNumbers,
+        enableLinks: enableLinks,
         formatPart: _this.handleFormatPart(number),
-        selectable: selectableLines,
+        gutter: gutter ? gutter[number] : undefined,
         highlight: highlight === null || highlight === void 0 ? void 0 : highlight.includes(number),
+        highlightClassName: "log-highlight ".concat(highlightLineClassName),
+        number: number,
+        rowHeight: rowHeight,
+        selectable: selectableLines,
+        style: options.style,
         onLineNumberClick: function onLineNumberClick(e) {
           var highlighted = _this.handleHighlight(e);
           _onLineNumberClick === null || _onLineNumberClick === void 0 ? void 0 : _onLineNumberClick({
@@ -2148,8 +2260,7 @@ var LazyLog = /*#__PURE__*/function (_Component) {
             highlightRange: highlighted
           });
         },
-        gutter: gutter ? gutter[number] : undefined,
-        data: Utils_ansiparse(decode(linesToRender === null || linesToRender === void 0 ? void 0 : linesToRender.get(options.index)))
+        onLineContentClick: onLineContentClick
       }, options.index);
     });
     LazyLog_defineProperty(LazyLog_assertThisInitialized(_this), "renderNoRows", function () {
@@ -2312,23 +2423,26 @@ var LazyLog = /*#__PURE__*/function (_Component) {
         url = _this$props9.url,
         lineClassName = _this$props9.lineClassName,
         selectableLines = _this$props9.selectableLines,
-        highlightLineClassName = _this$props9.highlightLineClassName;
+        highlightLineClassName = _this$props9.highlightLineClassName,
+        enableLinks = _this$props9.enableLinks;
       var error = this.state.error;
       return /*#__PURE__*/(0,jsx_runtime.jsxs)(react.Fragment, {
         children: [/*#__PURE__*/(0,jsx_runtime.jsx)(Line, {
           selectable: selectableLines,
           className: lineClassName,
           highlightClassName: highlightLineClassName,
+          enableLinks: enableLinks,
           number: "Error",
           data: [{
             bold: true,
             foreground: "red",
-            text: error.status ? "".concat(error.message, " (HTTP ").concat(error.status, ")") : error.message || "Network Error"
+            text: error !== null && error !== void 0 && error.status ? "".concat(error === null || error === void 0 ? void 0 : error.message, " (HTTP ").concat(error === null || error === void 0 ? void 0 : error.status, ")") : (error === null || error === void 0 ? void 0 : error.message) || "Network Error"
           }]
         }, "error-line-0"), /*#__PURE__*/(0,jsx_runtime.jsx)(Line, {
           selectable: selectableLines,
           className: lineClassName,
           highlightClassName: highlightLineClassName,
+          enableLinks: enableLinks,
           data: [{
             bold: true,
             text: "An error occurred attempting to load the provided log."
@@ -2337,6 +2451,7 @@ var LazyLog = /*#__PURE__*/function (_Component) {
           selectable: selectableLines,
           className: lineClassName,
           highlightClassName: highlightLineClassName,
+          enableLinks: enableLinks,
           data: [{
             bold: true,
             text: "Please check the URL and ensure it is reachable."
@@ -2345,16 +2460,36 @@ var LazyLog = /*#__PURE__*/function (_Component) {
           selectable: selectableLines,
           className: lineClassName,
           highlightClassName: highlightLineClassName,
+          enableLinks: enableLinks,
           data: []
         }, "error-line-3"), /*#__PURE__*/(0,jsx_runtime.jsx)(Line, {
           selectable: selectableLines,
           className: lineClassName,
           highlightClassName: highlightLineClassName,
+          enableLinks: enableLinks,
           data: [{
             foreground: "blue",
             text: url
           }]
         }, "error-line-4")]
+      });
+    }
+  }, {
+    key: "clear",
+    value:
+    /**
+     * Clears the log and search
+     */
+    function clear() {
+      var _this$searchBarRef$cu;
+      (_this$searchBarRef$cu = this.searchBarRef.current) === null || _this$searchBarRef$cu === void 0 ? void 0 : _this$searchBarRef$cu.setState({
+        keywords: ""
+      });
+      this.handleClearSearch();
+      this.setState({
+        count: 0,
+        lines: (0,immutable_es/* List */.aV)(),
+        isFilteringLinesWithMatches: false
       });
     }
   }, {
@@ -2372,17 +2507,18 @@ var LazyLog = /*#__PURE__*/function (_Component) {
       var rowCount = isFilteringLinesWithMatches ? filteredLines.size : count;
       return /*#__PURE__*/(0,jsx_runtime.jsxs)(react.Fragment, {
         children: [enableSearch && /*#__PURE__*/(0,jsx_runtime.jsx)(SearchBar, {
+          ref: this.searchBarRef,
+          disabled: count === 0,
+          currentResultsPosition: currentResultsPosition,
+          resultsCount: resultLines.length,
+          enableHotKeys: this.props.enableHotKeys,
           filterActive: isFilteringLinesWithMatches,
           onSearch: this.handleSearch,
           onClearSearch: this.handleClearSearch,
           onFilterLinesWithMatches: this.handleFilterLinesWithMatches,
-          resultsCount: resultLines.length,
-          disabled: count === 0,
-          enableHotKeys: this.props.enableHotKeys,
           onEnter: this.handleEnterPressed,
           onShiftEnter: this.handleShiftEnterPressed,
-          enableSearchNavigation: this.props.enableSearchNavigation,
-          currentResultsPosition: currentResultsPosition
+          enableSearchNavigation: this.props.enableSearchNavigation
         }), /*#__PURE__*/(0,jsx_runtime.jsx)(react_virtualized_auto_sizer_esm/* default */.ZP, {
           disableHeight: this.props.height !== "auto",
           disableWidth: this.props.width !== "auto",
@@ -2399,7 +2535,7 @@ var LazyLog = /*#__PURE__*/function (_Component) {
               width: _this3.props.width === "auto" ? width : _this3.props.width,
               itemSize: _this3.getItemSize,
               initialScrollOffset: _this3.state.scrollToIndex,
-              itemCount: rowCount === 0 ? rowCount : rowCount + _this3.props.extraLines,
+              itemCount: rowCount === 0 ? rowCount : rowCount + (_this3.props.extraLines || 0),
               onScroll: function onScroll(options) {
                 _this3.setState({
                   scrollOffset: options.scrollOffset
@@ -2455,12 +2591,14 @@ LazyLog_defineProperty(LazyLog, "defaultProps", {
     maxWidth: "initial",
     overflow: "initial"
   },
-  enableHotKeys: false,
   caseInsensitive: false,
+  enableGutters: false,
+  enableHotKeys: false,
+  enableLineNumbers: true,
+  enableLinks: false,
   enableMultilineHighlight: true,
   enableSearch: false,
-  enableGutters: false,
-  enableLineNumbers: true,
+  enableSearchNavigation: true,
   extraLines: 0,
   fetchOptions: {
     credentials: "omit"
@@ -2478,7 +2616,6 @@ LazyLog_defineProperty(LazyLog, "defaultProps", {
   overscanRowCount: 100,
   rowHeight: 19,
   scrollToLine: 0,
-  searchLikeBrowser: true,
   selectableLines: false,
   stream: false,
   style: {},
@@ -2492,7 +2629,7 @@ try {
     // @ts-ignore
     LazyLog.displayName = "LazyLog";
     // @ts-ignore
-    LazyLog.__docgenInfo = { "description": "React component that loads and views remote text in the browser lazily and efficiently.\nLogs can be loaded from static text, a URL, or a WebSocket and including ANSI highlighting.", "displayName": "LazyLog", "props": { "caseInsensitive": { "defaultValue": { value: "false" }, "description": "Flag to enable/disable case insensitive search", "name": "caseInsensitive", "required": false, "type": { "name": "boolean" } }, "enableHotKeys": { "defaultValue": { value: "false" }, "description": "If true, capture system hotkeys for searching the page (Cmd-F, Ctrl-F,\netc.)", "name": "enableHotKeys", "required": false, "type": { "name": "boolean" } }, "containerStyle": { "defaultValue": { value: "{\r\n            width: \"auto\",\r\n            maxWidth: \"initial\",\r\n            overflow: \"initial\",\r\n        }" }, "description": "Optional custom inline style to attach to element which contains\nthe interior scrolling container.", "name": "containerStyle", "required": false, "type": { "name": "CSSProperties" } }, "enableGutters": { "defaultValue": { value: "false" }, "description": "Enable the line gutters to be displayed. Default is false", "name": "enableGutters", "required": false, "type": { "name": "boolean" } }, "enableLineNumbers": { "defaultValue": { value: "true" }, "description": "Enable the line numbers to be displayed. Default is true.", "name": "enableLineNumbers", "required": false, "type": { "name": "boolean" } }, "enableSearch": { "defaultValue": { value: "false" }, "description": "Enable the search feature.", "name": "enableSearch", "required": false, "type": { "name": "boolean" } }, "enableSearchNavigation": { "defaultValue": null, "description": "If true, search like a browser search - enter jumps to the next line\nwith the searched term, shift + enter goes backwards.\nAlso adds up and down arrows to search bar to jump\nto the next and previous result.\nIf false, enter toggles the filter instead.\nDefaults to true.", "name": "enableSearchNavigation", "required": false, "type": { "name": "boolean" } }, "enableMultilineHighlight": { "defaultValue": { value: "true" }, "description": "Enable the ability to select multiple lines using shift + click.\nDefaults to true.", "name": "enableMultilineHighlight", "required": false, "type": { "name": "boolean" } }, "extraLines": { "defaultValue": { value: "0" }, "description": "Number of extra lines to show at the bottom of the log.\nSet this to 1 so that Linux users can see the last line\nof the log output.", "name": "extraLines", "required": false, "type": { "name": "number" } }, "fetchOptions": { "defaultValue": { value: "{ credentials: \"omit\" as RequestCredentials }" }, "description": "Options object which will be passed through to the `fetch` request.\nDefaults to `{ credentials: 'omit' }`.", "name": "fetchOptions", "required": false, "type": { "name": "RequestInit" } }, "follow": { "defaultValue": { value: "false" }, "description": "Scroll to the end of the component after each update to the content.\nCannot be used in combination with `scrollToLine`.", "name": "follow", "required": false, "type": { "name": "boolean" } }, "formatPart": { "defaultValue": { value: "undefined" }, "description": "Execute a function against each string part of a line,\nreturning a new line part. Is passed a single argument which is\nthe string part to manipulate, should return a new string\nwith the manipulation completed.", "name": "formatPart", "required": false, "type": { "name": "((text: string) => ReactNode)" } }, "gutter": { "defaultValue": null, "description": "The Line Gutter component", "name": "gutter", "required": false, "type": { "name": "ReactNode[]" } }, "height": { "defaultValue": { value: "auto" }, "description": "Set the height in pixels for the component.\nDefaults to `'auto'` if unspecified. When the `height` is `'auto'`,\nthe component will expand vertically to fill its container.", "name": "height", "required": false, "type": { "name": "string | number" } }, "highlight": { "defaultValue": { value: "undefined" }, "description": "Line number (e.g. `highlight={10}`) or line number range to highlight\ninclusively (e.g. `highlight={[5, 10]}` highlights lines 5-10).\nThis is 1-indexed, i.e. line numbers start at `1`.", "name": "highlight", "required": false, "type": { "name": "number | number[]" } }, "highlightLineClassName": { "defaultValue": { value: "" }, "description": "Specify an additional className to append to highlighted lines.", "name": "highlightLineClassName", "required": false, "type": { "name": "string" } }, "lineClassName": { "defaultValue": { value: "" }, "description": "Specify an additional className to append to lines.", "name": "lineClassName", "required": false, "type": { "name": "string" } }, "loadingComponent": { "defaultValue": null, "description": "Specify an alternate component to use when loading.", "name": "loadingComponent", "required": false, "type": { "name": "ReactNode | ((props: any) => ReactNode)" } }, "onError": { "defaultValue": { value: "undefined" }, "description": "Execute a function if the provided `url` has encountered an error\nduring loading.", "name": "onError", "required": false, "type": { "name": "((error: any) => any)" } }, "onHighlight": { "defaultValue": { value: "undefined" }, "description": "Execute a function when the highlighted range has changed.\nIs passed a single argument which is an `Immutable.Range`\nof the highlighted line numbers.", "name": "onHighlight", "required": false, "type": { "name": "((range: Indexed<number>) => any)" } }, "onLoad": { "defaultValue": { value: "undefined" }, "description": "Execute a function if/when the provided `url` has completed loading.", "name": "onLoad", "required": false, "type": { "name": "(() => any)" } }, "onLineNumberClick": { "defaultValue": { value: "undefined" }, "description": "Additional function called when a line number is clicked.\nOn click, the line will always be highlighted.\nThis function is to provide additional actions.\nReceives an object with lineNumber and highlightRange.\nDefaults to null.", "name": "onLineNumberClick", "required": false, "type": { "name": "((event: LineNumberClickEvent) => any)" } }, "overscanRowCount": { "defaultValue": { value: "100" }, "description": "Number of rows to render above/below the visible bounds of the list.\nThis can help reduce flickering during scrolling on\ncertain browsers/devices. Defaults to `100`.", "name": "overscanRowCount", "required": false, "type": { "name": "number" } }, "rowHeight": { "defaultValue": { value: "19" }, "description": "A fixed row height in pixels. Controls how tall a line is,\nas well as the `lineHeight` style of the line's text.\nDefaults to `19`.", "name": "rowHeight", "required": false, "type": { "name": "number" } }, "scrollToLine": { "defaultValue": { value: "0" }, "description": "Scroll to a particular line number once it has loaded.\nThis is 1-indexed, i.e. line numbers start at `1`.\nCannot be used in combination with `follow`.", "name": "scrollToLine", "required": false, "type": { "name": "number" } }, "selectableLines": { "defaultValue": { value: "false" }, "description": "Make the text selectable, allowing to copy & paste. Defaults to `false`.", "name": "selectableLines", "required": false, "type": { "name": "boolean" } }, "stream": { "defaultValue": { value: "false" }, "description": "Set to `true` to specify remote URL will be streaming chunked data.\nDefaults to `false` to download data until completion.", "name": "stream", "required": false, "type": { "name": "boolean" } }, "style": { "defaultValue": { value: "{}" }, "description": "Optional custom inline style to attach to root\nvirtual `LazyList` element.", "name": "style", "required": false, "type": { "name": "CSSProperties" } }, "text": { "defaultValue": null, "description": "String containing text to display.", "name": "text", "required": false, "type": { "name": "string" } }, "url": { "defaultValue": null, "description": "The URL from which to fetch content. Subject to same-origin policy,\nso must be accessible via fetch on same domain or via CORS.", "name": "url", "required": false, "type": { "name": "string" } }, "websocket": { "defaultValue": { value: "false" }, "description": "Set to `true` to specify that url is a websocket URL.\nDefaults to `false` to download data until completion.", "name": "websocket", "required": false, "type": { "name": "boolean" } }, "websocketOptions": { "defaultValue": { value: "{}" }, "description": "Options object which will be passed through to websocket.", "name": "websocketOptions", "required": false, "type": { "name": "WebsocketOptions" } }, "width": { "defaultValue": { value: "auto" }, "description": "Set the width in pixels for the component.\nDefaults to `'auto'` if unspecified.\nWhen the `width` is `'auto'`, the component will expand\nhorizontally to fill its container.", "name": "width", "required": false, "type": { "name": "string | number" } } } };
+    LazyLog.__docgenInfo = { "description": "React component that loads and views remote text in the browser lazily and efficiently.\nLogs can be loaded from static text, a URL, or a WebSocket and including ANSI highlighting.", "displayName": "LazyLog", "props": { "caseInsensitive": { "defaultValue": { value: "false" }, "description": "Flag to enable/disable case insensitive search", "name": "caseInsensitive", "required": false, "type": { "name": "boolean" } }, "containerStyle": { "defaultValue": { value: "{\r\n            width: \"auto\",\r\n            maxWidth: \"initial\",\r\n            overflow: \"initial\",\r\n        }" }, "description": "Optional custom inline style to attach to element which contains\nthe interior scrolling container.", "name": "containerStyle", "required": false, "type": { "name": "CSSProperties" } }, "enableHotKeys": { "defaultValue": { value: "false" }, "description": "If true, capture system hotkeys for searching the page (Cmd-F, Ctrl-F,\netc.)", "name": "enableHotKeys", "required": false, "type": { "name": "boolean" } }, "enableGutters": { "defaultValue": { value: "false" }, "description": "Enable the line gutters to be displayed. Default is false", "name": "enableGutters", "required": false, "type": { "name": "boolean" } }, "enableLineNumbers": { "defaultValue": { value: "true" }, "description": "Enable the line numbers to be displayed. Default is true.", "name": "enableLineNumbers", "required": false, "type": { "name": "boolean" } }, "enableLinks": { "defaultValue": { value: "false" }, "description": "Enable hyperlinks to be discovered in log text and made clickable links. Default is false.", "name": "enableLinks", "required": false, "type": { "name": "boolean" } }, "enableSearch": { "defaultValue": { value: "false" }, "description": "Enable the search feature.", "name": "enableSearch", "required": false, "type": { "name": "boolean" } }, "enableSearchNavigation": { "defaultValue": { value: "true" }, "description": "If true, search like a browser search - enter jumps to the next line\nwith the searched term, shift + enter goes backwards.\nAlso adds up and down arrows to search bar to jump\nto the next and previous result.\nIf false, enter toggles the filter instead.\nDefaults to true.", "name": "enableSearchNavigation", "required": false, "type": { "name": "boolean" } }, "enableMultilineHighlight": { "defaultValue": { value: "true" }, "description": "Enable the ability to select multiple lines using shift + click.\nDefaults to true.", "name": "enableMultilineHighlight", "required": false, "type": { "name": "boolean" } }, "extraLines": { "defaultValue": { value: "0" }, "description": "Number of extra lines to show at the bottom of the log.\nSet this to 1 so that Linux users can see the last line\nof the log output.", "name": "extraLines", "required": false, "type": { "name": "number" } }, "fetchOptions": { "defaultValue": { value: "{ credentials: \"omit\" as RequestCredentials }" }, "description": "Options object which will be passed through to the `fetch` request.\nDefaults to `{ credentials: 'omit' }`.", "name": "fetchOptions", "required": false, "type": { "name": "RequestInit" } }, "follow": { "defaultValue": { value: "false" }, "description": "Scroll to the end of the component after each update to the content.\nCannot be used in combination with `scrollToLine`.", "name": "follow", "required": false, "type": { "name": "boolean" } }, "formatPart": { "defaultValue": { value: "undefined" }, "description": "Execute a function against each string part of a line,\nreturning a new line part. Is passed a single argument which is\nthe string part to manipulate, should return a new string\nwith the manipulation completed.", "name": "formatPart", "required": false, "type": { "name": "((text: string) => ReactNode)" } }, "gutter": { "defaultValue": null, "description": "The Line Gutter component", "name": "gutter", "required": false, "type": { "name": "ReactNode[]" } }, "height": { "defaultValue": { value: "auto" }, "description": "Set the height in pixels for the component.\nDefaults to `'auto'` if unspecified. When the `height` is `'auto'`,\nthe component will expand vertically to fill its container.", "name": "height", "required": false, "type": { "name": "string | number" } }, "highlight": { "defaultValue": { value: "undefined" }, "description": "Line number (e.g. `highlight={10}`) or line number range to highlight\ninclusively (e.g. `highlight={[5, 10]}` highlights lines 5-10).\nThis is 1-indexed, i.e. line numbers start at `1`.", "name": "highlight", "required": false, "type": { "name": "number | number[]" } }, "highlightLineClassName": { "defaultValue": { value: "" }, "description": "Specify an additional className to append to highlighted lines.", "name": "highlightLineClassName", "required": false, "type": { "name": "string" } }, "iconFilterLines": { "defaultValue": null, "description": "Icon for the Filter Lines button in the Search Bar. Defaults to FilterLineIcon SVG.", "name": "iconFilterLines", "required": false, "type": { "name": "ReactNode" } }, "iconFindNext": { "defaultValue": null, "description": "Icon for the Find Next button in the Search Bar. Defaults to ArrowDownIcon SVG.", "name": "iconFindNext", "required": false, "type": { "name": "ReactNode" } }, "iconFindPrevious": { "defaultValue": null, "description": "Icon for the Find Previous button in the Search Bar. Defaults to ArrowUpIcon SVG.", "name": "iconFindPrevious", "required": false, "type": { "name": "ReactNode" } }, "lineClassName": { "defaultValue": { value: "" }, "description": "Specify an additional className to append to lines.", "name": "lineClassName", "required": false, "type": { "name": "string" } }, "loadingComponent": { "defaultValue": null, "description": "Specify an alternate component to use when loading.", "name": "loadingComponent", "required": false, "type": { "name": "ReactNode | ((props: any) => ReactNode)" } }, "onError": { "defaultValue": { value: "undefined" }, "description": "Execute a function if the provided `url` has encountered an error\nduring loading.", "name": "onError", "required": false, "type": { "name": "((error: any) => any)" } }, "onHighlight": { "defaultValue": { value: "undefined" }, "description": "Execute a function when the highlighted range has changed.\nIs passed a single argument which is an `Immutable.Range`\nof the highlighted line numbers.", "name": "onHighlight", "required": false, "type": { "name": "((range: Indexed<number>) => any)" } }, "onLoad": { "defaultValue": { value: "undefined" }, "description": "Execute a function if/when the provided `url` has completed loading.", "name": "onLoad", "required": false, "type": { "name": "(() => any)" } }, "onLineNumberClick": { "defaultValue": { value: "undefined" }, "description": "Additional function called when a line number is clicked.\nOn click, the line will always be highlighted.\nThis function is to provide additional actions.\nReceives an object with lineNumber and highlightRange.\nDefaults to null.", "name": "onLineNumberClick", "required": false, "type": { "name": "((event: LineNumberClickEvent) => any)" } }, "onLineContentClick": { "defaultValue": null, "description": "Callback to invoke on click of line contents.\n@param event - Browser event.", "name": "onLineContentClick", "required": false, "type": { "name": "((event: MouseEvent<HTMLSpanElement, MouseEvent>) => void)" } }, "overscanRowCount": { "defaultValue": { value: "100" }, "description": "Number of rows to render above/below the visible bounds of the list.\nThis can help reduce flickering during scrolling on\ncertain browsers/devices. Defaults to `100`.", "name": "overscanRowCount", "required": false, "type": { "name": "number" } }, "rowHeight": { "defaultValue": { value: "19" }, "description": "A fixed row height in pixels. Controls how tall a line is,\nas well as the `lineHeight` style of the line's text.\nDefaults to `19`.", "name": "rowHeight", "required": false, "type": { "name": "number" } }, "scrollToLine": { "defaultValue": { value: "0" }, "description": "Scroll to a particular line number once it has loaded.\nThis is 1-indexed, i.e. line numbers start at `1`.\nCannot be used in combination with `follow`.", "name": "scrollToLine", "required": false, "type": { "name": "number" } }, "selectableLines": { "defaultValue": { value: "false" }, "description": "Make the text selectable, allowing to copy & paste. Defaults to `false`.", "name": "selectableLines", "required": false, "type": { "name": "boolean" } }, "stream": { "defaultValue": { value: "false" }, "description": "Set to `true` to specify remote URL will be streaming chunked data.\nDefaults to `false` to download data until completion.", "name": "stream", "required": false, "type": { "name": "boolean" } }, "style": { "defaultValue": { value: "{}" }, "description": "Optional custom inline style to attach to root\nvirtual `LazyList` element.", "name": "style", "required": false, "type": { "name": "CSSProperties" } }, "text": { "defaultValue": null, "description": "String containing text to display.", "name": "text", "required": false, "type": { "name": "string" } }, "url": { "defaultValue": null, "description": "The URL from which to fetch content. Subject to same-origin policy,\nso must be accessible via fetch on same domain or via CORS.", "name": "url", "required": false, "type": { "name": "string" } }, "websocket": { "defaultValue": { value: "false" }, "description": "Set to `true` to specify that url is a websocket URL.\nDefaults to `false` to download data until completion.", "name": "websocket", "required": false, "type": { "name": "boolean" } }, "websocketOptions": { "defaultValue": { value: "{}" }, "description": "Options object which will be passed through to websocket.", "name": "websocketOptions", "required": false, "type": { "name": "WebsocketOptions" } }, "width": { "defaultValue": { value: "auto" }, "description": "Set the width in pixels for the component.\nDefaults to `'auto'` if unspecified.\nWhen the `width` is `'auto'`, the component will expand\nhorizontally to fill its container.", "name": "width", "required": false, "type": { "name": "string | number" } } } };
     // @ts-ignore
     if (typeof STORYBOOK_REACT_CLASSES !== "undefined")
         // @ts-ignore
@@ -2605,13 +2742,15 @@ catch (__react_docgen_typescript_loader_error) { }
 
 
 ;// CONCATENATED MODULE: ./src/stories/LazyLog.stories.tsx
-var _TextLog$parameters, _TextLog$parameters2, _URLLog$parameters, _URLLog$parameters2;
+var _TextLog$parameters, _TextLog$parameters2, _URLLog$parameters, _URLLog$parameters2, _ClearMethod$paramete, _ClearMethod$paramete2, _ClickEvents$paramete, _ClickEvents$paramete2, _HtmlLinks$parameters, _HtmlLinks$parameters2;
 function LazyLog_stories_typeof(obj) { "@babel/helpers - typeof"; return LazyLog_stories_typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, LazyLog_stories_typeof(obj); }
 function LazyLog_stories_ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
 function LazyLog_stories_objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? LazyLog_stories_ownKeys(Object(source), !0).forEach(function (key) { LazyLog_stories_defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : LazyLog_stories_ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
 function LazyLog_stories_defineProperty(obj, key, value) { key = LazyLog_stories_toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 function LazyLog_stories_toPropertyKey(arg) { var key = LazyLog_stories_toPrimitive(arg, "string"); return LazyLog_stories_typeof(key) === "symbol" ? key : String(key); }
 function LazyLog_stories_toPrimitive(input, hint) { if (LazyLog_stories_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (LazyLog_stories_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
+
+
 
 
 
@@ -2622,11 +2761,12 @@ var meta = {
   }
 };
 /* harmony default export */ const LazyLog_stories = (meta);
-var DefaultStory = {
+var BaseStory = {
   caseInsensitive: true,
   enableGutters: false,
   enableHotKeys: true,
   enableLineNumbers: true,
+  enableLinks: false,
   enableMultilineHighlight: true,
   enableSearch: true,
   enableSearchNavigation: true,
@@ -2647,30 +2787,99 @@ var DefaultStory = {
  * to learn how to use render functions.
  */
 var TextLog = {
-  args: LazyLog_stories_objectSpread(LazyLog_stories_objectSpread({}, DefaultStory), {}, {
+  name: "Text Based",
+  args: LazyLog_stories_objectSpread(LazyLog_stories_objectSpread({}, BaseStory), {}, {
     text: "\x1B[4;1mRunning \"clean:all\" (clean) task\x1B[0m\n\x1B[32m>> \x1B[39m0 paths cleaned.\n\n\x1B[4;1mRunning \"copy:base\" (copy) task\x1B[0m\nCreated 188 directories, copied 1433 files\n\n\x1B[4;1mRunning \"copy:app\" (copy) task\x1B[0m\nCreated 40 directories, copied 233 files\n\n\x1B[4;1mRunning \"processhtml:dist\" (processhtml) task\x1B[0m\n\n\x1B[4;1mRunning \"ngAnnotate:dist\" (ngAnnotate) task\x1B[0m\n\x1B[32m>> \x1B[39m52 files successfully generated.\n\n\x1B[4;1mRunning \"uglify:dist\" (uglify) task\x1B[0m\n\x1B[32m>> \x1B[39m2 sourcemaps created.\n\x1B[32m>> \x1B[39m2 files created.\n\n\x1B[4;1mRunning \"less:app\" (less) task\x1B[0m\n\x1B[32mFile target/dist/css/alertEvents.css created\x1B[39m\n\x1B[32mFile target/dist/css/application.css created\x1B[39m\n\n\x1B[4;1mRunning \"less:libs\" (less) task\x1B[0m\n\x1B[31mCreate file target/dist/css/libs.css failed\x1B[39m"
   })
 };
 var URLLog = {
-  args: LazyLog_stories_objectSpread(LazyLog_stories_objectSpread({}, DefaultStory), {}, {
+  name: "URL Based",
+  args: LazyLog_stories_objectSpread(LazyLog_stories_objectSpread({}, BaseStory), {}, {
     url: "https://gist.githubusercontent.com/helfi92/96d4444aa0ed46c5f9060a789d316100/raw/ba0d30a9877ea5cc23c7afcd44505dbc2bab1538/typical-live_backing.log"
+  })
+};
+var ClearMethod = {
+  args: LazyLog_stories_objectSpread(LazyLog_stories_objectSpread({}, BaseStory), {}, {
+    height: 100,
+    text: "Press the Clear button to test clearing the log!"
+  }),
+  render: function render(args) {
+    var ref = /*#__PURE__*/react.createRef();
+    return /*#__PURE__*/(0,jsx_runtime.jsxs)(jsx_runtime.Fragment, {
+      children: [/*#__PURE__*/(0,jsx_runtime.jsx)("button", {
+        onClick: function onClick() {
+          var _ref$current;
+          return (_ref$current = ref.current) === null || _ref$current === void 0 ? void 0 : _ref$current.clear();
+        },
+        style: {
+          marginBottom: "6px"
+        },
+        children: "Clear Log"
+      }), /*#__PURE__*/(0,jsx_runtime.jsx)("br", {}), /*#__PURE__*/(0,jsx_runtime.jsx)(LazyLog, LazyLog_stories_objectSpread({
+        ref: ref
+      }, args))]
+    });
+  }
+};
+var ClickEvents = {
+  args: LazyLog_stories_objectSpread(LazyLog_stories_objectSpread({}, BaseStory), {}, {
+    height: 150,
+    text: "Click me 100!\nClick me 200!\nClick me 300!\n"
+  }),
+  render: function render(args) {
+    return /*#__PURE__*/(0,jsx_runtime.jsx)(LazyLog, LazyLog_stories_objectSpread(LazyLog_stories_objectSpread({}, args), {}, {
+      onLineNumberClick: function onLineNumberClick(e) {
+        return alert("Line No: ".concat(e.lineNumber, " - ").concat(e.highlightRange));
+      },
+      onLineContentClick: function onLineContentClick(e) {
+        return alert("Line Content: ".concat(e.currentTarget.textContent));
+      }
+    }));
+  }
+};
+var HtmlLinks = {
+  args: LazyLog_stories_objectSpread(LazyLog_stories_objectSpread({}, BaseStory), {}, {
+    height: 200,
+    enableLinks: true,
+    text: "Can be secure https://www.mozilla.org or unsecure http://www.mozilla.org\nWe want to upload data to ftp://www.mozilla.org or ftps://www.mozilla.org\nWe just need to write documents for www.mozilla.org\nAnd at the end send a mail to react-lazylog@mozilla.org\n"
   })
 };
 TextLog.parameters = LazyLog_stories_objectSpread(LazyLog_stories_objectSpread({}, TextLog.parameters), {}, {
   docs: LazyLog_stories_objectSpread(LazyLog_stories_objectSpread({}, (_TextLog$parameters = TextLog.parameters) === null || _TextLog$parameters === void 0 ? void 0 : _TextLog$parameters.docs), {}, {
     source: LazyLog_stories_objectSpread({
-      originalSource: "{\n  args: {\n    ...DefaultStory,\n    text: `\\x1b[4;1mRunning \"clean:all\" (clean) task\\x1b[0m\\n\\x1b[32m>> \\x1b[39m0 paths cleaned.\\n\\n\\x1b[4;1mRunning \"copy:base\" (copy) task\\x1b[0m\\nCreated 188 directories, copied 1433 files\\n\\n\\x1b[4;1mRunning \"copy:app\" (copy) task\\x1b[0m\\nCreated 40 directories, copied 233 files\\n\\n\\x1b[4;1mRunning \"processhtml:dist\" (processhtml) task\\x1b[0m\\n\\n\\x1b[4;1mRunning \"ngAnnotate:dist\" (ngAnnotate) task\\x1b[0m\\n\\x1b[32m>> \\x1b[39m52 files successfully generated.\\n\\n\\x1b[4;1mRunning \"uglify:dist\" (uglify) task\\x1b[0m\\n\\x1b[32m>> \\x1b[39m2 sourcemaps created.\\n\\x1b[32m>> \\x1b[39m2 files created.\\n\\n\\x1b[4;1mRunning \"less:app\" (less) task\\x1b[0m\\n\\x1b[32mFile target/dist/css/alertEvents.css created\\x1b[39m\\n\\x1b[32mFile target/dist/css/application.css created\\x1b[39m\\n\\n\\x1b[4;1mRunning \"less:libs\" (less) task\\x1b[0m\\n\\x1b[31mCreate file target/dist/css/libs.css failed\\x1b[39m`\n  }\n}"
+      originalSource: "{\n  name: \"Text Based\",\n  args: {\n    ...BaseStory,\n    text: `\\x1b[4;1mRunning \"clean:all\" (clean) task\\x1b[0m\\n\\x1b[32m>> \\x1b[39m0 paths cleaned.\\n\\n\\x1b[4;1mRunning \"copy:base\" (copy) task\\x1b[0m\\nCreated 188 directories, copied 1433 files\\n\\n\\x1b[4;1mRunning \"copy:app\" (copy) task\\x1b[0m\\nCreated 40 directories, copied 233 files\\n\\n\\x1b[4;1mRunning \"processhtml:dist\" (processhtml) task\\x1b[0m\\n\\n\\x1b[4;1mRunning \"ngAnnotate:dist\" (ngAnnotate) task\\x1b[0m\\n\\x1b[32m>> \\x1b[39m52 files successfully generated.\\n\\n\\x1b[4;1mRunning \"uglify:dist\" (uglify) task\\x1b[0m\\n\\x1b[32m>> \\x1b[39m2 sourcemaps created.\\n\\x1b[32m>> \\x1b[39m2 files created.\\n\\n\\x1b[4;1mRunning \"less:app\" (less) task\\x1b[0m\\n\\x1b[32mFile target/dist/css/alertEvents.css created\\x1b[39m\\n\\x1b[32mFile target/dist/css/application.css created\\x1b[39m\\n\\n\\x1b[4;1mRunning \"less:libs\" (less) task\\x1b[0m\\n\\x1b[31mCreate file target/dist/css/libs.css failed\\x1b[39m`\n  }\n}"
     }, (_TextLog$parameters2 = TextLog.parameters) === null || _TextLog$parameters2 === void 0 || (_TextLog$parameters2 = _TextLog$parameters2.docs) === null || _TextLog$parameters2 === void 0 ? void 0 : _TextLog$parameters2.source)
   })
 });
 URLLog.parameters = LazyLog_stories_objectSpread(LazyLog_stories_objectSpread({}, URLLog.parameters), {}, {
   docs: LazyLog_stories_objectSpread(LazyLog_stories_objectSpread({}, (_URLLog$parameters = URLLog.parameters) === null || _URLLog$parameters === void 0 ? void 0 : _URLLog$parameters.docs), {}, {
     source: LazyLog_stories_objectSpread({
-      originalSource: "{\n  args: {\n    ...DefaultStory,\n    url: \"https://gist.githubusercontent.com/helfi92/96d4444aa0ed46c5f9060a789d316100/raw/ba0d30a9877ea5cc23c7afcd44505dbc2bab1538/typical-live_backing.log\"\n  }\n}"
+      originalSource: "{\n  name: \"URL Based\",\n  args: {\n    ...BaseStory,\n    url: \"https://gist.githubusercontent.com/helfi92/96d4444aa0ed46c5f9060a789d316100/raw/ba0d30a9877ea5cc23c7afcd44505dbc2bab1538/typical-live_backing.log\"\n  }\n}"
     }, (_URLLog$parameters2 = URLLog.parameters) === null || _URLLog$parameters2 === void 0 || (_URLLog$parameters2 = _URLLog$parameters2.docs) === null || _URLLog$parameters2 === void 0 ? void 0 : _URLLog$parameters2.source)
   })
 });
-var __namedExportsOrder = ["TextLog", "URLLog"];
+ClearMethod.parameters = LazyLog_stories_objectSpread(LazyLog_stories_objectSpread({}, ClearMethod.parameters), {}, {
+  docs: LazyLog_stories_objectSpread(LazyLog_stories_objectSpread({}, (_ClearMethod$paramete = ClearMethod.parameters) === null || _ClearMethod$paramete === void 0 ? void 0 : _ClearMethod$paramete.docs), {}, {
+    source: LazyLog_stories_objectSpread({
+      originalSource: "{\n  args: {\n    ...BaseStory,\n    height: 100,\n    text: `Press the Clear button to test clearing the log!`\n  },\n  render: args => {\n    const ref = React.createRef<LazyLog>();\n    return <>\r\n                <button onClick={() => ref.current?.clear()} style={{\n        marginBottom: \"6px\"\n      }}>\r\n                    Clear Log\r\n                </button>\r\n                <br></br>\r\n                <LazyLog ref={ref} {...args} />\r\n            </>;\n  }\n}"
+    }, (_ClearMethod$paramete2 = ClearMethod.parameters) === null || _ClearMethod$paramete2 === void 0 || (_ClearMethod$paramete2 = _ClearMethod$paramete2.docs) === null || _ClearMethod$paramete2 === void 0 ? void 0 : _ClearMethod$paramete2.source)
+  })
+});
+ClickEvents.parameters = LazyLog_stories_objectSpread(LazyLog_stories_objectSpread({}, ClickEvents.parameters), {}, {
+  docs: LazyLog_stories_objectSpread(LazyLog_stories_objectSpread({}, (_ClickEvents$paramete = ClickEvents.parameters) === null || _ClickEvents$paramete === void 0 ? void 0 : _ClickEvents$paramete.docs), {}, {
+    source: LazyLog_stories_objectSpread({
+      originalSource: "{\n  args: {\n    ...BaseStory,\n    height: 150,\n    text: `Click me 100!\\nClick me 200!\\nClick me 300!\\n`\n  },\n  render: args => <LazyLog {...args} onLineNumberClick={e => alert(`Line No: ${e.lineNumber} - ${e.highlightRange}`)} onLineContentClick={e => alert(`Line Content: ${e.currentTarget.textContent}`)} />\n}"
+    }, (_ClickEvents$paramete2 = ClickEvents.parameters) === null || _ClickEvents$paramete2 === void 0 || (_ClickEvents$paramete2 = _ClickEvents$paramete2.docs) === null || _ClickEvents$paramete2 === void 0 ? void 0 : _ClickEvents$paramete2.source)
+  })
+});
+HtmlLinks.parameters = LazyLog_stories_objectSpread(LazyLog_stories_objectSpread({}, HtmlLinks.parameters), {}, {
+  docs: LazyLog_stories_objectSpread(LazyLog_stories_objectSpread({}, (_HtmlLinks$parameters = HtmlLinks.parameters) === null || _HtmlLinks$parameters === void 0 ? void 0 : _HtmlLinks$parameters.docs), {}, {
+    source: LazyLog_stories_objectSpread({
+      originalSource: "{\n  args: {\n    ...BaseStory,\n    height: 200,\n    enableLinks: true,\n    text: `Can be secure https://www.mozilla.org or unsecure http://www.mozilla.org\nWe want to upload data to ftp://www.mozilla.org or ftps://www.mozilla.org\nWe just need to write documents for www.mozilla.org\nAnd at the end send a mail to react-lazylog@mozilla.org\n`\n  }\n}"
+    }, (_HtmlLinks$parameters2 = HtmlLinks.parameters) === null || _HtmlLinks$parameters2 === void 0 || (_HtmlLinks$parameters2 = _HtmlLinks$parameters2.docs) === null || _HtmlLinks$parameters2 === void 0 ? void 0 : _HtmlLinks$parameters2.source)
+  })
+});
+var __namedExportsOrder = ["TextLog", "URLLog", "ClearMethod", "ClickEvents", "HtmlLinks"];
 
 /***/ }),
 
@@ -2689,7 +2898,7 @@ var __namedExportsOrder = ["TextLog", "URLLog"];
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, ".mwcQB6MiHERlY01Dguac {\n    overflow: auto !important;\n    font-family: \"Monaco\", monospace;\n    font-size: 12px;\n    margin: 0;\n    white-space: pre;\n    background-color: #222222;\n    color: #ffffff;\n    font-weight: 400;\n    will-change: initial;\n    outline: none;\n}\n\n.Y6CaaC0yKve7KWp0kBVu {\n    background-color: #ffff00;\n    color: #222222;\n}\n\n.n7ZbVUs0ZqCsjPWJxQz1 {\n    background-color: #ff10f0;\n    color: #222222;\n}\n", "",{"version":3,"sources":["webpack://./src/components/LazyLog/index.module.css"],"names":[],"mappings":"AAAA;IACI,yBAAyB;IACzB,gCAAgC;IAChC,eAAe;IACf,SAAS;IACT,gBAAgB;IAChB,yBAAyB;IACzB,cAAc;IACd,gBAAgB;IAChB,oBAAoB;IACpB,aAAa;AACjB;;AAEA;IACI,yBAAyB;IACzB,cAAc;AAClB;;AAEA;IACI,yBAAyB;IACzB,cAAc;AAClB","sourcesContent":[".lazyLog {\n    overflow: auto !important;\n    font-family: \"Monaco\", monospace;\n    font-size: 12px;\n    margin: 0;\n    white-space: pre;\n    background-color: #222222;\n    color: #ffffff;\n    font-weight: 400;\n    will-change: initial;\n    outline: none;\n}\n\n.searchMatch {\n    background-color: #ffff00;\n    color: #222222;\n}\n\n.searchMatchHighlighted {\n    background-color: #ff10f0;\n    color: #222222;\n}\n"],"sourceRoot":""}]);
+___CSS_LOADER_EXPORT___.push([module.id, ".mwcQB6MiHERlY01Dguac {\n    overflow: auto !important;\n    font-family: \"Monaco\", monospace;\n    font-size: 12px;\n    margin: 0;\n    white-space: pre;\n    background-color: #222222;\n    color: #ffffff;\n    font-weight: 400;\n    will-change: initial;\n    outline: none;\n}\n\n.mwcQB6MiHERlY01Dguac span a {\n    color: #d6d6d6;\n}\n\n.Y6CaaC0yKve7KWp0kBVu {\n    background-color: #ffff00;\n    color: #222222;\n}\n\n.n7ZbVUs0ZqCsjPWJxQz1 {\n    background-color: #ff10f0;\n    color: #222222;\n}\n", "",{"version":3,"sources":["webpack://./src/components/LazyLog/index.module.css"],"names":[],"mappings":"AAAA;IACI,yBAAyB;IACzB,gCAAgC;IAChC,eAAe;IACf,SAAS;IACT,gBAAgB;IAChB,yBAAyB;IACzB,cAAc;IACd,gBAAgB;IAChB,oBAAoB;IACpB,aAAa;AACjB;;AAEA;IACI,cAAc;AAClB;;AAEA;IACI,yBAAyB;IACzB,cAAc;AAClB;;AAEA;IACI,yBAAyB;IACzB,cAAc;AAClB","sourcesContent":[".lazyLog {\n    overflow: auto !important;\n    font-family: \"Monaco\", monospace;\n    font-size: 12px;\n    margin: 0;\n    white-space: pre;\n    background-color: #222222;\n    color: #ffffff;\n    font-weight: 400;\n    will-change: initial;\n    outline: none;\n}\n\n.lazyLog span a {\n    color: #d6d6d6;\n}\n\n.searchMatch {\n    background-color: #ffff00;\n    color: #222222;\n}\n\n.searchMatchHighlighted {\n    background-color: #ff10f0;\n    color: #222222;\n}\n"],"sourceRoot":""}]);
 // Exports
 ___CSS_LOADER_EXPORT___.locals = {
 	"lazyLog": "mwcQB6MiHERlY01Dguac",
@@ -2989,4 +3198,4 @@ ___CSS_LOADER_EXPORT___.locals = {
 /***/ })
 
 }]);
-//# sourceMappingURL=stories-LazyLog-stories.f0f3a9f3.iframe.bundle.js.map
+//# sourceMappingURL=stories-LazyLog-stories.00331009.iframe.bundle.js.map
