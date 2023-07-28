@@ -8,6 +8,8 @@ export interface LinePartCss {
     background?: string;
     italic?: string;
     underline?: string;
+    email?: boolean;
+    link?: boolean;
     text: string;
 }
 
@@ -69,10 +71,37 @@ export default class LinePart extends Component<LinePartProps, any> {
 
     render() {
         const { format, part, style } = this.props;
+        const partText = part.text;
+        const partClassName = getClassName(part);
+
+        if (part.link) {
+            return (
+                <span>
+                    <a
+                        className={partClassName}
+                        href={partText}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        {format ? format(partText) : partText}
+                    </a>{" "}
+                </span>
+            );
+        }
+
+        if (part.email) {
+            return (
+                <span>
+                    <a className={partClassName} href={`mailto:${partText}`}>
+                        {format ? format(partText) : partText}
+                    </a>{" "}
+                </span>
+            );
+        }
 
         return (
-            <span className={getClassName(part)} style={style}>
-                {format ? format(part.text) : part.text}
+            <span className={partClassName} style={style}>
+                {format ? format(partText) : partText}{" "}
             </span>
         );
     }

@@ -16,6 +16,7 @@ import {
     convertBufferToLines,
     getHighlightRange,
     getScrollIndex,
+    parseLinks,
     searchFormatPart,
 } from "../Utils/utils";
 import websocket from "../Utils/websocket";
@@ -61,15 +62,15 @@ export interface LazyLogProps {
      */
     caseInsensitive?: boolean;
     /**
-     * If true, capture system hotkeys for searching the page (Cmd-F, Ctrl-F,
-     * etc.)
-     */
-    enableHotKeys?: boolean;
-    /**
      * Optional custom inline style to attach to element which contains
      * the interior scrolling container.
      */
     containerStyle?: CSSProperties;
+    /**
+     * If true, capture system hotkeys for searching the page (Cmd-F, Ctrl-F,
+     * etc.)
+     */
+    enableHotKeys?: boolean;
     /**
      * Enable the line gutters to be displayed. Default is false
      */
@@ -78,6 +79,10 @@ export interface LazyLogProps {
      * Enable the line numbers to be displayed. Default is true.
      */
     enableLineNumbers?: boolean;
+    /**
+     * Enable hyperlinks to be discovered in log text and made clickable links. Default is false.
+     */
+    enableLinks?: boolean;
     /**
      * Enable the search feature.
      */
@@ -266,12 +271,14 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
             maxWidth: "initial",
             overflow: "initial",
         },
-        enableHotKeys: false,
         caseInsensitive: false,
+        enableGutters: false,
+        enableHotKeys: false,
+        enableLineNumbers: true,
+        enableLinks: false,
         enableMultilineHighlight: true,
         enableSearch: false,
-        enableGutters: false,
-        enableLineNumbers: true,
+        enableSearchNavigation: true,
         extraLines: 0,
         fetchOptions: { credentials: "omit" as RequestCredentials },
         follow: false,
@@ -287,7 +294,6 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
         overscanRowCount: 100,
         rowHeight: 19,
         scrollToLine: 0,
-        enableSearchNavigation: true,
         selectableLines: false,
         stream: false,
         style: {},
@@ -506,7 +512,7 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
         }
     };
 
-    handleError = (err: Error) => {
+    handleError = (err: ErrorStatus) => {
         this.setState({ error: err });
 
         if (this.props.onError) {
@@ -514,15 +520,15 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
         }
     };
 
-    handleHighlight = (e: any) => {
+    handleHighlight = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
         const { onHighlight, enableMultilineHighlight } = this.props;
         const { isFilteringLinesWithMatches } = this.state;
 
-        if (!e.target.id) {
+        if (!e.currentTarget.id) {
             return;
         }
 
-        const lineNumber = +e.target.id;
+        const lineNumber = +e.currentTarget.id;
 
         if (!lineNumber) {
             return;
@@ -882,6 +888,7 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
             gutter,
             enableGutters,
             enableLineNumbers,
+            enableLinks,
         } = this.props;
         const {
             highlight,
@@ -902,20 +909,27 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
             return this.renderNoRows();
         }
 
+        const decodedLine = decode(linesToRender?.get(options.index));
+        const parsedData = enableLinks
+            ? parseLinks(ansiparse(decodedLine))
+            : ansiparse(decodedLine);
+
         return (
             <Line
                 className={`log-line ${lineClassName}`}
+                data={parsedData}
+                enableGutters={enableGutters}
+                enableLineNumbers={enableLineNumbers}
+                formatPart={this.handleFormatPart(number)}
+                gutter={gutter ? gutter[number] : undefined}
+                highlight={highlight?.includes(number)}
                 highlightClassName={`log-highlight ${highlightLineClassName}`}
-                rowHeight={rowHeight}
-                style={options.style}
                 key={options.index}
                 number={number}
-                enableLineNumbers={enableLineNumbers}
-                enableGutters={enableGutters}
-                formatPart={this.handleFormatPart(number)}
+                rowHeight={rowHeight}
                 selectable={selectableLines}
-                highlight={highlight?.includes(number)}
-                onLineNumberClick={(e: any) => {
+                style={options.style}
+                onLineNumberClick={(e) => {
                     const highlighted = this.handleHighlight(e);
                     onLineNumberClick?.({
                         lineNumber: number,
@@ -923,8 +937,6 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
                     });
                 }}
                 onLineContentClick={onLineContentClick}
-                gutter={gutter ? gutter[number] : undefined}
-                data={ansiparse(decode(linesToRender?.get(options.index)))}
             />
         );
     };
