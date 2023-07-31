@@ -14,9 +14,5 @@ module.exports = {
     },
     docs: {
         autodocs: true,
-    },
-    webpackFinal: async (config) => {
-        config.optimization.minimize = false;
-        return config;
-    },
+    }
 };
