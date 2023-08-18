@@ -10,10 +10,11 @@
         "lazy",
         "lazylog"
     ],
-    "author": "Melloware <mellowaredev@gmail.com> (http://melloware.com)",
+    "author": "Melloware <mellowaredev@gmail.com> (https://github.com/melloware)",
     "contributors": [
+        "Eli Perelman (https://github.com/eliperelman)",
         "Hassan Ali (http://hassanali.me)",
-        "Melloware <mellowaredev@gmail.com> (http://melloware.com)"
+        "Melloware <mellowaredev@gmail.com> (https://github.com/melloware)"
     ],
     "main": "dist/cjs/index.js",
     "module": "dist/esm/index.js",
