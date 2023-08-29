@@ -60,15 +60,15 @@ export interface SearchBarProps {
     /**
      * Executes a function when the user starts typing.
      */
-    onSearch?: ((keyword: string) => void) | undefined;
+    onSearch?: (keyword: string) => void;
     /**
      * Exectues a function when enter is pressed.
      */
-    onEnter?: ((e: React.UIEvent<HTMLElement>) => void) | undefined;
+    onEnter: (e: React.UIEvent<HTMLElement>) => void;
     /**
      * Exectues a function when shift + enter is pressed.
      */
-    onShiftEnter?: ((e: React.UIEvent<HTMLElement>) => void) | undefined;
+    onShiftEnter: (e: React.UIEvent<HTMLElement>) => void;
     /**
      * Number of search results. Should come from the component
      * executing the search algorithm.
@@ -147,7 +147,28 @@ export default class SearchBar extends Component<
 
     componentDidMount() {
         if (this.props.enableHotKeys) {
-            hotkeys("ctrl+f,command+f", this.handleSearchHotkey);
+            const $this = this;
+            hotkeys("ctrl+f,command+f,f3,ctrl+f3", function (event, handler) {
+                switch (handler.key) {
+                    case "ctrl+f":
+                    case "command+f":
+                        $this.handleSearchHotkey(event);
+                        event.preventDefault();
+                        break;
+                    case "f3":
+                        // @ts-ignore
+                        $this.props.onEnter(event);
+                        event.preventDefault();
+                        break;
+                    case "ctrl+f3":
+                        // @ts-ignore
+                        $this.props.onShiftEnter(event);
+                        event.preventDefault();
+                        break;
+                    default:
+                    // do nothing
+                }
+            });
             hotkeys.filter = () => true;
         }
     }
