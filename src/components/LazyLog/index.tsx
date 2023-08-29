@@ -1052,6 +1052,9 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
                         enableSearchNavigation={
                             this.props.enableSearchNavigation
                         }
+                        iconFilterLines={this.props.iconFilterLines}
+                        iconFindNext={this.props.iconFindNext}
+                        iconFindPrevious={this.props.iconFindPrevious}
                     />
                 )}
 
