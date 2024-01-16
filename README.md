@@ -8,6 +8,11 @@
 React component that loads and views remote text in the browser lazily and efficiently. Logs can be loaded from static text, a URL, or a WebSocket and including ANSI highlighting.
 Forked from [mozilla-frontend-infra/react-lazylog](https://github.com/mozilla-frontend-infra/react-lazylog).
 
+**If you like this project, please consider supporting me ❤️**
+
+[![GitHub Sponsor](https://img.shields.io/badge/GitHub-FFDD00?style=for-the-badge&logo=github&logoColor=black)](https://github.com/sponsors/melloware)
+[![PayPal](https://img.shields.io/badge/PayPal-00457C?style=for-the-badge&logo=paypal&logoColor=white)](https://www.paypal.me/mellowareinc)
+
 ## Features
 
 -   Efficient scrolling performance thanks to [react-window](https://github.com/bvaughn/react-window)
