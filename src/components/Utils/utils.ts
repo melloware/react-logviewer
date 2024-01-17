@@ -235,32 +235,22 @@ const emailPattern =
     '^(?:(?!.*?[.]{2})[a-zA-Z0-9](?:[a-zA-Z0-9.+!%-]{1,64}|)|"[a-zA-Z0-9.+!% -]{1,64}")';
 const emailDomainPattern = "[a-zA-Z0-9][a-zA-Z0-9.-]+(.[a-z]{2,}|.[0-9]{1,})$";
 const emailRegex = new RegExp(`${emailPattern}@${emailDomainPattern}`);
-// Add some RegEx magic from xterm.js | xterm-addon-web-links
-// https://github.com/xtermjs/xterm.js/blob/581272ee51129ee2431718b03e90755aed63d8ba/addons/xterm-addon-web-links/src/WebLinksAddon.ts
 const protocolClause = "(((http|ftp)?s?s?)(:)(/{2}))";
-const domainCharacterSet = "[\\da-z\\.-]+";
-const negatedDomainCharacterSet = "[^\\da-z\\.-]+";
-const domainBodyClause = `(${domainCharacterSet})`;
-const tldClause = "([a-z\\.]{2,6})";
-const ipClause = "((\\d{1,3}\\.){3}\\d{1,3})";
-const localHostClause = "(localhost)";
-const portClause = "(:\\d{1,5})";
-const hostClause = `((${domainBodyClause}\\.${tldClause})|${ipClause}|${localHostClause})${portClause}?`;
-const pathCharacterSet = "(\\/[\\/\\w\\.\\-%~:+@]*)*([^:\"'\\s])";
-const pathClause = `(${pathCharacterSet})?`;
-const queryStringHashFragmentCharacterSet =
-    "[0-9\\w\\[\\]\\(\\)\\/\\?\\!#@$%&'*+,:;~\\=\\.\\-]*";
-const queryStringClause = `(\\?${queryStringHashFragmentCharacterSet})?`;
-const hashFragmentClause = `(#${queryStringHashFragmentCharacterSet})?`;
-const negatedPathCharacterSet = "[^\\/\\w\\.\\-%]+";
-const bodyClause =
-    hostClause + pathClause + queryStringClause + hashFragmentClause;
-const start = `(?:^|${negatedDomainCharacterSet})(`;
-const end = `)($|${negatedPathCharacterSet})`;
-const strictUrlRegex = new RegExp(
-    `${start + protocolClause}?${bodyClause}${end}`,
-    "gim"
-);
+// Add some RegEx magic from xterm.js | xterm-addon-web-links
+// https://github.com/xtermjs/xterm.js/blob/master/addons/addon-web-links/src/WebLinksAddon.ts
+// consider everthing starting with http:// or https://
+// up to first whitespace, `"` or `'` as url
+// NOTE: The repeated end clause is needed to not match a dangling `:`
+// resembling the old (...)*([^:"\'\\s]) final path clause
+// additionally exclude early + final:
+// - unsafe from rfc3986: !*'()
+// - unsafe chars from rfc1738: {}|\^~[]` (minus [] as we need them for ipv6 adresses, also allow ~)
+// also exclude as finals:
+// - final interpunction like ,.!?
+// - any sort of brackets <>()[]{} (not spec conform, but often used to enclose urls)
+// - unsafe chars from rfc1738: {}|\^~[]`
+const strictUrlRegex =
+    /https?:[/]{2}[^\s"'!*(){}|\\\^<>`]*[^\s"':,.!?{}|\\\^~\[\]`()<>]/;
 
 export const parseLinks = (lines: any[]) => {
     const result: LinePartCss[] = [];
