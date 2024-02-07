@@ -12,7 +12,7 @@ changelog:
         - accessibility
     - title: Defects 🐞
       labels:
-        - ":lady_beetle: defect"
+        - "bug"
     - title: Dependencies 👒 
       labels:
         - dependencies
