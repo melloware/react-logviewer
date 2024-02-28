@@ -488,12 +488,41 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
 
     handleUpdate = ({ lines: moreLines, encodedLog }: any) => {
         this.encodedLog = encodedLog;
-        this.setState((state, props) => {
-            const { scrollToLine, follow } = props;
-            const { count: previousCount } = state;
+        const { scrollToLine, follow, stream, websocket } = this.props;
+
+        // handle stream and socket updates batched update mode
+        if (stream || websocket) {
+            this.setState((state, props) => {
+                const { scrollToLine, follow } = props;
+                const { count: previousCount } = state;
+
+                const offset = 0;
+                const lines = (state.lines || List()).concat(moreLines);
+                const count = lines.count();
+
+                const scrollToIndex = getScrollIndex({
+                    follow,
+                    scrollToLine,
+                    previousCount,
+                    count,
+                    offset,
+                });
+
+                return {
+                    lines,
+                    offset,
+                    count,
+                    scrollToIndex,
+                };
+            });
+
+            this.forceSearch();
+        } else {
+            // regular text update in normal react hook mode
+            const { count: previousCount } = this.state;
 
             const offset = 0;
-            const lines = (state.lines || List()).concat(moreLines);
+            const lines = (this.state.lines || List()).concat(moreLines);
             const count = lines.count();
 
             const scrollToIndex = getScrollIndex({
@@ -504,17 +533,12 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
                 offset,
             });
 
-           return {
-               lines,
-               offset,
-               count,
-               scrollToIndex,
-           }
-        });
-
-        const { stream, websocket } = this.props;
-        if (stream || websocket) {
-            this.forceSearch();
+            this.setState({
+                lines,
+                offset,
+                count,
+                scrollToIndex,
+            });
         }
     };
 
