@@ -3,7 +3,7 @@ import mitt, { Emitter, EventType } from "mitt";
 
 import { bufferConcat, convertBufferToLines } from "./utils";
 
-const fetcher = Promise.resolve().then(() => self.fetch);
+const fetcher = Promise.resolve().then(() => globalThis.fetch);
 
 export const recurseReaderAsEvent: any = async (
     reader: ReadableStreamDefaultReader<Uint8Array>,

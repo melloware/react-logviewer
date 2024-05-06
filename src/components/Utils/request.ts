@@ -2,7 +2,7 @@ import mitt from "mitt";
 
 import { convertBufferToLines } from "./utils";
 
-const fetcher = Promise.resolve().then(() => self.fetch);
+const fetcher = Promise.resolve().then(() => globalThis.fetch);
 
 export default (url: RequestInfo | URL, options: RequestInit) => {
     const emitter = mitt();

@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     // Default
-    "target": "es2015",
+    "target": "es2020",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "strict": true,
