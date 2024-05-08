@@ -81,7 +81,7 @@ Note the following only applies to documentation/articles meant to be published 
 Pay special attention to this
 -----------------------------
 
-All React LogViewer software is distributed under the **MIT** open source license, and your contributions
+All React LogViewer software is distributed under the **MPL** open source license, and your contributions
 will be licensed in the same way.
 
 If you work for a company which, by the way or place in which your code was written, by your contract terms 
@@ -150,7 +150,7 @@ compliance with Section 2.3.
 #### 2.3 Outbound License
 
 As a condition on the grant of rights in Sections 2.1 and 2.2, React LogViewer agrees to license the Contribution only
-under the terms of the MIT License (including any right to adopt any future version of this license if 
+under the terms of the MPL License (including any right to adopt any future version of this license if 
 permitted).
 
 
