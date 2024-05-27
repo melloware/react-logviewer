@@ -192,6 +192,17 @@ export interface LazyLogProps {
      * @param {React.MouseEvent<HTMLElement>} event - Browser event.
      */
     onLineContentClick?(event: React.MouseEvent<HTMLSpanElement>): void;
+
+    /**
+     * Callback to invoke on user scroll. Args matches the ScrollFollow onScroll callback.
+     * @param args
+     */
+    onScroll?(args: {
+        scrollTop: number;
+        scrollHeight: number;
+        clientHeight: number;
+    }): void;
+
     /**
      * Number of rows to render above/below the visible bounds of the list.
      * This can help reduce flickering during scrolling on
@@ -1116,6 +1127,18 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
                                     this.setState({
                                         scrollOffset: options.scrollOffset,
                                     });
+                                    // If there is an onScroll callback, call it.
+                                    if(this.props.onScroll) {
+                                        const args = {
+                                            scrollTop: options.scrollOffset,
+                                            scrollHeight: this.getItemSize(0) * (rowCount === 0
+                                                ? rowCount
+                                                : rowCount +
+                                                (this.props.extraLines || 0)),
+                                            clientHeight: this.calculateListHeight(height) as number
+                                        }
+                                        this.props.onScroll(args);
+                                    }
                                 }}
                             >
                                 {/* 
