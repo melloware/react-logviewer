@@ -418,7 +418,7 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
 
         // If follow is activated, and we're not currently searching, scroll to offset
         if (this.props.follow && !this.state.isSearching) {
-            this.state.listRef?.current?.scrollToItem(this.state.scrollOffset, "auto");
+            this.state.listRef?.current?.scrollToItem(this.state.scrollToIndex, "auto");
             this.state.listRef?.current?.forceUpdate();
         }
 
