@@ -57,19 +57,22 @@ export default class ScrollFollow extends Component<
         startFollowing: false,
     };
 
-    static getDerivedStateFromProps(nextProps: { startFollowing: boolean }) {
-        return {
-            follow: nextProps.startFollowing,
-        };
-    }
-
+    // Initial state is the startFollowing prop.
     state: ScrollFollowState = {
-        follow: false,
+        follow: this.props.startFollowing ?? false,
     };
 
     handleScroll = ({ scrollTop, scrollHeight, clientHeight }: any) => {
-        if (this.state.follow && scrollHeight - scrollTop !== clientHeight) {
-            this.setState({ follow: false });
+        // Only update the state if the content exceeds the available space
+        // otherwise the follow will be disabled before the screen is filled.
+        if(scrollHeight > clientHeight) {
+            if (this.state.follow && scrollHeight - scrollTop !== clientHeight) {
+                // Disable follow, if we're currently following and have manually scrolled away from the bottom.
+                this.setState({follow: false});
+            } else if (!this.state.follow && scrollHeight - scrollTop === clientHeight) {
+                // Enable follow if we are not currently following and have scrolled to the bottom.
+                this.setState({follow: true});
+            }
         }
     };
 
