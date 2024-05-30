@@ -39,6 +39,15 @@ export interface WebsocketOptions {
      * Callback allback which formats the websocket data stream.
      */
     formatMessage?: ((message: any) => string) | undefined;
+    /**
+     * Set to true, to reconnect the WebSocket automatically.
+     */
+    reconnect?: boolean;
+    /**
+     * Set the time to wait between reconnects in seconds.
+     * Default is 1s
+     */
+    reconnectWait?: number
 }
 
 export interface ErrorStatus extends Error {

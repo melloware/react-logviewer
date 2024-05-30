@@ -10,6 +10,7 @@ export default (url: string | URL, options: WebsocketOptions) => {
     const emitter = mitt();
     let encodedLog = new Uint8Array();
     let overage: any = null;
+    let aborted: boolean = false;
 
     emitter.on("data", (data) => {
         encodedLog = bufferConcat(
@@ -46,6 +47,10 @@ export default (url: string | URL, options: WebsocketOptions) => {
             });
             socket.addEventListener("close", (e) => {
                 onClose && onClose(e);
+                if(!aborted && options.reconnect) {
+                    const timeout = options.reconnectWait ?? 1;
+                    setTimeout(() => emitter.emit("start"), timeout*1000);
+                }
             });
 
             socket.addEventListener("error", (err) => {
@@ -65,7 +70,10 @@ export default (url: string | URL, options: WebsocketOptions) => {
                 emitter.emit("data", msg);
             });
 
-            emitter.on("abort", () => socket.close());
+            emitter.on("abort", () => {
+                aborted = true;
+                socket.close()
+            });
         } catch (err) {
             emitter.emit("error", err);
         }
