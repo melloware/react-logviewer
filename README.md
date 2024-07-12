@@ -82,18 +82,23 @@ If you are going to be requesting a streaming or chunked response, use the `<Laz
 The `ScrollFollow` component accepts a render prop function which should return a component to render based on the
 function's arguments.
 
+> [!NOTE]  
+> ScrollFollow must be wrapped in an element that contains a fixed height such as a `<div>`
+
 ```jsx
 import React from "react";
 import { render } from "react-dom";
 import { LazyLog, ScrollFollow } from "@melloware/react-logviewer";
 
 render(
+    <div style={{ height: 500, width: 902 }}>
     <ScrollFollow
         startFollowing={true}
         render={({ follow, onScroll }) => (
             <LazyLog url="http://example.log" stream follow={follow} onScroll={onScroll} />
         )}
-    />,
+    />
+    </div>,
     document.getElementById("root"),
 );
 ```
