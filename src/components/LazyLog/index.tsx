@@ -47,7 +47,7 @@ export interface WebsocketOptions {
      * Set the time to wait between reconnects in seconds.
      * Default is 1s
      */
-    reconnectWait?: number
+    reconnectWait?: number;
 }
 
 export interface ErrorStatus extends Error {
@@ -427,7 +427,10 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
 
         // If follow is activated, and we're not currently searching, scroll to offset
         if (this.props.follow && !this.state.isSearching) {
-            this.state.listRef?.current?.scrollToItem(this.state.scrollToIndex, "auto");
+            this.state.listRef?.current?.scrollToItem(
+                this.state.scrollToIndex,
+                "auto"
+            );
             this.state.listRef?.current?.forceUpdate();
         }
 
@@ -451,6 +454,13 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
             this.props.onHighlight
         ) {
             this.props.onHighlight(this.state.highlight!);
+        }
+
+        if (
+            this.props.scrollToLine &&
+            prevProps.scrollToLine !== this.props.scrollToLine
+        ) {
+            this.handleScrollToLine(this.props.scrollToLine);
         }
     }
 
@@ -1143,15 +1153,21 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
                                         scrollOffset: options.scrollOffset,
                                     });
                                     // If there is an onScroll callback, call it.
-                                    if(this.props.onScroll) {
+                                    if (this.props.onScroll) {
                                         const args = {
                                             scrollTop: options.scrollOffset,
-                                            scrollHeight: this.getItemSize(0) * (rowCount === 0
-                                                ? rowCount
-                                                : rowCount +
-                                                (this.props.extraLines || 0)),
-                                            clientHeight: this.calculateListHeight(height) as number
-                                        }
+                                            scrollHeight:
+                                                this.getItemSize(0) *
+                                                (rowCount === 0
+                                                    ? rowCount
+                                                    : rowCount +
+                                                      (this.props.extraLines ||
+                                                          0)),
+                                            clientHeight:
+                                                this.calculateListHeight(
+                                                    height
+                                                ) as number,
+                                        };
                                         this.props.onScroll(args);
                                     }
                                 }}
