@@ -219,6 +219,10 @@ export interface LazyLogProps {
      */
     overscanRowCount?: number;
     /**
+     * Use Regex for search
+     */
+    regexSearch?: boolean;
+    /**
      * A fixed row height in pixels. Controls how tall a line is,
      * as well as the `lineHeight` style of the line's text.
      * Defaults to `19`.
@@ -304,6 +308,7 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
             overflow: "initial",
         },
         caseInsensitive: false,
+        regexSearch: false,
         enableGutters: false,
         enableHotKeys: false,
         enableLineNumbers: true,
@@ -732,11 +737,16 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
 
     handleSearch = (keywords: string | undefined) => {
         const { resultLines, searchKeywords } = this.state;
-        const { caseInsensitive, stream, websocket } = this.props;
+        const { caseInsensitive, stream, websocket, regexSearch } = this.props;
         const currentResultLines =
             !stream && !websocket && keywords === searchKeywords
                 ? resultLines
-                : searchLines(keywords, this.encodedLog!, caseInsensitive!);
+                : searchLines(
+                      keywords,
+                      this.encodedLog!,
+                      caseInsensitive!,
+                      regexSearch!
+                  );
 
         this.setState(
             {
