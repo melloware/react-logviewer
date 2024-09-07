@@ -657,7 +657,6 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
             scrollToLine,
         });
         this.state.listRef?.current?.scrollToItem(scrollToLine, "auto");
-        this.state.listRef?.current?.forceUpdate();
     }
 
     handleEnterPressed = () => {
