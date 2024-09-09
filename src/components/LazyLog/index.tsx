@@ -400,6 +400,13 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
     componentDidMount() {
         this.setState({ listRef: React.createRef() });
         this.request();
+        if (this.props.scrollToLine) {
+            setTimeout(() => {
+                if (this.state.listRef && this.state.listRef.current) {
+                    this.handleScrollToLine(this.props.scrollToLine);
+                }
+            }, 100);
+        }
     }
 
     componentDidUpdate(prevProps: LazyLogProps, prevState: LazyLogState) {
@@ -420,7 +427,6 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
             const update = () => {
                 const newPosition = this.state.scrollOffset;
                 this.state.listRef?.current?.scrollToItem(newPosition, "auto");
-                this.state.listRef?.current?.forceUpdate();
             };
             update();
         }
@@ -431,7 +437,6 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
                 this.state.scrollToIndex,
                 "auto"
             );
-            this.state.listRef?.current?.forceUpdate();
         }
 
         if (
