@@ -4,13 +4,14 @@ import styles from "./index.module.css";
 
 export interface LinePartCss {
     foreground?: string | number;
-    bold?: string;
+    bold?: boolean;
     background?: string;
-    italic?: string;
-    underline?: string;
+    italic?: boolean;
+    underline?: boolean;
     email?: boolean;
     link?: boolean;
     text: string;
+    [key: string]: any;
 }
 
 const getClassName = (part: LinePartCss) => {
