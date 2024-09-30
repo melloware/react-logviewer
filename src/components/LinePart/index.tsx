@@ -4,13 +4,14 @@ import styles from "./index.module.css";
 
 export interface LinePartCss {
     foreground?: string | number;
-    bold?: string;
+    bold?: boolean;
     background?: string;
-    italic?: string;
-    underline?: string;
+    italic?: boolean;
+    underline?: boolean;
     email?: boolean;
     link?: boolean;
     text: string;
+    [key: string]: any;
 }
 
 const getClassName = (part: LinePartCss) => {
@@ -78,7 +79,7 @@ export default class LinePart extends Component<LinePartProps, any> {
         const { format, part, style } = this.props;
         const partText = part.text;
         const partClassName = getClassName(part);
-        const renderedText = format ? format(partText) : partText;
+        const renderedText = format ? format(partText!) : partText!;
 
         if (this.props.enableLinks) {
             if (part.link) {

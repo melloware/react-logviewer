@@ -252,14 +252,17 @@ const protocolClause = "(((http|ftp)?s?s?)(:)(/{2}))";
 const strictUrlRegex =
     /https?:[/]{2}[^\s"'!*(){}|\\\^<>`]*[^\s"':,.!?{}|\\\^~\[\]`()<>]/;
 
-export const parseLinks = (lines: any[]) => {
+export const parseLinks = (lines: any[]): LinePartCss[] => {
     const result: LinePartCss[] = [];
 
     lines.forEach((line) => {
         const arr = line.text.split(" ");
 
+        let found = false;
+
         arr.forEach((text: string) => {
             if (text.search(strictUrlRegex) > -1) {
+                found = true;
                 const email = true;
                 const link = true;
 
@@ -282,9 +285,11 @@ export const parseLinks = (lines: any[]) => {
 
                 return;
             }
-
-            result.push({ text });
         });
+
+        if (!found) {
+            result.push(line);
+        }
     });
 
     return result;
