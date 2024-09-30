@@ -66,17 +66,55 @@ export const searchIndexes = (
 };
 
 /**
+ * Search for a given pattern in the text
+ *
+ * @param rawKeywords - The Regex pattern to search.
+ * @param {Uint8Array} rawLog - The log data to search within.
+ * @returns {number[]} An array of indices where the keyword is found in the log.
+ */
+export const searchIndexesRegex = (
+    rawKeywords: string | undefined,
+    rawLog: Uint8Array,
+    isCaseInsensitive: boolean
+) => {
+    if (!rawKeywords) return [];
+
+    const decodedLog = new TextDecoder("utf-8").decode(rawLog);
+    const indexes: number[] = [];
+
+    let flags = "g";
+    if (isCaseInsensitive) {
+        flags += "i";
+    }
+
+    try {
+        const regex = new RegExp(rawKeywords, flags);
+        let match;
+
+        while ((match = regex.exec(decodedLog)) !== null) {
+            indexes.push(match.index);
+        }
+    } catch (e) {
+        return [];
+    }
+
+    return indexes;
+};
+
+/**
  * Searches for keywords within log lines, handling case sensitivity.
  *
  * @param {string | undefined} rawKeywords - The search term to look for.
  * @param {Uint8Array} rawLog - The log data to search within.
  * @param {boolean} isCaseInsensitive - Whether the search should be case-insensitive.
+ * @param {boolean} regexSearch - Search with regex.
  * @returns {number[]} An array of line numbers where the keyword is found.
  */
 export const searchLines = (
     rawKeywords: string | undefined,
     rawLog: Uint8Array,
-    isCaseInsensitive: boolean
+    isCaseInsensitive: boolean,
+    regexSearch: boolean
 ) => {
     let keywords = rawKeywords;
     let log = rawLog;
@@ -91,8 +129,9 @@ export const searchLines = (
     decodedLog = decodedLog.endsWith("\n") ? decodedLog : decodedLog + "\n";
     log = encode(decodedLog);
 
-    // Perform the search
-    const results = searchIndexes(keywords, log);
+    const results = regexSearch
+        ? searchIndexesRegex(keywords, log, isCaseInsensitive)
+        : searchIndexes(keywords, log);
     const linesRanges = getLinesLengthRanges(log);
     const maxLineRangeIndex = linesRanges.length;
     const maxResultIndex = results.length;
