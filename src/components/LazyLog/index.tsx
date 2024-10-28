@@ -998,6 +998,12 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
             return this.renderNoRows();
         }
 
+        if (!number) {
+            // A falsy number can only be a result of displaying filtered lines with extraLines, and this row is an extraLine.
+            // In this case, do not render anything.
+            return undefined;
+        }
+
         const decodedLine = decode(linesToRender?.get(options.index));
         const parsedData = enableLinks
             ? parseLinks(ansiparse(decodedLine))
