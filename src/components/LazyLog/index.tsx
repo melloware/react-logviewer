@@ -20,6 +20,7 @@ import {
     searchFormatPart,
 } from "../Utils/utils";
 import websocket from "../Utils/websocket";
+import eventsource from "../Utils/eventsource";
 import styles from "./index.module.css";
 
 export interface WebsocketOptions {
@@ -36,11 +37,43 @@ export interface WebsocketOptions {
      */
     onError?: ((e: Event) => void) | undefined;
     /**
-     * Callback allback which formats the websocket data stream.
+     * Callback which formats the websocket data stream.
      */
     formatMessage?: ((message: any) => string) | undefined;
     /**
      * Set to true, to reconnect the WebSocket automatically.
+     */
+    reconnect?: boolean;
+    /**
+     * Set the time to wait between reconnects in seconds.
+     * Default is 1s
+     */
+    reconnectWait?: number;
+}
+
+export interface EventSourceOptions {
+    /**
+     * Boolean indicating if CORS should be set to include credentials
+     */
+    withCredentials?: boolean;
+    /**
+     * Callback when the eventsource is opened
+     */
+    onOpen?: ((e: Event, eventSource: EventSource) => void) | undefined;
+    /**
+     * Callback when the eventsource is closed
+     */
+    onClose?: ((e: Event) => void) | undefined;
+    /**
+     * Callback when the eventsource has an error
+     */
+    onError?: ((e: Event) => void) | undefined;
+    /**
+     * Callback which formats the eventsource data stream.
+     */
+    formatMessage?: ((message: any) => string) | undefined;
+    /**
+     * Set to true, to reconnect the EventSource automatically.
      */
     reconnect?: boolean;
     /**
@@ -263,6 +296,15 @@ export interface LazyLogProps {
      */
     websocketOptions?: WebsocketOptions;
     /**
+     * Set to `true` to specify that url is an eventsource URL.
+     * Defaults to `false` to download data until completion.
+     */
+    eventsource?: boolean;
+    /**
+     * Options object which will be passed through to evensource.
+     */
+    eventsourceOptions?: EventSourceOptions;
+    /**
      * Set the width in pixels for the component.
      * Defaults to `'auto'` if unspecified.
      * When the `width` is `'auto'`, the component will expand
@@ -331,6 +373,8 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
         style: {},
         websocket: false,
         websocketOptions: {},
+        eventsource: false,
+        eventsourceOptions: {},
         width: "auto",
     };
 
@@ -477,13 +521,19 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
         const {
             stream: isStream,
             websocket: isWebsocket,
+            eventsource: isEventsource,
             url,
             fetchOptions,
             websocketOptions,
+            eventsourceOptions,
         } = this.props;
 
         if (isWebsocket) {
             return websocket(url!, websocketOptions!);
+        }
+
+        if (isEventsource) {
+            return eventsource(url!, eventsourceOptions!);
         }
 
         if (isStream) {
@@ -529,10 +579,10 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
 
     handleUpdate = ({ lines: moreLines, encodedLog }: any) => {
         this.encodedLog = encodedLog;
-        const { scrollToLine, follow, stream, websocket } = this.props;
+        const { scrollToLine, follow, stream, websocket, eventsource } = this.props;
 
-        // handle stream and socket updates batched update mode
-        if (stream || websocket) {
+        // handle stream, socket and eventsource updates batched update mode
+        if (stream || websocket || eventsource) {
             this.setState((state, props) => {
                 const { scrollToLine, follow } = props;
                 const { count: previousCount } = state;
@@ -736,9 +786,9 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
 
     handleSearch = (keywords: string | undefined) => {
         const { resultLines, searchKeywords } = this.state;
-        const { caseInsensitive, stream, websocket } = this.props;
+        const { caseInsensitive, stream, websocket, eventsource } = this.props;
         const currentResultLines =
-            !stream && !websocket && keywords === searchKeywords
+            !stream && !websocket && !eventsource && keywords === searchKeywords
                 ? resultLines
                 : searchLines(keywords, this.encodedLog!, caseInsensitive!);
 

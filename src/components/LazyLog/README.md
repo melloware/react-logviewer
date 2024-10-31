@@ -63,3 +63,22 @@ let socket = null;
   </div>
 </div>
 ```
+
+Log viewing using an eventsource
+
+```jsx harmony
+const url = 'https://my.eventsource.tld';
+
+<div>
+  <div style={{ height: 200, width: 902 }}>
+  <LazyLog
+    enableSearch
+    url={url}
+    eventsource
+    eventsourceOptions={{
+      formatMessage: e => JSON.parse(e).message,
+    }}
+  />
+  </div>
+</div>
+```
