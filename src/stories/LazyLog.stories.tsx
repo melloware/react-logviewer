@@ -12,6 +12,7 @@ type Story = StoryObj<typeof LazyLog>;
 
 const BaseStory = {
     caseInsensitive: true,
+    regexSearch: false,
     enableGutters: false,
     enableHotKeys: true,
     enableLineNumbers: true,
