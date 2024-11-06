@@ -1146,7 +1146,7 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
                     ? `calc(100% - ${SEARCH_BAR_HEIGHT}px)`
                     : "100%";
             } else {
-                return viewportHeight - searchBarHeightAdjustment;
+                return viewportHeight;
             }
         } else {
             return Number(height) - searchBarHeightAdjustment;
