@@ -33,6 +33,10 @@ export interface LineContentProps {
      * Enable hyperlinks to be discovered in log text and made clickable links. Default is false.
      */
     enableLinks?: boolean;
+    /**
+     * Wrap overflowing lines. Default is false
+     */
+    wrapLines?: boolean | undefined;
 }
 
 /**
@@ -70,6 +74,7 @@ export default class LineContent extends Component<LineContentProps, any> {
                 {data &&
                     data.map((part: any, n: number) => (
                         <LinePart
+                            wrapLines={this.props.wrapLines}
                             part={part}
                             format={formatPart}
                             key={`line-${number}-${n}`}

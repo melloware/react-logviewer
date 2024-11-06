@@ -16,6 +16,7 @@ const BaseStory = {
     enableHotKeys: true,
     enableLineNumbers: true,
     enableLinks: false,
+    wrapLines: false,
     enableMultilineHighlight: true,
     enableSearch: true,
     enableSearchNavigation: true,
@@ -140,7 +141,7 @@ export const HighlightAndScrolling: Story = {
 [vcs 2018-11-14T21:09:09.000Z] (sharing from new pooled repository 8ba995b74e18334ab3707f27e9eb8f4e37ba3d29)
 [vcs 2018-11-14T21:09:09.516Z] applying clone bundle from https://s3-external-1.amazonaws.com/moz-hg-bundles-us-east-1/mozilla-unified/d3f4d556a89d3e5e72749314a0cf81d942fafc13.packed1.hg
 [vcs 2018-11-14T21:09:09.622Z] 478890 files to transfer, 2.58 GB of data
-[vcs 2018-11-14T21:09:11.623Z] 
+[vcs 2018-11-14T21:09:11.623Z]
 [vcs 2018-11-14T21:09:12.626Z] clone [>                                          ]   67491620/2774698696 1m21s
 [vcs 2018-11-14T21:09:13.625Z] clone [>                                          ]  106279767/2774698696 1m16s
 [vcs 2018-11-14T21:09:14.625Z] clone [=>                                         ]  146574164/2774698696 1m12s
@@ -249,14 +250,14 @@ export const HighlightAndScrolling: Story = {
 [vcs 2018-11-14T21:10:57.982Z] clone [========================================>    ] 2562423625/2774698696 09s
 [vcs 2018-11-14T21:10:58.983Z] clone [==========================================>  ] 2651822447/2774698696 05s
 [vcs 2018-11-14T21:10:59.782Z] clone [===========================================> ] 2714343791/2774698696 03s
-[vcs 2018-11-14T21:10:59.783Z]                                                                                 
+[vcs 2018-11-14T21:10:59.783Z]
 [vcs 2018-11-14T21:10:59.783Z] transferred 2.58 GB in 110.2 seconds (24.0 MB/sec)
 [vcs 2018-11-14T21:11:00.268Z] finished applying clone bundle
 [vcs 2018-11-14T21:11:01.445Z] searching for changes
 [vcs 2018-11-14T21:11:01.999Z] adding changesets
-[vcs 2018-11-14T21:11:02.072Z] 
+[vcs 2018-11-14T21:11:02.072Z]
 [vcs 2018-11-14T21:11:02.146Z] changesets [                                                          ]   1/314
-[vcs 2018-11-14T21:11:02.146Z]                                                                                 
+[vcs 2018-11-14T21:11:02.146Z]
 [vcs 2018-11-14T21:11:02.146Z] adding manifests
 [vcs 2018-11-14T21:11:02.477Z] adding file changes
 [vcs 2018-11-14T21:11:03.050Z] added 314 changesets with 1315 changes to 1067 files
@@ -279,20 +280,20 @@ export const HighlightAndScrolling: Story = {
 [vcs 2018-11-14T21:11:45.340Z] adding remote bookmark release
 [vcs 2018-11-14T21:11:46.045Z] (pulling to obtain 6926e117b97cd120f5de0be2ab3bff7153f10a78)
 [vcs 2018-11-14T21:11:48.984Z] searching for changes
-[vcs 2018-11-14T21:11:50.797Z] 
+[vcs 2018-11-14T21:11:50.797Z]
 [vcs 2018-11-14T21:11:52.672Z] searching [ <=>                                                             ] 2
 [vcs 2018-11-14T21:11:54.295Z] searching [  <=>                                                            ] 3
-[vcs 2018-11-14T21:11:59.781Z]                                                                                 
+[vcs 2018-11-14T21:11:59.781Z]
 [vcs 2018-11-14T21:11:59.781Z] adding changesets
-[vcs 2018-11-14T21:11:59.782Z] 
+[vcs 2018-11-14T21:11:59.782Z]
 [vcs 2018-11-14T21:11:59.783Z] changesets [==============================>                               ] 1/2
-[vcs 2018-11-14T21:11:59.783Z]                                                                                 
+[vcs 2018-11-14T21:11:59.783Z]
 [vcs 2018-11-14T21:11:59.783Z] adding manifests
 [vcs 2018-11-14T21:11:59.813Z] adding file changes
 [vcs 2018-11-14T21:11:59.822Z] added 2 changesets with 4 changes to 4 files (+1 heads)
 [vcs 2018-11-14T21:11:59.847Z] new changesets f8f2c4c13360:6926e117b97c
 [vcs 2018-11-14T21:12:04.110Z] (warning: large working directory being used without fsmonitor enabled; enable fsmonitor to improve performance; see "hg help -e fsmonitor")
-[vcs 2018-11-14T21:12:05.059Z] 
+[vcs 2018-11-14T21:12:05.059Z]
 [vcs 2018-11-14T21:12:06.078Z] updating [                                                      ]    100/258996
 [vcs 2018-11-14T21:12:07.117Z] updating [                                                ]   2800/258996 1m37s
 [vcs 2018-11-14T21:12:08.121Z] updating [>                                               ]   5600/258996 1m35s
@@ -374,7 +375,7 @@ export const HighlightAndScrolling: Story = {
 [vcs 2018-11-14T21:13:26.512Z] updating [================================================> ] 256598/258996 01s
 [vcs 2018-11-14T21:13:27.520Z] updating [================================================> ] 257547/258996 01s
 [vcs 2018-11-14T21:13:27.979Z] updating [================================================> ] 258547/258996 01s
-[vcs 2018-11-14T21:13:38.214Z]                                                                                 
+[vcs 2018-11-14T21:13:38.214Z]
 [vcs 2018-11-14T21:13:38.214Z] 258996 files updated, 0 files merged, 0 files removed, 0 files unresolved
 [vcs 2018-11-14T21:13:38.463Z] updated to 6926e117b97cd120f5de0be2ab3bff7153f10a78
 [vcs 2018-11-14T21:13:38.469Z] PERFHERDER_DATA: {"framework": {"name": "vcs"}, "suites": [{"extraOptions": ["m3.xlarge"], "lowerIsBetter": true, "name": "clone", "shouldAlert": false, "subtests": [], "value": 156.62339401245117}, {"extraOptions": ["m3.xlarge"], "lowerIsBetter": true, "name": "pull", "shouldAlert": false, "subtests": [], "value": 13.032690048217773}, {"extraOptions": ["m3.xlarge"], "lowerIsBetter": true, "name": "update", "shouldAlert": false, "subtests": [], "value": 98.61538600921631}, {"extraOptions": ["m3.xlarge"], "lowerIsBetter": true, "name": "overall", "shouldAlert": false, "subtests": [], "value": 270.7935130596161}]}
@@ -405,7 +406,7 @@ export const HighlightAndScrolling: Story = {
 [task 2018-11-14T21:13:44.180Z] x86_64-linux-gnu-gcc -pthread -shared -Wl,-O1 -Wl,-Bsymbolic-functions -Wl,-Bsymbolic-functions -Wl,-z,relro -fno-strict-aliasing -DNDEBUG -g -fwrapv -O2 -Wall -Wstrict-prototypes -Wdate-time -D_FORTIFY_SOURCE=2 -g -fstack-protector-strong -Wformat -Werror=format-security -Wl,-Bsymbolic-functions -Wl,-z,relro -Wdate-time -D_FORTIFY_SOURCE=2 -g -fstack-protector-strong -Wformat -Werror=format-security build/temp.linux-x86_64-2.7/psutil/_psutil_common.o build/temp.linux-x86_64-2.7/psutil/_psutil_posix.o -o build/lib.linux-x86_64-2.7/psutil/_psutil_posix.so
 [task 2018-11-14T21:13:44.180Z] copying build/lib.linux-x86_64-2.7/psutil/_psutil_linux.so -> psutil
 [task 2018-11-14T21:13:44.180Z] copying build/lib.linux-x86_64-2.7/psutil/_psutil_posix.so -> psutil
-[task 2018-11-14T21:13:44.180Z] 
+[task 2018-11-14T21:13:44.180Z]
 [task 2018-11-14T21:13:44.180Z] Error processing command. Ignoring because optional. (optional:packages.txt:comm/build/virtualenv_packages.txt)
 [task 2018-11-14T21:19:41.952Z] No lint issues found.
 [taskcluster 2018-11-14 21:19:42.433Z] === Task Finished ===

@@ -29,6 +29,10 @@ export interface LineProps {
      */
     enableGutters?: boolean | undefined;
     /**
+     * Wrap overflowing lines. Default is false
+     */
+    wrapLines?: boolean | undefined;
+    /**
      * Enable hyperlinks to be discovered in log text and made clickable links. Default is false.
      */
     enableLinks?: boolean;
@@ -57,6 +61,7 @@ export default class Line extends Component<LineProps, any> {
         highlightClassName: "",
         enableLineNumbers: true,
         enableLinks: false,
+        wrapLines: false,
     };
 
     render() {
@@ -73,12 +78,15 @@ export default class Line extends Component<LineProps, any> {
             className,
             highlightClassName,
             gutter,
+            wrapLines,
         } = this.props;
         const selectableClass = selectable ? ` ${styles.lineSelectable}` : "";
         const highlightClass = highlight
             ? ` ${styles.lineHighlight} ${highlightClassName}`
             : "";
-        const classes = `${styles.line}${selectableClass}${highlightClass} ${className}`;
+        const classes = `${styles.line}${selectableClass}${highlightClass} ${
+            wrapLines ? styles.wrap : ""
+        } ${className}`;
         const lineStyle = {
             ...style,
             lineHeight: `${style ? style.height || rowHeight : rowHeight}px`,
@@ -93,12 +101,14 @@ export default class Line extends Component<LineProps, any> {
                         number={number}
                         highlight={highlight}
                         onClick={onLineNumberClick}
+                        wrapLines={wrapLines}
                     />
                 ) : null}
                 {this.props.enableGutters ? (
                     <LineGutter gutter={gutter} />
                 ) : null}
                 <LineContent
+                    wrapLines={wrapLines}
                     number={number}
                     formatPart={formatPart}
                     data={data}

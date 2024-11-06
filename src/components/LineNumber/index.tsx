@@ -19,6 +19,10 @@ export interface LineNumberProps {
      * CSS style for the Line Number.
      */
     style?: CSSProperties | undefined;
+    /**
+     * Wrap overflowing lines. Default is false
+     */
+    wrapLines?: boolean | undefined;
 }
 
 /**
@@ -31,13 +35,14 @@ export default class LineNumber extends Component<LineNumberProps, any> {
         style: null,
         highlight: false,
         onClick: null,
+        wrapLines: false,
     };
 
     render() {
         const { highlight, onClick, number, style } = this.props;
         const className = `log-number ${
             highlight ? styles.lineNumberHighlight : styles.lineNumber
-        }`;
+        } ${this.props.wrapLines ? styles.wrap : ""}`;
 
         return (
             <a

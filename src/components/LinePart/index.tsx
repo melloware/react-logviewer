@@ -11,10 +11,11 @@ export interface LinePartCss {
     email?: boolean;
     link?: boolean;
     text: string;
+    wrap?: boolean;
     [key: string]: any;
 }
 
-const getClassName = (part: LinePartCss) => {
+const getClassName = (part: LinePartCss, wrapLines: boolean) => {
     const className = ["log-part"];
 
     if (part.foreground && part.bold) {
@@ -23,6 +24,10 @@ const getClassName = (part: LinePartCss) => {
         className.push(styles[part.foreground]);
     } else if (part.bold) {
         className.push(styles.bold);
+    }
+
+    if (wrapLines) {
+        className.push(styles.wrap);
     }
 
     if (part.background) {
@@ -60,6 +65,10 @@ export interface LinePartProps {
      * return a new value to render for the part.
      */
     format?: ((text: string) => ReactNode) | undefined;
+    /**
+     * Wrap overflowing lines. Default is false
+     */
+    wrapLines?: boolean | undefined;
 }
 
 /**
@@ -73,13 +82,16 @@ export default class LinePart extends Component<LinePartProps, any> {
         format: null,
         style: null,
         enableLinks: false,
+        wrapLines: false,
     };
 
     render() {
         const { format, part, style } = this.props;
+        console.log(this.props.wrapLines);
         const partText = part.text;
-        const partClassName = getClassName(part);
+        const partClassName = getClassName(part, !!this.props.wrapLines);
         const renderedText = format ? format(partText!) : partText!;
+        console.log("partClassName", partClassName);
 
         if (this.props.enableLinks) {
             if (part.link) {
