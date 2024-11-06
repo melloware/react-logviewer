@@ -87,11 +87,9 @@ export default class LinePart extends Component<LinePartProps, any> {
 
     render() {
         const { format, part, style } = this.props;
-        console.log(this.props.wrapLines);
         const partText = part.text;
         const partClassName = getClassName(part, !!this.props.wrapLines);
         const renderedText = format ? format(partText!) : partText!;
-        console.log("partClassName", partClassName);
 
         if (this.props.enableLinks) {
             if (part.link) {

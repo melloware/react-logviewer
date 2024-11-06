@@ -1,7 +1,7 @@
 import { List, Range } from "immutable";
 import React, { CSSProperties, Component, Fragment, ReactNode } from "react";
 import { VariableSizeList } from "react-window";
-import { VList } from "virtua";
+import { VList, VListHandle } from "virtua";
 import Line from "../Line";
 import { Loading } from "../Loading";
 import SearchBar from "../SearchBar";
@@ -445,6 +445,7 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
     emitter: any = undefined;
     encodedLog: Uint8Array | undefined = undefined;
     searchBarRef = React.createRef<SearchBar>();
+    vListRef = React.createRef<VListHandle>();
 
     componentDidMount() {
         this.setState({ listRef: React.createRef() });
@@ -1129,16 +1130,20 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
         return this.props.loadingComponent || <Loading />;
     };
 
-    calculateListHeight = (autoSizerHeight: number) => {
+    calculateListHeight = () => {
         const { height, enableSearch } = this.props;
+
+        const offsetHeight = this.vListRef.current?.viewportSize || 0;
 
         if (enableSearch) {
             return height === "auto"
-                ? autoSizerHeight - SEARCH_BAR_HEIGHT
+                ? `calc(100% - ${SEARCH_BAR_HEIGHT}px)`
                 : Number(height) - SEARCH_BAR_HEIGHT;
         }
 
-        return height === "auto" ? autoSizerHeight : height;
+        return height === "auto"
+            ? `calc(100% - ${SEARCH_BAR_HEIGHT}px)`
+            : height;
     };
 
     getItemSize = (index: number) => this.props.rowHeight || 19;
@@ -1195,10 +1200,27 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
                     />
                 )}
                 <VList
+                    ref={this.vListRef}
                     className={`react-lazylog ${styles.lazyLog} ${
                         this.props.wrapLines ? styles.wrap : ""
                     }`}
-                    style={{ height: 800 }}
+                    style={{ height: this.calculateListHeight() }}
+                    onScroll={(offset) => {
+                        this.setState({
+                            scrollOffset: offset,
+                        });
+                        // If there is an onScroll callback, call it.
+                        if (this.props.onScroll) {
+                            const args = {
+                                scrollTop: offset,
+                                scrollHeight:
+                                    this.vListRef.current?.scrollSize || 0,
+                                clientHeight:
+                                    this.calculateListHeight() as number,
+                            };
+                            this.props.onScroll(args);
+                        }
+                    }}
                 >
                     {Array.from({
                         length:
