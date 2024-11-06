@@ -1130,20 +1130,27 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
         return this.props.loadingComponent || <Loading />;
     };
 
-    calculateListHeight = () => {
+    calculateListHeight = (useCSSStyle: boolean = false) => {
         const { height, enableSearch } = this.props;
 
-        const offsetHeight = this.vListRef.current?.viewportSize || 0;
-
-        if (enableSearch) {
-            return height === "auto"
-                ? `calc(100% - ${SEARCH_BAR_HEIGHT}px)`
-                : Number(height) - SEARCH_BAR_HEIGHT;
+        if (!this.vListRef.current) {
+            return 0;
         }
 
-        return height === "auto"
-            ? `calc(100% - ${SEARCH_BAR_HEIGHT}px)`
-            : height;
+        const viewportHeight = this.vListRef.current.viewportSize;
+        const searchBarHeightAdjustment = enableSearch ? SEARCH_BAR_HEIGHT : 0;
+
+        if (height === "auto") {
+            if (useCSSStyle) {
+                return enableSearch
+                    ? `calc(100% - ${SEARCH_BAR_HEIGHT}px)`
+                    : "100%";
+            } else {
+                return viewportHeight - searchBarHeightAdjustment;
+            }
+        } else {
+            return Number(height) - searchBarHeightAdjustment;
+        }
     };
 
     getItemSize = (index: number) => this.props.rowHeight || 19;
@@ -1204,17 +1211,19 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
                     className={`react-lazylog ${styles.lazyLog} ${
                         this.props.wrapLines ? styles.wrap : ""
                     }`}
-                    style={{ height: this.calculateListHeight() }}
+                    style={{ height: this.calculateListHeight(true) }}
                     onScroll={(offset) => {
                         this.setState({
                             scrollOffset: offset,
                         });
                         // If there is an onScroll callback, call it.
                         if (this.props.onScroll) {
+                            if (!this.vListRef.current) {
+                                return;
+                            }
                             const args = {
                                 scrollTop: offset,
-                                scrollHeight:
-                                    this.vListRef.current?.scrollSize || 0,
+                                scrollHeight: this.vListRef.current.scrollSize,
                                 clientHeight:
                                     this.calculateListHeight() as number,
                             };
