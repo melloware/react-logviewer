@@ -355,7 +355,7 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
         enableMultilineHighlight: true,
         enableSearch: false,
         enableSearchNavigation: true,
-        wrapLines: true,
+        wrapLines: false,
         extraLines: 0,
         fetchOptions: { credentials: "omit" as RequestCredentials },
         follow: false,
