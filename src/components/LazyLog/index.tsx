@@ -324,7 +324,6 @@ type LazyLogState = {
     isFilteringLinesWithMatches: boolean;
     isSearching: boolean;
     lines: List<Uint8Array>;
-    listRef?: React.RefObject<VListHandle>;
     loaded?: boolean;
     offset: number;
     resultLineUniqueIndexes: number[];
@@ -444,13 +443,13 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
     emitter: any = undefined;
     encodedLog: Uint8Array | undefined = undefined;
     searchBarRef = React.createRef<SearchBar>();
+    listRef = React.createRef<VListHandle>();
 
     componentDidMount() {
-        this.setState({ listRef: React.createRef() });
         this.request();
         if (this.props.scrollToLine) {
             setTimeout(() => {
-                if (this.state.listRef && this.state.listRef.current) {
+                if (this.listRef && this.listRef.current) {
                     this.handleScrollToLine(this.props.scrollToLine);
                 }
             }, 100);
@@ -474,14 +473,14 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
         ) {
             const update = () => {
                 const newPosition = this.state.scrollOffset;
-                this.state.listRef?.current?.scrollTo(newPosition);
+                this.listRef?.current?.scrollTo(newPosition);
             };
             update();
         }
 
         // If follow is activated, and we're not currently searching, scroll to offset
         if (this.props.follow && !this.state.isSearching) {
-            this.state.listRef?.current?.scrollToIndex(
+            this.listRef?.current?.scrollToIndex(
                 this.state.scrollToIndex + (this.props?.extraLines || 0),
                 { align: "nearest" }
             );
@@ -716,7 +715,7 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
             scrollToIndex,
             scrollToLine,
         });
-        this.state.listRef?.current?.scrollToIndex(scrollToLine, {
+        this.listRef?.current?.scrollToIndex(scrollToLine, {
             align: "nearest",
         });
     }
@@ -1133,11 +1132,11 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
     calculateListHeight = (useCSSStyle: boolean = false) => {
         const { height, enableSearch } = this.props;
 
-        if (!this.state.listRef?.current) {
+        if (!this.listRef?.current) {
             return 0;
         }
 
-        const viewportHeight = this.state.listRef.current.viewportSize;
+        const viewportHeight = this.listRef.current.viewportSize;
         const searchBarHeightAdjustment = enableSearch ? SEARCH_BAR_HEIGHT : 0;
 
         if (height === "auto") {
@@ -1207,7 +1206,7 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
                     />
                 )}
                 <VList
-                    ref={this.state.listRef}
+                    ref={this.listRef}
                     className={`react-lazylog ${styles.lazyLog} ${
                         this.props.wrapLines ? styles.wrap : ""
                     }`}
@@ -1218,13 +1217,12 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
                         });
                         // If there is an onScroll callback, call it.
                         if (this.props.onScroll) {
-                            if (!this.state.listRef?.current) {
+                            if (!this.listRef?.current) {
                                 return;
                             }
                             const args = {
                                 scrollTop: offset,
-                                scrollHeight:
-                                    this.state.listRef.current.scrollSize,
+                                scrollHeight: this.listRef.current.scrollSize,
                                 clientHeight:
                                     this.calculateListHeight() as number,
                             };
