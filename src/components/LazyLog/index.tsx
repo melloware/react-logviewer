@@ -1,6 +1,5 @@
 import { List, Range } from "immutable";
 import React, { CSSProperties, Component, Fragment, ReactNode } from "react";
-import { VariableSizeList } from "react-window";
 import { VList, VListHandle } from "virtua";
 import Line from "../Line";
 import { Loading } from "../Loading";
@@ -325,7 +324,7 @@ type LazyLogState = {
     isFilteringLinesWithMatches: boolean;
     isSearching: boolean;
     lines: List<Uint8Array>;
-    listRef?: React.RefObject<VariableSizeList>;
+    listRef?: React.RefObject<VListHandle>;
     loaded?: boolean;
     offset: number;
     resultLineUniqueIndexes: number[];
@@ -445,7 +444,6 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
     emitter: any = undefined;
     encodedLog: Uint8Array | undefined = undefined;
     searchBarRef = React.createRef<SearchBar>();
-    vListRef = React.createRef<VListHandle>();
 
     componentDidMount() {
         this.setState({ listRef: React.createRef() });
@@ -476,16 +474,16 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
         ) {
             const update = () => {
                 const newPosition = this.state.scrollOffset;
-                this.state.listRef?.current?.scrollToItem(newPosition, "auto");
+                this.state.listRef?.current?.scrollTo(newPosition);
             };
             update();
         }
 
         // If follow is activated, and we're not currently searching, scroll to offset
         if (this.props.follow && !this.state.isSearching) {
-            this.state.listRef?.current?.scrollToItem(
+            this.state.listRef?.current?.scrollToIndex(
                 this.state.scrollToIndex + (this.props?.extraLines || 0),
-                "auto"
+                { align: "nearest" }
             );
         }
 
@@ -718,7 +716,9 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
             scrollToIndex,
             scrollToLine,
         });
-        this.state.listRef?.current?.scrollToItem(scrollToLine, "auto");
+        this.state.listRef?.current?.scrollToIndex(scrollToLine, {
+            align: "nearest",
+        });
     }
 
     handleEnterPressed = () => {
@@ -1133,11 +1133,11 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
     calculateListHeight = (useCSSStyle: boolean = false) => {
         const { height, enableSearch } = this.props;
 
-        if (!this.vListRef.current) {
+        if (!this.state.listRef?.current) {
             return 0;
         }
 
-        const viewportHeight = this.vListRef.current.viewportSize;
+        const viewportHeight = this.state.listRef.current.viewportSize;
         const searchBarHeightAdjustment = enableSearch ? SEARCH_BAR_HEIGHT : 0;
 
         if (height === "auto") {
@@ -1207,7 +1207,7 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
                     />
                 )}
                 <VList
-                    ref={this.vListRef}
+                    ref={this.state.listRef}
                     className={`react-lazylog ${styles.lazyLog} ${
                         this.props.wrapLines ? styles.wrap : ""
                     }`}
@@ -1218,12 +1218,13 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
                         });
                         // If there is an onScroll callback, call it.
                         if (this.props.onScroll) {
-                            if (!this.vListRef.current) {
+                            if (!this.state.listRef?.current) {
                                 return;
                             }
                             const args = {
                                 scrollTop: offset,
-                                scrollHeight: this.vListRef.current.scrollSize,
+                                scrollHeight:
+                                    this.state.listRef.current.scrollSize,
                                 clientHeight:
                                     this.calculateListHeight() as number,
                             };
