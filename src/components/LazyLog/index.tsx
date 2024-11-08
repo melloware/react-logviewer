@@ -355,6 +355,7 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
         enableMultilineHighlight: true,
         enableSearch: false,
         enableSearchNavigation: true,
+        wrapLines: true,
         extraLines: 0,
         fetchOptions: { credentials: "omit" as RequestCredentials },
         follow: false,
@@ -378,7 +379,6 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
         eventsource: false,
         eventsourceOptions: {},
         width: "auto",
-        wrapLines: true,
     };
 
     static getDerivedStateFromProps(
