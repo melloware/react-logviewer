@@ -2,7 +2,7 @@
 .underline { text-decoration: underline; }
 .italic { font-style: italic; }
 
-.wrap {
+.wrapLine {
     white-space: normal;
     text-indent: 0;
     display: inline-block;

@@ -349,7 +349,6 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
         },
         caseInsensitive: false,
         enableGutters: false,
-        wrapLines: true,
         enableHotKeys: false,
         enableLineNumbers: true,
         enableLinks: false,
@@ -379,6 +378,7 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
         eventsource: false,
         eventsourceOptions: {},
         width: "auto",
+        wrapLines: true,
     };
 
     static getDerivedStateFromProps(
@@ -1208,7 +1208,7 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
                 <VList
                     ref={this.listRef}
                     className={`react-lazylog ${styles.lazyLog} ${
-                        this.props.wrapLines ? styles.wrap : ""
+                        this.props.wrapLines ? styles.wrapLine : ""
                     }`}
                     style={{ height: this.calculateListHeight(true) }}
                     onScroll={(offset) => {

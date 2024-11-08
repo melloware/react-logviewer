@@ -85,7 +85,7 @@ export default class Line extends Component<LineProps, any> {
             ? ` ${styles.lineHighlight} ${highlightClassName}`
             : "";
         const classes = `${styles.line}${selectableClass}${highlightClass} ${
-            wrapLines ? styles.wrap : ""
+            wrapLines ? styles.wrapLine : ""
         } ${className}`;
         const lineStyle = {
             ...style,

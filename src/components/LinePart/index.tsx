@@ -11,7 +11,7 @@ export interface LinePartCss {
     email?: boolean;
     link?: boolean;
     text: string;
-    wrap?: boolean;
+    wrapLine?: boolean;
     [key: string]: any;
 }
 
@@ -27,7 +27,7 @@ const getClassName = (part: LinePartCss, wrapLines: boolean) => {
     }
 
     if (wrapLines) {
-        className.push(styles.wrap);
+        className.push(styles.wrapLine);
     }
 
     if (part.background) {

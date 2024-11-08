@@ -2,7 +2,7 @@ declare namespace IndexModuleCssNamespace {
     export interface IIndexModuleCss {
         lineNumber: string;
         lineNumberHighlight: string;
-        wrap: string;
+        wrapLine: string;
     }
 }
 

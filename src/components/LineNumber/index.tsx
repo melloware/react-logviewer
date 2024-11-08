@@ -42,7 +42,7 @@ export default class LineNumber extends Component<LineNumberProps, any> {
         const { highlight, onClick, number, style } = this.props;
         const className = `log-number ${
             highlight ? styles.lineNumberHighlight : styles.lineNumber
-        } ${this.props.wrapLines ? styles.wrap : ""}`;
+        } ${this.props.wrapLines ? styles.wrapLine : ""}`;
 
         return (
             <a
