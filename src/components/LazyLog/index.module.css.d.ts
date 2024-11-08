@@ -3,6 +3,7 @@ declare namespace IndexModuleCssNamespace {
         lazyLog: string;
         searchMatch: string;
         searchMatchHighlighted: string;
+        wrapLine: string;
     }
 }
 

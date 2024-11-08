@@ -2,6 +2,12 @@
 .underline { text-decoration: underline; }
 .italic { font-style: italic; }
 
+.wrapLine {
+    white-space: normal;
+    text-indent: 0;
+    display: inline-block;
+}
+
 .black { color: #4e4e4e; }
 .red { color: #ff6c60; }
 .green { color: #00aa00; }

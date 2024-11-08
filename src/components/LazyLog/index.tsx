@@ -1,12 +1,12 @@
 import { List, Range } from "immutable";
 import React, { CSSProperties, Component, Fragment, ReactNode } from "react";
-import AutoSizer from "react-virtualized-auto-sizer";
-import { ListChildComponentProps, VariableSizeList } from "react-window";
+import { VList, VListHandle } from "virtua";
 import Line from "../Line";
 import { Loading } from "../Loading";
 import SearchBar from "../SearchBar";
 import ansiparse from "../Utils/ansiparse";
 import { decode, encode } from "../Utils/encoding";
+import eventsource from "../Utils/eventsource";
 import request from "../Utils/request";
 import { searchLines } from "../Utils/search";
 import stream from "../Utils/stream";
@@ -20,7 +20,6 @@ import {
     searchFormatPart,
 } from "../Utils/utils";
 import websocket from "../Utils/websocket";
-import eventsource from "../Utils/eventsource";
 import styles from "./index.module.css";
 
 export interface WebsocketOptions {
@@ -205,7 +204,7 @@ export interface LazyLogProps {
     /**
      * Specify an alternate component to use when loading.
      */
-    loadingComponent?: React.ReactNode | ((props: any) => React.ReactNode);
+    loadingComponent?: React.ReactNode;
     /**
      * Execute a function if the provided `url` has encountered an error
      * during loading.
@@ -311,6 +310,10 @@ export interface LazyLogProps {
      * horizontally to fill its container.
      */
     width?: string | number;
+    /**
+     * Wrap overflowing lines. Default is false
+     */
+    wrapLines?: boolean;
 }
 type LazyLogState = {
     count: number;
@@ -321,7 +324,6 @@ type LazyLogState = {
     isFilteringLinesWithMatches: boolean;
     isSearching: boolean;
     lines: List<Uint8Array>;
-    listRef?: React.RefObject<VariableSizeList>;
     loaded?: boolean;
     offset: number;
     resultLineUniqueIndexes: number[];
@@ -353,6 +355,7 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
         enableMultilineHighlight: true,
         enableSearch: false,
         enableSearchNavigation: true,
+        wrapLines: false,
         extraLines: 0,
         fetchOptions: { credentials: "omit" as RequestCredentials },
         follow: false,
@@ -440,13 +443,13 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
     emitter: any = undefined;
     encodedLog: Uint8Array | undefined = undefined;
     searchBarRef = React.createRef<SearchBar>();
+    listRef = React.createRef<VListHandle>();
 
     componentDidMount() {
-        this.setState({ listRef: React.createRef() });
         this.request();
         if (this.props.scrollToLine) {
             setTimeout(() => {
-                if (this.state.listRef && this.state.listRef.current) {
+                if (this.listRef && this.listRef.current) {
                     this.handleScrollToLine(this.props.scrollToLine);
                 }
             }, 100);
@@ -470,16 +473,16 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
         ) {
             const update = () => {
                 const newPosition = this.state.scrollOffset;
-                this.state.listRef?.current?.scrollToItem(newPosition, "auto");
+                this.listRef?.current?.scrollTo(newPosition);
             };
             update();
         }
 
         // If follow is activated, and we're not currently searching, scroll to offset
         if (this.props.follow && !this.state.isSearching) {
-            this.state.listRef?.current?.scrollToItem(
+            this.listRef?.current?.scrollToIndex(
                 this.state.scrollToIndex + (this.props?.extraLines || 0),
-                "auto"
+                { align: "nearest" }
             );
         }
 
@@ -579,7 +582,8 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
 
     handleUpdate = ({ lines: moreLines, encodedLog }: any) => {
         this.encodedLog = encodedLog;
-        const { scrollToLine, follow, stream, websocket, eventsource } = this.props;
+        const { scrollToLine, follow, stream, websocket, eventsource } =
+            this.props;
 
         // handle stream, socket and eventsource updates batched update mode
         if (stream || websocket || eventsource) {
@@ -711,7 +715,9 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
             scrollToIndex,
             scrollToLine,
         });
-        this.state.listRef?.current?.scrollToItem(scrollToLine, "auto");
+        this.listRef?.current?.scrollToIndex(scrollToLine, {
+            align: "nearest",
+        });
     }
 
     handleEnterPressed = () => {
@@ -943,12 +949,14 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
             selectableLines,
             highlightLineClassName,
             enableLinks,
+            wrapLines,
         } = this.props;
         const { error } = this.state;
 
         return (
             <Fragment>
                 <Line
+                    wrapLines={wrapLines}
                     selectable={selectableLines}
                     className={lineClassName}
                     highlightClassName={highlightLineClassName}
@@ -966,6 +974,7 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
                     ]}
                 />
                 <Line
+                    wrapLines={wrapLines}
                     selectable={selectableLines}
                     key="error-line-1"
                     className={lineClassName}
@@ -979,6 +988,7 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
                     ]}
                 />
                 <Line
+                    wrapLines={wrapLines}
                     selectable={selectableLines}
                     key="error-line-2"
                     className={lineClassName}
@@ -992,6 +1002,7 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
                     ]}
                 />
                 <Line
+                    wrapLines={wrapLines}
                     selectable={selectableLines}
                     key="error-line-3"
                     className={lineClassName}
@@ -1000,6 +1011,7 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
                     data={[]}
                 />
                 <Line
+                    wrapLines={wrapLines}
                     selectable={selectableLines}
                     key="error-line-4"
                     className={lineClassName}
@@ -1016,7 +1028,7 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
         );
     }
 
-    renderRow = (options: ListChildComponentProps) => {
+    renderRow = (options: { index: number }) => {
         const {
             rowHeight,
             selectableLines,
@@ -1027,6 +1039,7 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
             gutter,
             enableGutters,
             enableLineNumbers,
+            wrapLines,
             enableLinks,
         } = this.props;
         const {
@@ -1064,6 +1077,7 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
                 className={`log-line ${lineClassName}`}
                 data={parsedData}
                 enableGutters={enableGutters}
+                wrapLines={wrapLines}
                 enableLineNumbers={enableLineNumbers}
                 enableLinks={enableLinks}
                 formatPart={this.handleFormatPart(number)}
@@ -1074,7 +1088,6 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
                 number={number}
                 rowHeight={rowHeight}
                 selectable={selectableLines}
-                style={options.style}
                 onLineNumberClick={(e) => {
                     const highlighted = this.handleHighlight(e);
                     onLineNumberClick?.({
@@ -1088,7 +1101,7 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
     };
 
     renderNoRows = () => {
-        const { lineClassName, highlightLineClassName } = this.props;
+        const { lineClassName, highlightLineClassName, wrapLines } = this.props;
         const { error, count, loaded } = this.state;
 
         if (error) {
@@ -1105,6 +1118,7 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
         if (count) {
             return (
                 <Line
+                    wrapLines={wrapLines}
                     className={lineClassName}
                     highlightClassName={highlightLineClassName}
                     data={[{ bold: true, text: "No filter matches" }]}
@@ -1115,16 +1129,27 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
         return this.props.loadingComponent || <Loading />;
     };
 
-    calculateListHeight = (autoSizerHeight: number) => {
+    calculateListHeight = (useCSSStyle: boolean = false) => {
         const { height, enableSearch } = this.props;
 
-        if (enableSearch) {
-            return height === "auto"
-                ? autoSizerHeight - SEARCH_BAR_HEIGHT
-                : Number(height) - SEARCH_BAR_HEIGHT;
+        if (!this.listRef?.current) {
+            return 0;
         }
 
-        return height === "auto" ? autoSizerHeight : height;
+        const viewportHeight = this.listRef.current.viewportSize;
+        const searchBarHeightAdjustment = enableSearch ? SEARCH_BAR_HEIGHT : 0;
+
+        if (height === "auto") {
+            if (useCSSStyle) {
+                return enableSearch
+                    ? `calc(100% - ${SEARCH_BAR_HEIGHT}px)`
+                    : "100%";
+            } else {
+                return viewportHeight;
+            }
+        } else {
+            return Number(height) - searchBarHeightAdjustment;
+        }
     };
 
     getItemSize = (index: number) => this.props.rowHeight || 19;
@@ -1180,65 +1205,38 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
                         iconFindPrevious={this.props.iconFindPrevious}
                     />
                 )}
-
-                {/*
-                 // @ts-ignore */}
-                <AutoSizer
-                    disableHeight={this.props.height !== "auto"}
-                    disableWidth={this.props.width !== "auto"}
+                <VList
+                    ref={this.listRef}
+                    className={`react-lazylog ${styles.lazyLog} ${
+                        this.props.wrapLines ? styles.wrapLine : ""
+                    }`}
+                    style={{ height: this.calculateListHeight(true) }}
+                    onScroll={(offset) => {
+                        this.setState({
+                            scrollOffset: offset,
+                        });
+                        // If there is an onScroll callback, call it.
+                        if (this.props.onScroll) {
+                            if (!this.listRef?.current) {
+                                return;
+                            }
+                            const args = {
+                                scrollTop: offset,
+                                scrollHeight: this.listRef.current.scrollSize,
+                                clientHeight:
+                                    this.calculateListHeight() as number,
+                            };
+                            this.props.onScroll(args);
+                        }
+                    }}
                 >
-                    {
-                        // @ts-ignore
-                        ({ height, width }) => (
-                            <VariableSizeList
-                                ref={this.state.listRef}
-                                className={`react-lazylog ${styles.lazyLog}`}
-                                {...this.props}
-                                height={this.calculateListHeight(height)!}
-                                width={
-                                    this.props.width === "auto"
-                                        ? width
-                                        : this.props.width
-                                }
-                                itemSize={this.getItemSize}
-                                initialScrollOffset={this.state.scrollToIndex}
-                                itemCount={
-                                    rowCount === 0
-                                        ? rowCount
-                                        : rowCount +
-                                          (this.props.extraLines || 0)
-                                }
-                                onScroll={(options) => {
-                                    this.setState({
-                                        scrollOffset: options.scrollOffset,
-                                    });
-                                    // If there is an onScroll callback, call it.
-                                    if (this.props.onScroll) {
-                                        const args = {
-                                            scrollTop: options.scrollOffset,
-                                            scrollHeight:
-                                                this.getItemSize(0) *
-                                                (rowCount === 0
-                                                    ? rowCount
-                                                    : rowCount +
-                                                      (this.props.extraLines ||
-                                                          0)),
-                                            clientHeight:
-                                                this.calculateListHeight(
-                                                    height
-                                                ) as number,
-                                        };
-                                        this.props.onScroll(args);
-                                    }
-                                }}
-                            >
-                                {/*
-                                 // @ts-ignore */}
-                                {this.renderRow}
-                            </VariableSizeList>
-                        )
-                    }
-                </AutoSizer>
+                    {Array.from({
+                        length:
+                            rowCount === 0
+                                ? rowCount
+                                : rowCount + (this.props.extraLines || 0),
+                    }).map((_, i) => this.renderRow({ index: i }))}
+                </VList>
             </Fragment>
         );
     }

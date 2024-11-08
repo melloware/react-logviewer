@@ -3,6 +3,7 @@ declare namespace IndexModuleCssNamespace {
         line: string;
         lineHighlight: string;
         lineSelectable: string;
+        wrapLine: string;
     }
 }
 

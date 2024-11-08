@@ -3,6 +3,10 @@
   user-select: none;
 }
 
+.wrapLine {
+    display: flex;
+}
+
 .line:hover {
   background-color: #444444;
 }

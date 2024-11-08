@@ -9,7 +9,12 @@
   min-width: 40px;
   cursor: pointer;
   text-decoration: none;
-  padding-right: 1em
+  padding-right: 1em;
+  vertical-align: top;
+}
+
+.wrapLine {
+    min-width: 55px;
 }
 
 .lineNumber::before {

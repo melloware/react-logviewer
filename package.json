@@ -43,8 +43,7 @@
         "hotkeys-js": "^3.13.7",
         "mitt": "^3.0.1",
         "react-string-replace": "^1.1.1",
-        "react-virtualized-auto-sizer": "^1.0.24",
-        "react-window": "^1.8.10"
+        "virtua": "^0.36.2"
     },
     "devDependencies": {
         "@babel/core": "^7.26.0",
