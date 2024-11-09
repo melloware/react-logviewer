@@ -28,6 +28,8 @@ const getClassName = (part: LinePartCss, wrapLines: boolean) => {
 
     if (wrapLines) {
         className.push(styles.wrapLine);
+    } else {
+        className.push(styles.noWrapLine);
     }
 
     if (part.background) {

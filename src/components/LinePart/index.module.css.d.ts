@@ -30,6 +30,8 @@ declare namespace IndexModuleCssNamespace {
     yellow: string;
     yellowBg: string;
     yellowBold: string;
+    wrapLine: string;
+    noWrapLine: string;
   }
 }
 

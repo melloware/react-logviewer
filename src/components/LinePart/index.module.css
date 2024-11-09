@@ -8,6 +8,10 @@
     display: inline-block;
 }
 
+.noWrapLine {
+    display: ruby;
+}
+
 .black { color: #4e4e4e; }
 .red { color: #ff6c60; }
 .green { color: #00aa00; }
