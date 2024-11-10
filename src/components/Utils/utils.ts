@@ -259,9 +259,12 @@ export const parseLinks = (lines: any[]): LinePartCss[] => {
         const arr = line.text.split(" ");
 
         let found = false;
+        let partial = '';
 
         arr.forEach((text: string) => {
             if (text.search(strictUrlRegex) > -1) {
+                result.push({ text: partial.trimEnd() });
+                partial = '';
                 found = true;
                 const email = true;
                 const link = true;
@@ -285,6 +288,8 @@ export const parseLinks = (lines: any[]): LinePartCss[] => {
 
                 return;
             }
+
+            partial += text + ' ';
         });
 
         if (!found) {
