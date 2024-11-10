@@ -40,10 +40,10 @@
         "init-msw": "msw init public/"
     },
     "dependencies": {
-        "hotkeys-js": "^3.13.7",
-        "mitt": "^3.0.1",
-        "react-string-replace": "^1.1.1",
-        "virtua": "^0.36.2"
+        "hotkeys-js": "3.13.7",
+        "mitt": "3.0.1",
+        "react-string-replace": "1.1.1",
+        "virtua": "0.36.3"
     },
     "devDependencies": {
         "@storybook/addon-essentials": "^8.4.2",
@@ -56,9 +56,9 @@
         "@types/react": "^18.3.12",
         "@types/react-dom": "^18.3.1",
         "@vitejs/plugin-react": "^4.3.3",
-        "eslint": "^8.57.0",
+        "eslint": "^9.14.0",
         "eslint-plugin-react": "^7.37.2",
-        "eslint-plugin-react-hooks": "^4.6.0",
+        "eslint-plugin-react-hooks": "^5.0.0",
         "eslint-plugin-react-refresh": "^0.4.14",
         "eslint-plugin-storybook": "^0.11.0",
         "msw": "^2.6.3",
