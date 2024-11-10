@@ -23,6 +23,7 @@ Forked from [mozilla-frontend-infra/react-lazylog](https://github.com/mozilla-fr
 -   Line highlighting
 -   Customizable styling
 -   Searching through log
+-   Infinite scrolling
 -   Works in latest browser versions, including iOS Safari and Android Chrome
 -   TypeScript support
 
