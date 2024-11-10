@@ -202,6 +202,10 @@ export interface LazyLogProps {
      */
     lineClassName?: string;
     /**
+     * Manually display the loading component
+     */
+    loading?: boolean;
+    /**
      * Specify an alternate component to use when loading.
      */
     loadingComponent?: React.ReactNode;
@@ -243,6 +247,13 @@ export interface LazyLogProps {
         scrollHeight: number;
         clientHeight: number;
     }): void;
+
+    /**
+     * Callback invoked when visible items range changes.
+     * @param startIndex - The start index of viewable items.
+     * @param endIndex - The end index of viewable items.
+     */
+    onRangeChange?(startIndex: number, endIndex: number): void;
 
     /**
      * Number of rows to render above/below the visible bounds of the list.
@@ -368,6 +379,8 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
         onHighlight: undefined,
         onLineNumberClick: undefined,
         onLoad: undefined,
+        onRangeChange: undefined,
+        loading: undefined,
         overscanRowCount: 100,
         rowHeight: 19,
         scrollToLine: 0,
@@ -1229,6 +1242,7 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
                             this.props.onScroll(args);
                         }
                     }}
+                    onRangeChange={this.props.onRangeChange}
                 >
                     {Array.from({
                         length:
@@ -1236,6 +1250,8 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
                                 ? rowCount
                                 : rowCount + (this.props.extraLines || 0),
                     }).map((_, i) => this.renderRow({ index: i }))}
+                    {this.props.loading === true &&
+                        (this.props.loadingComponent || <Loading />)}
                 </VList>
             </Fragment>
         );
