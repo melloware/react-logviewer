@@ -719,3 +719,59 @@ export const LineWrapping: Story = {
 [taskcluster 2018-11-14 21:19:42.433Z] Successful task run with exit code: 0 completed in 669.981 seconds`,
     },
 };
+
+const delay = (time: number) => {
+    return new Promise((res) => {
+        setTimeout(res, time);
+    });
+};
+
+export const InfiniteScrolling: Story = {
+    args: {
+        ...BaseStory,
+        height: 400,
+    },
+    render: (args) => {
+        const createLines = (num: number, offset: number = 0) => {
+            return Array.from({
+                length: num,
+            }).map((_, i) => {
+                i += offset;
+                return `Line: ${i}\n`;
+            });
+        };
+        const [fetching, setFetching] = React.useState(false);
+
+        const fetchItems = async () => {
+            setFetching(true);
+            await delay(1000);
+            setFetching(false);
+        };
+
+        const ITEM_BATCH_COUNT = 100;
+        const [items, setItems] = React.useState(() =>
+            createLines(ITEM_BATCH_COUNT)
+        );
+
+        const fetchedCountRef = React.useRef(-1);
+        const count = items.length;
+
+        return (
+            <LazyLog
+                {...args}
+                onRangeChange={async (_, end) => {
+                    if (end + 50 > count && fetchedCountRef.current < count) {
+                        fetchedCountRef.current = count;
+                        await fetchItems();
+                        setItems((prev) => [
+                            ...prev,
+                            ...createLines(ITEM_BATCH_COUNT, prev.length),
+                        ]);
+                    }
+                }}
+                loading={fetching}
+                text={items.join("")}
+            ></LazyLog>
+        );
+    },
+};
