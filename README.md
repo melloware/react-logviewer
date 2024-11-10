@@ -174,7 +174,7 @@ own `LinePart` and styled separately (colors, text formatting, etc.) from the re
 
 -   Fork and clone this repo.
 -   Install the dependencies with `npm`.
--   Start the development server with `npm run dev`. This will launch a StoryBook instance.
+-   Start the development server with `npm run storybook`. This will launch a StoryBook instance.
     Open a browser to http://localhost:6006 to preview the React components.
 -   Use CTRL-C to exit the StoryBook.
 -   Use `npm run build` to generate the compiled component for publishing to npm.
