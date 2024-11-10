@@ -16,14 +16,14 @@ Forked from [mozilla-frontend-infra/react-lazylog](https://github.com/mozilla-fr
 
 ## Features
 
--   Efficient scrolling performance thanks to [react-window](https://github.com/bvaughn/react-window)
+-   Efficient scrolling performance thanks to [Virtua](https://github.com/inokawa/virtua)
+-   Infinite scrolling thanks to [Virtua](https://github.com/inokawa/virtua)
 -   Able to load large files upwards of 100MB without crashing the browser
 -   Parses, colorizes, and styles ANSI escapes within content
 -   Supports remote text files as well as chunked/streamed responses
 -   Line highlighting
 -   Customizable styling
 -   Searching through log
--   Infinite scrolling
 -   Works in latest browser versions, including iOS Safari and Android Chrome
 -   TypeScript support
 
@@ -163,7 +163,7 @@ own `LinePart` and styled separately (colors, text formatting, etc.) from the re
 
 ## Technology
 
--   [React Window](https://github.com/bvaughn/react-window) for efficiently rendering large lines of data
+-   [Virtua](https://github.com/inokawa/virtua) for efficiently rendering large lines of data
 -   `fetch` API for efficiently requesting data with array buffers and binary streams
 -   [ansiparse](https://www.npmjs.com/package/ansiparse) for nice log styling, like Travis
 -   [mitt](https://www.npmjs.com/package/mitt) for dead-simple events to manage streaming lifecycle
