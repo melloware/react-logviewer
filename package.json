@@ -1,6 +1,6 @@
 {
     "name": "@melloware/react-logviewer",
-    "version": "6.0.0",
+    "version": "6.0.1",
     "description": "React Lazy LogViewer",
     "keywords": [
         "react",
@@ -33,11 +33,12 @@
     "license": "MPL-2.0",
     "scripts": {
         "dev": "vite",
-        "build": "vite build",
+        "build": "rimraf dist && rollup -c",
         "preview": "vite preview",
         "storybook": "storybook dev -p 6006",
         "build-storybook": "storybook build -o docs/",
-        "init-msw": "msw init public/"
+        "init-msw": "msw init public/",
+        "prepack": "npm run build"
     },
     "dependencies": {
         "hotkeys-js": "3.13.7",
@@ -46,6 +47,9 @@
         "virtua": "0.36.3"
     },
     "devDependencies": {
+        "@rollup/plugin-commonjs": "^25.0.7",
+        "@rollup/plugin-node-resolve": "^15.3.0",
+        "@rollup/plugin-typescript": "^11.1.6",
         "@storybook/addon-essentials": "^8.4.2",
         "@storybook/addon-interactions": "^8.4.2",
         "@storybook/addon-links": "^8.4.2",
@@ -64,6 +68,10 @@
         "msw": "^2.6.3",
         "msw-storybook-addon": "^2.0.4",
         "prop-types": "^15.8.1",
+        "rimraf": "^6.0.1",
+        "rollup": "2.79.1",
+        "rollup-plugin-dts": "4.2.3",
+        "rollup-plugin-postcss": "^4.0.2",
         "storybook": "^8.4.2",
         "vite": "^5.4.10"
     },
