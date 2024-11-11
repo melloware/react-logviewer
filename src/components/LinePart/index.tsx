@@ -10,7 +10,7 @@ export interface LinePartCss {
     underline?: boolean;
     email?: boolean;
     link?: boolean;
-    text: string;
+    text?: string;
     wrapLine?: boolean;
     [key: string]: any;
 }
