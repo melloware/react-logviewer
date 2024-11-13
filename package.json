@@ -1,6 +1,6 @@
 {
     "name": "@melloware/react-logviewer",
-    "version": "6.0.1",
+    "version": "6.0.2",
     "description": "React Lazy LogViewer",
     "keywords": [
         "react",
@@ -65,15 +65,15 @@
         "eslint-plugin-react-hooks": "^5.0.0",
         "eslint-plugin-react-refresh": "^0.4.14",
         "eslint-plugin-storybook": "^0.11.0",
-        "msw": "^2.6.3",
+        "msw": "^2.6.4",
         "msw-storybook-addon": "^2.0.4",
         "prop-types": "^15.8.1",
         "rimraf": "^6.0.1",
-        "rollup": "2.79.1",
+        "rollup": "^2.79.2",
         "rollup-plugin-dts": "4.2.3",
         "rollup-plugin-postcss": "^4.0.2",
         "storybook": "^8.4.2",
-        "vite": "^5.4.10"
+        "vite": "^5.4.11"
     },
     "peerDependencies": {
         "react": ">=17.0.0",
