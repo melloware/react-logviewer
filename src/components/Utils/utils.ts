@@ -6,7 +6,6 @@ import { LinePartCss } from "../LinePart";
 export const ENCODED_NEWLINE = 10; // \n
 export const ENCODED_CARRIAGE_RETURN = 13; // \r
 export const SEARCH_BAR_HEIGHT = 45;
-export const SEARCH_MIN_KEYWORDS = 2;
 
 export const isNewline = (current: number) =>
     current === ENCODED_NEWLINE || current === ENCODED_CARRIAGE_RETURN;
@@ -259,12 +258,12 @@ export const parseLinks = (lines: any[]): LinePartCss[] => {
         const arr = line.text.split(" ");
 
         let found = false;
-        let partial = '';
+        let partial = "";
 
         arr.forEach((text: string) => {
             if (text.search(strictUrlRegex) > -1) {
                 result.push({ text: partial.trimEnd() });
-                partial = '';
+                partial = "";
                 found = true;
                 const email = true;
                 const link = true;
@@ -289,7 +288,7 @@ export const parseLinks = (lines: any[]): LinePartCss[] => {
                 return;
             }
 
-            partial += text + ' ';
+            partial += text + " ";
         });
 
         if (!found) {

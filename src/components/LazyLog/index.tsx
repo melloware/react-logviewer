@@ -12,7 +12,6 @@ import { searchLines } from "../Utils/search";
 import stream from "../Utils/stream";
 import {
     SEARCH_BAR_HEIGHT,
-    SEARCH_MIN_KEYWORDS,
     convertBufferToLines,
     getHighlightRange,
     getScrollIndex,
@@ -274,6 +273,10 @@ export interface LazyLogProps {
      */
     scrollToLine?: number;
     /**
+     * Minimum number of characters to trigger a search. Defaults to 2.
+     */
+    searchMinCharacters?: number;
+    /**
      * Make the text selectable, allowing to copy & paste. Defaults to `false`.
      */
     selectableLines?: boolean;
@@ -384,6 +387,7 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
         overscanRowCount: 100,
         rowHeight: 19,
         scrollToLine: 0,
+        searchMinCharacters: 2,
         selectableLines: false,
         stream: false,
         style: {},
@@ -824,8 +828,12 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
 
     forceSearch = () => {
         const { searchKeywords } = this.state;
+        const { searchMinCharacters } = this.props;
 
-        if (searchKeywords && searchKeywords.length > SEARCH_MIN_KEYWORDS) {
+        if (
+            searchKeywords &&
+            searchKeywords.length > (searchMinCharacters || 0)
+        ) {
             this.handleSearch(this.state.searchKeywords);
         }
     };
@@ -1198,24 +1206,25 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
                 {enableSearch && (
                     <SearchBar
                         ref={this.searchBarRef}
-                        disabled={count === 0}
                         currentResultsPosition={currentResultsPosition}
-                        resultsCount={resultLines.length}
+                        disabled={count === 0}
                         enableHotKeys={this.props.enableHotKeys}
-                        filterActive={isFilteringLinesWithMatches}
-                        onSearch={this.handleSearch}
-                        onClearSearch={this.handleClearSearch}
-                        onFilterLinesWithMatches={
-                            this.handleFilterLinesWithMatches
-                        }
-                        onEnter={this.handleEnterPressed}
-                        onShiftEnter={this.handleShiftEnterPressed}
                         enableSearchNavigation={
                             this.props.enableSearchNavigation
                         }
+                        filterActive={isFilteringLinesWithMatches}
                         iconFilterLines={this.props.iconFilterLines}
                         iconFindNext={this.props.iconFindNext}
                         iconFindPrevious={this.props.iconFindPrevious}
+                        onClearSearch={this.handleClearSearch}
+                        onEnter={this.handleEnterPressed}
+                        onFilterLinesWithMatches={
+                            this.handleFilterLinesWithMatches
+                        }
+                        onSearch={this.handleSearch}
+                        onShiftEnter={this.handleShiftEnterPressed}
+                        resultsCount={resultLines.length}
+                        searchMinCharacters={this.props.searchMinCharacters}
                     />
                 )}
                 <VList

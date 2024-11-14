@@ -3,7 +3,6 @@ import hotkeys from "hotkeys-js";
 
 import React, { Component, Fragment, RefObject, createRef } from "react";
 
-import { SEARCH_MIN_KEYWORDS } from "../Utils/utils";
 import { DownArrowIcon } from "./ArrowIcons/DownArrowIcon";
 import { UpArrowIcon } from "./ArrowIcons/UpArrowIcon";
 import { FilterLinesIcon } from "./FilterLinesIcon";
@@ -74,6 +73,10 @@ export interface SearchBarProps {
      * executing the search algorithm.
      */
     resultsCount?: number | undefined;
+    /**
+     * Minimum number of characters to trigger a search. Defaults to 2.
+     */
+    searchMinCharacters?: number;
 }
 type SearchBarState = {
     keywords?: string;
@@ -84,14 +87,15 @@ export default class SearchBar extends Component<
     SearchBarState
 > {
     static defaultProps = {
-        onSearch: () => {},
-        onClearSearch: () => {},
-        onFilterLinesWithMatches: () => {},
-        resultsCount: 0,
-        filterActive: false,
+        currentResultsPosition: 0,
         disabled: false,
         enableHotKeys: false,
-        currentResultsPosition: 0,
+        filterActive: false,
+        onClearSearch: () => {},
+        onFilterLinesWithMatches: () => {},
+        onSearch: () => {},
+        resultsCount: 0,
+        searchMinCharacters: 2,
     };
 
     state: SearchBarState = {
@@ -136,9 +140,9 @@ export default class SearchBar extends Component<
 
     search = () => {
         const { keywords } = this.state;
-        const { onSearch, onClearSearch } = this.props;
+        const { onSearch, onClearSearch, searchMinCharacters } = this.props;
 
-        if (keywords && keywords.length > SEARCH_MIN_KEYWORDS) {
+        if (keywords && keywords.length > searchMinCharacters) {
             onSearch && onSearch(keywords);
         } else {
             onClearSearch && onClearSearch();
