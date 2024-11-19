@@ -1,83 +1,83 @@
 {
-    "name": "@melloware/react-logviewer",
-    "version": "6.0.2",
-    "description": "React Lazy LogViewer",
-    "keywords": [
-        "react",
-        "log",
-        "viewer",
-        "logviewer",
-        "lazy",
-        "lazylog"
-    ],
-    "author": "Melloware <mellowaredev@gmail.com> (https://github.com/melloware)",
-    "contributors": [
-        "Eli Perelman (https://github.com/eliperelman)",
-        "Hassan Ali (http://hassanali.me)",
-        "Melloware <mellowaredev@gmail.com> (https://github.com/melloware)"
-    ],
-    "main": "dist/cjs/index.js",
-    "module": "dist/esm/index.js",
-    "types": "dist/index.d.ts",
-    "files": [
-        "dist"
-    ],
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/melloware/react-logviewer.git"
-    },
-    "bugs": {
-        "url": "https://github.com/melloware/react-logviewer/issues"
-    },
-    "homepage": "https://melloware.github.io/react-logviewer/",
-    "license": "MPL-2.0",
-    "scripts": {
-        "dev": "vite",
-        "build": "rimraf dist && rollup -c",
-        "preview": "vite preview",
-        "storybook": "storybook dev -p 6006",
-        "build-storybook": "storybook build -o docs/",
-        "init-msw": "msw init public/",
-        "prepack": "npm run build"
-    },
-    "dependencies": {
-        "hotkeys-js": "3.13.7",
-        "mitt": "3.0.1",
-        "react-string-replace": "1.1.1",
-        "virtua": "0.37.2"
-    },
-    "devDependencies": {
-        "@rollup/plugin-commonjs": "^25.0.7",
-        "@rollup/plugin-node-resolve": "^15.3.0",
-        "@rollup/plugin-typescript": "^11.1.6",
-        "@storybook/addon-essentials": "^8.4.2",
-        "@storybook/addon-interactions": "^8.4.2",
-        "@storybook/addon-links": "^8.4.2",
-        "@storybook/blocks": "^8.4.2",
-        "@storybook/react": "^8.4.2",
-        "@storybook/react-vite": "^8.4.2",
-        "@storybook/test": "^8.4.2",
-        "@types/react": "^18.3.12",
-        "@types/react-dom": "^18.3.1",
-        "@vitejs/plugin-react": "^4.3.3",
-        "eslint": "^9.14.0",
-        "eslint-plugin-react": "^7.37.2",
-        "eslint-plugin-react-hooks": "^5.0.0",
-        "eslint-plugin-react-refresh": "^0.4.14",
-        "eslint-plugin-storybook": "^0.11.0",
-        "msw": "^2.6.4",
-        "msw-storybook-addon": "^2.0.4",
-        "prop-types": "^15.8.1",
-        "rimraf": "^6.0.1",
-        "rollup": "^2.79.2",
-        "rollup-plugin-dts": "4.2.3",
-        "rollup-plugin-postcss": "^4.0.2",
-        "storybook": "^8.4.2",
-        "vite": "^5.4.11"
-    },
-    "peerDependencies": {
-        "react": ">=17.0.0",
-        "react-dom": ">=17.0.0"
-    },
-    "packageManager": "pnpm@8.1.1+sha1.f3d2cd2bddf0fa447a13b80e166d1b85a7823486"
+  "name": "@melloware/react-logviewer",
+  "version": "6.0.2",
+  "description": "React Lazy LogViewer",
+  "keywords": [
+    "react",
+    "log",
+    "viewer",
+    "logviewer",
+    "lazy",
+    "lazylog"
+  ],
+  "author": "Melloware <mellowaredev@gmail.com> (https://github.com/melloware)",
+  "contributors": [
+    "Eli Perelman (https://github.com/eliperelman)",
+    "Hassan Ali (http://hassanali.me)",
+    "Melloware <mellowaredev@gmail.com> (https://github.com/melloware)"
+  ],
+  "main": "dist/cjs/index.js",
+  "module": "dist/esm/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/melloware/react-logviewer.git"
+  },
+  "bugs": {
+    "url": "https://github.com/melloware/react-logviewer/issues"
+  },
+  "homepage": "https://melloware.github.io/react-logviewer/",
+  "license": "MPL-2.0",
+  "scripts": {
+    "dev": "vite",
+    "build": "rimraf dist && rollup -c",
+    "preview": "vite preview",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build -o docs/",
+    "init-msw": "msw init public/",
+    "prepack": "npm run build"
+  },
+  "dependencies": {
+    "hotkeys-js": "3.13.7",
+    "mitt": "3.0.1",
+    "react-string-replace": "1.1.1",
+    "virtua": "0.37.3"
+  },
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^25.0.7",
+    "@rollup/plugin-node-resolve": "^15.3.0",
+    "@rollup/plugin-typescript": "^11.1.6",
+    "@storybook/addon-essentials": "^8.4.4",
+    "@storybook/addon-interactions": "^8.4.4",
+    "@storybook/addon-links": "^8.4.4",
+    "@storybook/blocks": "^8.4.4",
+    "@storybook/react": "^8.4.4",
+    "@storybook/react-vite": "^8.4.4",
+    "@storybook/test": "^8.4.4",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@vitejs/plugin-react": "^4.3.3",
+    "eslint": "^9.15.0",
+    "eslint-plugin-react": "^7.37.2",
+    "eslint-plugin-react-hooks": "^5.0.0",
+    "eslint-plugin-react-refresh": "^0.4.14",
+    "eslint-plugin-storybook": "^0.11.1",
+    "msw": "^2.6.5",
+    "msw-storybook-addon": "^2.0.4",
+    "prop-types": "^15.8.1",
+    "rimraf": "^6.0.1",
+    "rollup": "^2.79.2",
+    "rollup-plugin-dts": "4.2.3",
+    "rollup-plugin-postcss": "^4.0.2",
+    "storybook": "^8.4.4",
+    "vite": "^5.4.11"
+  },
+  "peerDependencies": {
+    "react": ">=17.0.0",
+    "react-dom": ">=17.0.0"
+  },
+  "packageManager": "pnpm@8.1.1+sha1.f3d2cd2bddf0fa447a13b80e166d1b85a7823486"
 }
