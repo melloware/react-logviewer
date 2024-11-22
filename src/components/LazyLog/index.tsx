@@ -382,7 +382,6 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
         onHighlight: undefined,
         onLineNumberClick: undefined,
         onLoad: undefined,
-        onRangeChange: undefined,
         loading: undefined,
         overscanRowCount: 100,
         rowHeight: 19,
@@ -1251,7 +1250,6 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
                             this.props.onScroll(args);
                         }
                     }}
-                    onRangeChange={this.props.onRangeChange}
                 >
                     {Array.from({
                         length:

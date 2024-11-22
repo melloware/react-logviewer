@@ -44,19 +44,19 @@
     "hotkeys-js": "3.13.7",
     "mitt": "3.0.1",
     "react-string-replace": "1.1.1",
-    "virtua": "0.37.3"
+    "virtua": "0.37.4"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^25.0.7",
     "@rollup/plugin-node-resolve": "^15.3.0",
     "@rollup/plugin-typescript": "^11.1.6",
-    "@storybook/addon-essentials": "^8.4.4",
-    "@storybook/addon-interactions": "^8.4.4",
-    "@storybook/addon-links": "^8.4.4",
-    "@storybook/blocks": "^8.4.4",
-    "@storybook/react": "^8.4.4",
-    "@storybook/react-vite": "^8.4.4",
-    "@storybook/test": "^8.4.4",
+    "@storybook/addon-essentials": "^8.4.5",
+    "@storybook/addon-interactions": "^8.4.5",
+    "@storybook/addon-links": "^8.4.5",
+    "@storybook/blocks": "^8.4.5",
+    "@storybook/react": "^8.4.5",
+    "@storybook/react-vite": "^8.4.5",
+    "@storybook/test": "^8.4.5",
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
     "@vitejs/plugin-react": "^4.3.3",
@@ -72,7 +72,7 @@
     "rollup": "^2.79.2",
     "rollup-plugin-dts": "4.2.3",
     "rollup-plugin-postcss": "^4.0.2",
-    "storybook": "^8.4.4",
+    "storybook": "^8.4.5",
     "vite": "^5.4.11"
   },
   "peerDependencies": {

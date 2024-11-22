@@ -140,7 +140,7 @@ export default class SearchBar extends Component<
 
     search = () => {
         const { keywords } = this.state;
-        const { onSearch, onClearSearch, searchMinCharacters } = this.props;
+        const { onSearch, onClearSearch, searchMinCharacters = 2 } = this.props;
 
         if (keywords && keywords.length > searchMinCharacters) {
             onSearch && onSearch(keywords);
