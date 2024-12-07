@@ -1,6 +1,6 @@
 {
   "name": "@melloware/react-logviewer",
-  "version": "6.0.3",
+  "version": "6.1.0",
   "description": "React Lazy LogViewer",
   "keywords": [
     "react",
@@ -44,7 +44,7 @@
     "hotkeys-js": "3.13.7",
     "mitt": "3.0.1",
     "react-string-replace": "1.1.1",
-    "virtua": "0.38.1"
+    "virtua": "0.39.0"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^25.0.7",
