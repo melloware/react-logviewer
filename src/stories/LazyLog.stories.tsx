@@ -52,6 +52,36 @@ export const URLLog: Story = {
     },
 };
 
+export const ExternalMode: Story = {
+    name: "External Mode",
+    args: {
+        ...BaseStory,
+        external: true,
+        text: `You can provide some initial content (multiple lines),
+such as this one.`,
+    },
+    render: (args) => {
+        const ref = React.createRef<LazyLog>();
+        return (
+            <>
+                <button
+                    onClick={() =>
+                        ref.current?.appendLines([
+                            "This is a new line!",
+                            "This is another new line!",
+                        ])
+                    }
+                    style={{ marginBottom: "6px" }}
+                >
+                    Append Line
+                </button>
+                <br />
+                <LazyLog ref={ref} {...args} />
+            </>
+        );
+    },
+};
+
 export const ClearMethod: Story = {
     args: {
         ...BaseStory,
@@ -68,7 +98,7 @@ export const ClearMethod: Story = {
                 >
                     Clear Log
                 </button>
-                <br></br>
+                <br />
                 <LazyLog ref={ref} {...args} />
             </>
         );

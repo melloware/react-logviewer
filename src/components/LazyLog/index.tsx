@@ -12,6 +12,7 @@ import { searchLines } from "../Utils/search";
 import stream from "../Utils/stream";
 import {
     SEARCH_BAR_HEIGHT,
+    bufferConcat,
     convertBufferToLines,
     getHighlightRange,
     getScrollIndex,
@@ -328,6 +329,12 @@ export interface LazyLogProps {
      * Wrap overflowing lines. Default is false
      */
     wrapLines?: boolean;
+    /**
+     * Set to `true` to specify that parent component will be calling `appendLines` to update data.
+     * Parent component should hold a ref (with `useRef` or `createRef`) to the `LazyLog` component.
+     * Defaults to `false`.
+     */
+    external?: boolean;
 }
 type LazyLogState = {
     count: number;
@@ -395,6 +402,7 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
         eventsource: false,
         eventsourceOptions: {},
         width: "auto",
+        external: false,
     };
 
     static getDerivedStateFromProps(
@@ -563,7 +571,7 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
     }
 
     request() {
-        const { text, url } = this.props;
+        const { text, url, external } = this.props;
 
         this.endRequest();
 
@@ -584,6 +592,15 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
             this.emitter.on("error", this.handleError);
             this.emitter.emit("start");
         }
+
+        if (external) {
+            const encodedLog = encode('');
+            const {lines} = convertBufferToLines(encodedLog);
+            this.handleUpdate({
+                lines,
+                encodedLog,
+            });
+        }
     }
 
     endRequest() {
@@ -596,13 +613,24 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
         }
     }
 
+    appendLines(newLines: string[]) {
+        const content = newLines.join("\n");
+        const newContent = encode(content.endsWith('\n') ? content : content + '\n');
+        const encodedLog = bufferConcat(this.encodedLog!, newContent);
+        const { lines } = convertBufferToLines(newContent);
+        this.handleUpdate({
+            lines: lines,
+            encodedLog,
+        });
+    }
+
     handleUpdate = ({ lines: moreLines, encodedLog }: any) => {
         this.encodedLog = encodedLog;
-        const { scrollToLine, follow, stream, websocket, eventsource } =
+        const { scrollToLine, follow, stream, websocket, eventsource, external } =
             this.props;
 
         // handle stream, socket and eventsource updates batched update mode
-        if (stream || websocket || eventsource) {
+        if (stream || websocket || eventsource || external) {
             this.setState((state, props) => {
                 const { scrollToLine, follow } = props;
                 const { count: previousCount } = state;
@@ -731,7 +759,7 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
             scrollToIndex,
             scrollToLine,
         });
-        this.listRef?.current?.scrollToIndex(scrollToLine, {
+        this.listRef?.current?.scrollToIndex(scrollToIndex, {
             align: "nearest",
         });
     }
@@ -807,19 +835,23 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
     };
 
     handleSearch = (keywords: string | undefined) => {
-        const { resultLines, searchKeywords } = this.state;
-        const { caseInsensitive, stream, websocket, eventsource } = this.props;
+        const { resultLines, searchKeywords, currentResultsPosition: previousResultsPosition } = this.state;
+        const { caseInsensitive, stream, websocket, eventsource, external } = this.props;
         const currentResultLines =
-            !stream && !websocket && !eventsource && keywords === searchKeywords
+            !stream && !websocket && !eventsource && !external && keywords === searchKeywords
                 ? resultLines
                 : searchLines(keywords, this.encodedLog!, caseInsensitive!);
 
+        let currentResultsPosition = previousResultsPosition;
+        if (currentResultsPosition > currentResultLines.length - 1) {
+            currentResultsPosition = 0;
+        }
         this.setState(
             {
                 resultLines: currentResultLines,
                 isSearching: true,
                 searchKeywords: keywords,
-                currentResultsPosition: 0,
+                currentResultsPosition,
             },
             this.filterLinesWithMatches
         );
