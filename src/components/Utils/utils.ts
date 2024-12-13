@@ -249,7 +249,7 @@ const protocolClause = "(((http|ftp)?s?s?)(:)(/{2}))";
 // - any sort of brackets <>()[]{} (not spec conform, but often used to enclose urls)
 // - unsafe chars from rfc1738: {}|\^~[]`
 const strictUrlRegex =
-    /https?:[/]{2}[^\s"'!*(){}|\\\^<>`]*[^\s"':,.!?{}|\\\^~\[\]`()<>]/;
+    /^https?:[/]{2}[^\s"'!*(){}|\\\^<>`]*[^\s"':,.!?{}|\\\^~\[\]`()<>]/;
 
 export const parseLinks = (lines: any[]): LinePartCss[] => {
     const result: LinePartCss[] = [];
