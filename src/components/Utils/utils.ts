@@ -251,46 +251,71 @@ const protocolClause = "(((http|ftp)?s?s?)(:)(/{2}))";
 const strictUrlRegex =
     /https?:[/]{2}[^\s"'!*(){}|\\\^<>`]*[^\s"':,.!?{}|\\\^~\[\]`()<>]/;
 
+/**
+ * Parses an array of text lines and identifies URLs and email addresses, converting them into clickable links.
+ *
+ * @param lines - Array of line objects containing text to parse
+ * @returns Array of LinePartCss objects with identified links and emails marked up
+ */
 export const parseLinks = (lines: any[]): LinePartCss[] => {
     const result: LinePartCss[] = [];
 
     lines.forEach((line) => {
+        // Split line into words
         const arr = line.text.split(" ");
 
-        let found = false;
-        let partial = "";
+        let found = false; // Tracks if any links were found
+        let partial = ""; // Accumulates non-link text
 
         arr.forEach((text: string) => {
+            // Check if text matches URL pattern
             if (text.search(strictUrlRegex) > -1) {
+                // Push accumulated non-link text if any
                 result.push({ text: partial.trimEnd() });
                 partial = "";
                 found = true;
-                const email = true;
-                const link = true;
 
+                // Check if text is an email address
                 if (text.search(emailRegex) > -1) {
-                    result.push({ text, email });
-
+                    result.push({ text, email: true });
                     return;
                 }
 
+                // Add https:// prefix if protocol is missing
                 if (text.search(protocolClause) === -1) {
-                    result.push({ text: `https://${text}`, link });
-
+                    result.push({ text: `https://${text}`, link: true });
                     return;
                 }
 
-                result.push({
-                    text,
-                    link,
-                });
+                // Split text into protocol and non-protocol parts
+                const parts = text.split(new RegExp(`(${protocolClause}.*)`));
+                if (parts.length > 1) {
+                    // Push non-link part if it exists
+                    if (parts[0]) {
+                        result.push({
+                            text: parts[0],
+                        });
+                    }
+                    // Push link part
+                    result.push({
+                        text: parts[1],
+                        link: true,
+                    });
+                } else {
+                    result.push({
+                        text,
+                        link: true,
+                    });
+                }
 
                 return;
             }
 
+            // Accumulate non-link text
             partial += text + " ";
         });
 
+        // If no links found, push the entire line
         if (!found) {
             result.push(line);
         }
