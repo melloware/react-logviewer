@@ -262,57 +262,46 @@ export const parseLinks = (lines: any[]): LinePartCss[] => {
 
     lines.forEach((line) => {
         // Split line into words
-        const arr = line.text.split(" ");
+        const tokens = line.text.split(" ");
 
         let found = false; // Tracks if any links were found
         let partial = ""; // Accumulates non-link text
 
-        arr.forEach((text: string) => {
+        tokens.forEach((token: string) => {
             // Check if text matches URL pattern
-            if (text.search(strictUrlRegex) > -1) {
+            if (token.search(strictUrlRegex) > -1) {
                 // Push accumulated non-link text if any
                 result.push({ text: partial.trimEnd() });
                 partial = "";
                 found = true;
 
                 // Check if text is an email address
-                if (text.search(emailRegex) > -1) {
-                    result.push({ text, email: true });
+                if (token.search(emailRegex) > -1) {
+                    result.push({ token, email: true });
                     return;
                 }
 
                 // Add https:// prefix if protocol is missing
-                if (text.search(protocolClause) === -1) {
-                    result.push({ text: `https://${text}`, link: true });
+                if (token.search(protocolClause) === -1) {
+                    result.push({ text: `https://${token}`, link: true });
                     return;
                 }
 
                 // Split text into protocol and non-protocol parts
-                const parts = text.split(new RegExp(`(${protocolClause}.*)`));
-                if (parts.length > 1) {
-                    // Push non-link part if it exists
-                    if (parts[0]) {
-                        result.push({
-                            text: parts[0],
-                        });
+                const parts = token.split(new RegExp(/(\()*([^\)]+)(\))*/)).filter(Boolean);
+                parts.forEach((part) => {
+                    if (part.search(protocolClause) > -1) {
+                        result.push({ text: part, link: true });
+                    } else {
+                        result.push({ text: part });
                     }
-                    // Push link part
-                    result.push({
-                        text: parts[1],
-                        link: true,
-                    });
-                } else {
-                    result.push({
-                        text,
-                        link: true,
-                    });
-                }
+                });
 
                 return;
             }
 
             // Accumulate non-link text
-            partial += text + " ";
+            partial += token + " ";
         });
 
         // If no links found, push the entire line
