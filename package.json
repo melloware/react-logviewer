@@ -1,6 +1,6 @@
 {
   "name": "@melloware/react-logviewer",
-  "version": "6.1.1",
+  "version": "6.1.2",
   "description": "React Lazy LogViewer",
   "keywords": [
     "react",
@@ -57,15 +57,15 @@
     "@storybook/react": "^8.4.7",
     "@storybook/react-vite": "^8.4.7",
     "@storybook/test": "^8.4.7",
-    "@types/react": "^19.0.1",
-    "@types/react-dom": "^19.0.2",
+    "@types/react": "^19.0.7",
+    "@types/react-dom": "^19.0.3",
     "@vitejs/plugin-react": "^4.3.4",
-    "eslint": "^9.17.0",
-    "eslint-plugin-react": "^7.37.2",
+    "eslint": "^9.18.0",
+    "eslint-plugin-react": "^7.37.4",
     "eslint-plugin-react-hooks": "^5.1.0",
-    "eslint-plugin-react-refresh": "^0.4.16",
-    "eslint-plugin-storybook": "^0.11.1",
-    "msw": "^2.6.9",
+    "eslint-plugin-react-refresh": "^0.4.18",
+    "eslint-plugin-storybook": "^0.11.2",
+    "msw": "^2.7.0",
     "msw-storybook-addon": "^2.0.4",
     "prop-types": "^15.8.1",
     "rimraf": "^6.0.1",
@@ -73,7 +73,7 @@
     "rollup-plugin-dts": "4.2.3",
     "rollup-plugin-postcss": "^4.0.2",
     "storybook": "^8.4.7",
-    "vite": "^6.0.3"
+    "vite": "^6.0.7"
   },
   "peerDependencies": {
     "react": ">=17.0.0",
