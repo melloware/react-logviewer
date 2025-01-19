@@ -72,7 +72,7 @@ If you are going to be rendering a complete file, or an endpoint which can be do
 `<LazyLog />` component as-is for better overall performance at the expense of slightly longer upfront load time.
 
 If you are going to be requesting a streaming or chunked response, use the `<LazyLog stream />` component with the
-`stream` prop of `true` for quicker upfront rendering as content can be decoded as it arrives.                                                                                                                     |
+`stream` prop of `true` for quicker upfront rendering as content can be decoded as it arrives.
 
 ## `<ScrollFollow />`
 
