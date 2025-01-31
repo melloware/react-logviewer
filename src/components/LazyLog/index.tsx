@@ -249,13 +249,6 @@ export interface LazyLogProps {
     }): void;
 
     /**
-     * Callback invoked when visible items range changes.
-     * @param startIndex - The start index of viewable items.
-     * @param endIndex - The end index of viewable items.
-     */
-    onRangeChange?(startIndex: number, endIndex: number): void;
-
-    /**
      * Number of rows to render above/below the visible bounds of the list.
      * This can help reduce flickering during scrolling on
      * certain browsers/devices. Defaults to `100`.
@@ -594,8 +587,8 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
         }
 
         if (external) {
-            const encodedLog = encode('');
-            const {lines} = convertBufferToLines(encodedLog);
+            const encodedLog = encode("");
+            const { lines } = convertBufferToLines(encodedLog);
             this.handleUpdate({
                 lines,
                 encodedLog,
@@ -615,7 +608,9 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
 
     appendLines(newLines: string[]) {
         const content = newLines.join("\n");
-        const newContent = encode(content.endsWith('\n') ? content : content + '\n');
+        const newContent = encode(
+            content.endsWith("\n") ? content : content + "\n"
+        );
         const encodedLog = bufferConcat(this.encodedLog!, newContent);
         const { lines } = convertBufferToLines(newContent);
         this.handleUpdate({
@@ -626,8 +621,14 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
 
     handleUpdate = ({ lines: moreLines, encodedLog }: any) => {
         this.encodedLog = encodedLog;
-        const { scrollToLine, follow, stream, websocket, eventsource, external } =
-            this.props;
+        const {
+            scrollToLine,
+            follow,
+            stream,
+            websocket,
+            eventsource,
+            external,
+        } = this.props;
 
         // handle stream, socket and eventsource updates batched update mode
         if (stream || websocket || eventsource || external) {
@@ -835,10 +836,19 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
     };
 
     handleSearch = (keywords: string | undefined) => {
-        const { resultLines, searchKeywords, currentResultsPosition: previousResultsPosition } = this.state;
-        const { caseInsensitive, stream, websocket, eventsource, external } = this.props;
+        const {
+            resultLines,
+            searchKeywords,
+            currentResultsPosition: previousResultsPosition,
+        } = this.state;
+        const { caseInsensitive, stream, websocket, eventsource, external } =
+            this.props;
         const currentResultLines =
-            !stream && !websocket && !eventsource && !external && keywords === searchKeywords
+            !stream &&
+            !websocket &&
+            !eventsource &&
+            !external &&
+            keywords === searchKeywords
                 ? resultLines
                 : searchLines(keywords, this.encodedLog!, caseInsensitive!);
 

@@ -1,6 +1,6 @@
 {
   "name": "@melloware/react-logviewer",
-  "version": "6.1.2",
+  "version": "6.2.0",
   "description": "React Lazy LogViewer",
   "keywords": [
     "react",
@@ -44,23 +44,23 @@
     "hotkeys-js": "3.13.9",
     "mitt": "3.0.1",
     "react-string-replace": "1.1.1",
-    "virtua": "0.39.3"
+    "virtua": "0.40.0"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^25.0.7",
     "@rollup/plugin-node-resolve": "^15.3.0",
     "@rollup/plugin-typescript": "^11.1.6",
-    "@storybook/addon-essentials": "^8.4.7",
-    "@storybook/addon-interactions": "^8.4.7",
-    "@storybook/addon-links": "^8.4.7",
-    "@storybook/blocks": "^8.4.7",
-    "@storybook/react": "^8.4.7",
-    "@storybook/react-vite": "^8.4.7",
-    "@storybook/test": "^8.4.7",
-    "@types/react": "^19.0.7",
+    "@storybook/addon-essentials": "^8.5.2",
+    "@storybook/addon-interactions": "^8.5.2",
+    "@storybook/addon-links": "^8.5.2",
+    "@storybook/blocks": "^8.5.2",
+    "@storybook/react": "^8.5.2",
+    "@storybook/react-vite": "^8.5.2",
+    "@storybook/test": "^8.5.2",
+    "@types/react": "^19.0.8",
     "@types/react-dom": "^19.0.3",
     "@vitejs/plugin-react": "^4.3.4",
-    "eslint": "^9.18.0",
+    "eslint": "^9.19.0",
     "eslint-plugin-react": "^7.37.4",
     "eslint-plugin-react-hooks": "^5.1.0",
     "eslint-plugin-react-refresh": "^0.4.18",
@@ -72,8 +72,8 @@
     "rollup": "^2.79.2",
     "rollup-plugin-dts": "4.2.3",
     "rollup-plugin-postcss": "^4.0.2",
-    "storybook": "^8.4.7",
-    "vite": "^6.0.7"
+    "storybook": "^8.5.2",
+    "vite": "^6.0.11"
   },
   "peerDependencies": {
     "react": ">=17.0.0",

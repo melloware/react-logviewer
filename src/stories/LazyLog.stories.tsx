@@ -783,14 +783,20 @@ export const InfiniteScrolling: Story = {
             createLines(ITEM_BATCH_COUNT)
         );
 
+        const ref = React.useRef<LazyLog>(null);
         const fetchedCountRef = React.useRef(-1);
         const count = items.length;
 
         return (
             <LazyLog
                 {...args}
-                onRangeChange={async (_, end) => {
-                    if (end + 50 > count && fetchedCountRef.current < count) {
+                ref={ref}
+                onScroll={async () => {
+                    if (!ref.current || !ref.current.listRef.current) return;
+                    if (
+                        fetchedCountRef.current < count &&
+                        ref.current.listRef.current.findEndIndex() + 50 > count
+                    ) {
                         fetchedCountRef.current = count;
                         await fetchItems();
                         setItems((prev) => [
