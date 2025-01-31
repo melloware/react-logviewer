@@ -36,8 +36,27 @@ describe("Parsing lines with links", () => {
     ];
     const links = parseLinks(lines);
     expect(links.length).toBe(3);
-    expect(links[0]?.text).toBeFalsy();
-    expect(links[1]?.text?.endsWith(")")).toBeFalsy();
+    expect(links[0]?.text).toBeFalsy(); //
+    expect(links[1]?.text?.endsWith(")")).toBeFalsy(); //
     expect(links[2]?.text).toBe(")");
+  });
+});
+
+describe("", () => {
+  it("", () => {
+    const lines = [
+      {
+        text: "aaa bbb ccc",
+      },
+      {
+        text: "wrap1 'http://bla.alb/add' wrap2 wrap3",
+      },
+      {
+        text: "�[31m�[1m>�[22m�[2m�[39m�[90m �[36mthis�[39m�[33m.�[39mextend(�[36mthis",
+      },
+    ];
+    const links = parseLinks(lines);
+    expect(links[0]?.text).toBe("aaa bbb ccc");
+    //
   });
 });
