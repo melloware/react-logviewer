@@ -137,6 +137,67 @@ And at the end send a mail to react-lazylog@mozilla.org
     },
 };
 
+export const ScrollFollowForText: Story = {
+    args: {
+        ...BaseStory,
+        height: 150,
+        text: ``,
+    },
+    render: (args) => {
+        const ref = React.createRef<LazyLog>();
+
+        let interval: NodeJS.Timeout;
+
+        React.useEffect(() => {
+            restartLog();
+
+            // Cleanup interval on component unmount
+            return () => clearInterval(interval);
+        }, []); // Empty dependency array to run only on mount
+
+        const restartLog = () => {
+            clearInterval(interval);
+            ref.current?.clear();
+            // Counter for tracking iterations
+            let count = 0;
+            // Maximum number of iterations (100 seconds)
+            const maxCount = 30;
+
+            // Function to generate a log entry
+            const generateLogEntry = () => {
+                const timestamp = new Date().toLocaleTimeString();
+                return `[${timestamp}] Log entry #${count + 1}`;
+            };
+
+            // Set up interval to add new log every second
+            interval = setInterval(() => {
+                if (count < maxCount) {
+                    ref?.current?.appendLines([generateLogEntry()]);
+                    count++;
+                } else {
+                    // Clear interval when we reach 100 entries
+                    clearInterval(interval);
+                }
+            }, 1000);
+        };
+
+        return (
+            <>
+                <button
+                    onClick={() => {
+                        restartLog();
+                    }}
+                    style={{ marginBottom: "6px" }}
+                >
+                    Restart Log
+                </button>
+                <br />
+                <LazyLog ref={ref} {...args} external={true} follow={true} />
+            </>
+        );
+    },
+};
+
 export const HighlightAndScrolling: Story = {
     args: {
         ...BaseStory,

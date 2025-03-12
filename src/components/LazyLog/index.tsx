@@ -474,62 +474,60 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
     }
 
     componentDidUpdate(prevProps: LazyLogProps, prevState: LazyLogState) {
+        const { props, state, listRef } = this;
+        const {
+            url,
+            text,
+            follow,
+            extraLines,
+            onLoad,
+            onError,
+            highlight,
+            onHighlight,
+            scrollToLine,
+        } = props;
+        const { scrollOffset, scrollToIndex, isSearching, loaded, error } =
+            state;
+
+        // Check if we need to make a new request
         if (
-            prevProps.url !== this.props.url ||
-            prevState.url !== this.state.url ||
-            prevProps.text !== this.props.text
+            prevProps.url !== url ||
+            prevState.url !== state.url ||
+            prevProps.text !== text
         ) {
             this.request();
         }
 
-        // Reset scroll position when there's new data, otherwise the screen goes blank for some reason
-        if (
-            prevProps.text !== this.props.text &&
-            !this.props.follow &&
-            this.state.scrollOffset > 0
-        ) {
-            const update = () => {
-                const newPosition = this.state.scrollOffset;
-                this.listRef?.current?.scrollTo(newPosition);
-            };
-            update();
+        // Handle scroll position updates
+        if (prevProps.text !== text && !follow && scrollOffset > 0) {
+            listRef?.current?.scrollTo(scrollOffset);
         }
 
-        // If follow is activated, and we're not currently searching, scroll to offset
-        if (this.props.follow && !this.state.isSearching) {
-            this.listRef?.current?.scrollToIndex(
-                this.state.scrollToIndex + (this.props?.extraLines || 0),
-                { align: "nearest" }
-            );
+        if (follow && !isSearching) {
+            listRef?.current?.scrollToIndex(scrollToIndex + (extraLines || 0), {
+                align: "nearest",
+            });
         }
 
-        if (
-            !this.state.loaded &&
-            prevState.loaded !== this.state.loaded &&
-            this.props.onLoad
-        ) {
-            this.props.onLoad();
-        } else if (
-            this.state.error &&
-            prevState.error !== this.state.error &&
-            this.props.onError
-        ) {
-            this.props.onError(this.state.error);
+        // Handle load/error callbacks
+        if (!loaded && prevState.loaded !== loaded && onLoad) {
+            onLoad();
+        } else if (error && prevState.error !== error && onError) {
+            onError(error);
         }
 
-        if (
-            this.props.highlight &&
-            prevProps.highlight !== this.props.highlight &&
-            this.props.onHighlight
-        ) {
-            this.props.onHighlight(this.state.highlight!);
+        // Handle highlight changes
+        if (highlight && highlight !== prevProps.highlight && onHighlight) {
+            onHighlight(state.highlight!);
         }
 
+        // Handle scrollToLine changes
         if (
-            this.props.scrollToLine &&
-            prevProps.scrollToLine !== this.props.scrollToLine
+            !follow &&
+            scrollToLine &&
+            prevProps.scrollToLine !== scrollToLine
         ) {
-            this.handleScrollToLine(this.props.scrollToLine);
+            this.handleScrollToLine(scrollToLine);
         }
     }
 
