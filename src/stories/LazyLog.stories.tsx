@@ -137,7 +137,7 @@ And at the end send a mail to react-lazylog@mozilla.org
     },
 };
 
-export const ScrollFollowForText: Story = {
+export const AppendLines: Story = {
     args: {
         ...BaseStory,
         height: 150,
@@ -161,7 +161,7 @@ export const ScrollFollowForText: Story = {
             // Counter for tracking iterations
             let count = 0;
             // Maximum number of iterations (100 seconds)
-            const maxCount = 30;
+            const maxCount = 10;
 
             // Function to generate a log entry
             const generateLogEntry = () => {

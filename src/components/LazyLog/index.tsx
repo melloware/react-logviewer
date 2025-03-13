@@ -473,60 +473,78 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
         }
     }
 
+    /**
+     * Lifecycle method called after component updates. Handles various side effects and updates based on prop/state changes.
+     * @param prevProps - Previous props before update
+     * @param prevState - Previous state before update
+     */
     componentDidUpdate(prevProps: LazyLogProps, prevState: LazyLogState) {
+        // Destructure commonly used props and state
         const { props, state, listRef } = this;
         const {
-            url,
-            text,
-            follow,
-            extraLines,
-            onLoad,
-            onError,
-            highlight,
-            onHighlight,
-            scrollToLine,
+            url, // URL to fetch log from
+            text, // Direct text content
+            follow, // Whether to auto-scroll to bottom
+            extraLines, // Additional lines to render
+            onLoad, // Callback when log loads
+            onError, // Callback when error occurs
+            highlight, // Lines to highlight
+            onHighlight, // Callback when highlight changes
+            scrollToLine, // Line number to scroll to
         } = props;
         const { scrollOffset, scrollToIndex, isSearching, loaded, error } =
             state;
 
-        // Check if we need to make a new request
-        if (
+        // Check if the data source (url or text) has changed
+        const isDataChanged =
             prevProps.url !== url ||
             prevState.url !== state.url ||
-            prevProps.text !== text
-        ) {
+            prevProps.text !== text;
+
+        // If data source changed, make a new request
+        if (isDataChanged) {
             this.request();
         }
 
-        // Handle scroll position updates
-        if (prevProps.text !== text && !follow && scrollOffset > 0) {
+        // If data changed and we're not following, maintain scroll position
+        if (isDataChanged && !follow && scrollOffset > 0) {
             listRef?.current?.scrollTo(scrollOffset);
         }
 
-        if (follow && !isSearching) {
+        // Detect if user is manually scrolling
+        const isScrolling = prevState.scrollOffset != scrollOffset;
+
+        // Auto-scroll to bottom if:
+        // - follow mode is enabled
+        // - not currently searching
+        // - user is not manually scrolling
+        if (follow && !isSearching && !isScrolling) {
             listRef?.current?.scrollToIndex(scrollToIndex + (extraLines || 0), {
                 align: "nearest",
             });
         }
 
-        // Handle load/error callbacks
+        // Handle load state changes:
+        // - Call onLoad when loading completes
+        // - Call onError when error occurs
         if (!loaded && prevState.loaded !== loaded && onLoad) {
             onLoad();
         } else if (error && prevState.error !== error && onError) {
             onError(error);
         }
 
-        // Handle highlight changes
-        if (highlight && highlight !== prevProps.highlight && onHighlight) {
+        // Handle highlight prop changes
+        const isHighlightChanged =
+            highlight && highlight !== prevProps.highlight;
+        if (isHighlightChanged && onHighlight) {
             onHighlight(state.highlight!);
         }
 
-        // Handle scrollToLine changes
-        if (
-            !follow &&
-            scrollToLine &&
-            prevProps.scrollToLine !== scrollToLine
-        ) {
+        // Handle scrollToLine prop changes
+        // Only scroll if not in follow mode
+        const isScrollToLineChanged =
+            scrollToLine && prevProps.scrollToLine !== scrollToLine;
+        if (!follow && isScrollToLineChanged) {
             this.handleScrollToLine(scrollToLine);
         }
     }
