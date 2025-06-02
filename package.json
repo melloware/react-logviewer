@@ -44,7 +44,7 @@
     "hotkeys-js": "3.13.10",
     "mitt": "3.0.1",
     "react-string-replace": "1.1.1",
-    "virtua": "0.41.2"
+    "virtua": "0.41.3"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^25.0.7",
