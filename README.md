@@ -23,7 +23,7 @@ The original library has a fundamental flaw in how it handles EventSource connec
 
 3. **Zombie Connections**: The original library was missing an abort handler for EventSource, causing connections to persist even after components unmounted.
 
-**If you like this project, please consider supporting @melloware ❤️**
+**If you like this project, please consider supporting me ❤️**
 
 [![GitHub Sponsor](https://img.shields.io/badge/GitHub-FFDD00?style=for-the-badge&logo=github&logoColor=black)](https://github.com/sponsors/melloware)
 [![PayPal](https://img.shields.io/badge/PayPal-00457C?style=for-the-badge&logo=paypal&logoColor=white)](https://www.paypal.me/mellowareinc)

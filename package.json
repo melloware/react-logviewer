@@ -38,6 +38,7 @@
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build -o docs/",
     "init-msw": "msw init public/",
+    "prepare": "npm run build",
     "prepack": "npm run build",
     "test": "npm run build && playwright test",
     "test:server": "node tests/e2e/test-server.js",
