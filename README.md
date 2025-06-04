@@ -7,9 +7,23 @@
 # React LogViewer
 
 React component that loads and views remote text in the browser lazily and efficiently. Logs can be loaded from static text, a URL, a WebSocket, or an EventSource and including ANSI highlighting.
-Forked from [mozilla-frontend-infra/react-lazylog](https://github.com/mozilla-frontend-infra/react-lazylog).
+Originally forked from [mozilla-frontend-infra/react-lazylog](https://github.com/mozilla-frontend-infra/react-lazylog).
 
-**If you like this project, please consider supporting me ❤️**
+## React LogViewer - Improved Fork
+
+This is a fork of [@melloware/react-logviewer](https://github.com/melloware/react-logviewer) that fixes critical issues with EventSource handling.
+
+### Why This Fork?
+
+The original library has a fundamental flaw in how it handles EventSource connections:
+
+1. **Fighting Browser Behavior**: EventSource has built-in automatic reconnection after ~3 seconds on network errors. The original library tries to manually control reconnection by closing and recreating EventSource instances, which breaks the browser's native behavior.
+
+2. **Lost Event IDs**: When manually recreating EventSource instances, the `Last-Event-ID` header is lost, preventing proper resumption of log streams.
+
+3. **Zombie Connections**: The original library was missing an abort handler for EventSource, causing connections to persist even after components unmounted.
+
+**If you like this project, please consider supporting @melloware ❤️**
 
 [![GitHub Sponsor](https://img.shields.io/badge/GitHub-FFDD00?style=for-the-badge&logo=github&logoColor=black)](https://github.com/sponsors/melloware)
 [![PayPal](https://img.shields.io/badge/PayPal-00457C?style=for-the-badge&logo=paypal&logoColor=white)](https://www.paypal.me/mellowareinc)

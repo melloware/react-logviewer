@@ -6,11 +6,11 @@ import { encode } from "./encoding";
 import { bufferConcat, convertBufferToLines } from "./utils";
 
 export default (url: string | URL, options: EventSourceOptions) => {
-    const { withCredentials, onOpen, onClose, onError, formatMessage } = options;
+    const { withCredentials, onOpen, onClose, onError, formatMessage } =
+        options;
     const emitter = mitt();
     let encodedLog = new Uint8Array();
     let overage: any = null;
-    let aborted: boolean = false;
 
     emitter.on("data", (data) => {
         encodedLog = bufferConcat(
@@ -38,7 +38,7 @@ export default (url: string | URL, options: EventSourceOptions) => {
 
     emitter.on("start", () => {
         try {
-            // try to connect to eventSource
+            // Create EventSource - it will handle reconnection automatically
             const eventSource = new EventSource(url, { withCredentials });
 
             eventSource.addEventListener("open", (e) => {
@@ -46,21 +46,27 @@ export default (url: string | URL, options: EventSourceOptions) => {
                 onOpen && onOpen(e, eventSource);
             });
 
+            // Note: EventSource API doesn't have a 'close' event in the spec
+            // This listener will never fire, but we keep it for backwards compatibility
+            // in case any code depends on the onClose callback
             eventSource.addEventListener("close", (e) => {
                 onClose && onClose(e);
-                if(!aborted && options.reconnect) {
-                    const timeout = options.reconnectWait ?? 1;
-                    setTimeout(() => emitter.emit("start"), timeout*1000);
-                }
             });
 
             eventSource.addEventListener("error", (err) => {
                 onError && onError(err);
+                // EventSource will automatically reconnect after ~3 seconds
+                // unless options.reconnect is false.
+                //
+                // EventSource will also not reconnect if the server sends a
+                // 204 No Content response.
+                if (options.reconnect === false) {
+                    eventSource.close();
+                }
             });
 
             eventSource.addEventListener("message", (e) => {
                 let msg = formatMessage ? formatMessage(e.data) : e.data;
-
                 if (typeof msg !== "string") {
                     return;
                 }
@@ -69,6 +75,11 @@ export default (url: string | URL, options: EventSourceOptions) => {
                 msg = msg.endsWith("\n") ? msg : `${msg}\n`;
 
                 emitter.emit("data", msg);
+            });
+
+            emitter.on("abort", () => {
+                // Close the EventSource when component unmounts
+                eventSource.close();
             });
         } catch (err) {
             emitter.emit("error", err);
