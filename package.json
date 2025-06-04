@@ -38,7 +38,11 @@
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build -o docs/",
     "init-msw": "msw init public/",
-    "prepack": "npm run build"
+    "prepack": "npm run build",
+    "test": "npm run build && playwright test",
+    "test:server": "node tests/e2e/test-server.js",
+    "test:ui": "npm run build && playwright test --ui",
+    "test:eventsource": "npm run build && playwright test eventsource.spec.ts"
   },
   "dependencies": {
     "hotkeys-js": "3.13.10",
@@ -47,6 +51,7 @@
     "virtua": "0.41.3"
   },
   "devDependencies": {
+    "@playwright/test": "^1.52.0",
     "@rollup/plugin-commonjs": "^25.0.7",
     "@rollup/plugin-node-resolve": "^15.3.0",
     "@rollup/plugin-typescript": "^11.1.6",
@@ -57,14 +62,17 @@
     "@storybook/react": "^8.6.4",
     "@storybook/react-vite": "^8.6.4",
     "@storybook/test": "^8.6.4",
+    "@types/node": "^22.15.29",
     "@types/react": "^19.0.10",
     "@types/react-dom": "^19.0.4",
     "@vitejs/plugin-react": "^4.3.4",
+    "cors": "^2.8.5",
     "eslint": "^9.22.0",
     "eslint-plugin-react": "^7.37.4",
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.19",
     "eslint-plugin-storybook": "^0.11.4",
+    "express": "^5.1.0",
     "msw": "^2.7.3",
     "msw-storybook-addon": "^2.0.4",
     "prop-types": "^15.8.1",
