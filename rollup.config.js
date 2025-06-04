@@ -21,6 +21,17 @@ export default [
                 format: "esm",
                 sourcemap: true,
             },
+            {
+                file: "dist/umd/index.js",
+                format: "umd",
+                name: "ReactLogViewer",
+                sourcemap: true,
+                globals: {
+                    react: "React",
+                    "react-dom": "ReactDOM",
+                    "react/jsx-runtime": "jsxRuntime",
+                },
+            },
         ],
         plugins: [
             resolve(),

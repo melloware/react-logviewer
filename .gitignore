@@ -1,3 +1,7 @@
+# Test files
+/test-results
+/.test-server-port
+
 # Logs
 logs
 *.log
