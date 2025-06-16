@@ -46,7 +46,7 @@
     "test:eventsource": "npm run build && playwright test eventsource.spec.ts"
   },
   "dependencies": {
-    "hotkeys-js": "3.13.10",
+    "hotkeys-js": "3.13.11",
     "mitt": "3.0.1",
     "react-string-replace": "1.1.1",
     "virtua": "0.41.3"
