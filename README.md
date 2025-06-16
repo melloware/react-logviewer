@@ -26,7 +26,7 @@ Originally forked from [mozilla-frontend-infra/react-lazylog](https://github.com
 -   Searching through log
 -   Works in latest browser versions, including iOS Safari and Android Chrome
 -   TypeScript support
--   EventSource support
+-   EventSource or WebSocket support
 
 ## Demo
 
