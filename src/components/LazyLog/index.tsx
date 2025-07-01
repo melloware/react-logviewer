@@ -48,6 +48,10 @@ export interface WebsocketOptions {
      * Default is 1s
      */
     reconnectWait?: number;
+    /**
+     * List of protocols to be passed to the WebSocket constructor as the second argument.
+     */
+    protocols?: string | string[] | undefined;
 }
 
 export interface EventSourceOptions {

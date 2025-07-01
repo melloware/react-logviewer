@@ -6,7 +6,7 @@ import { encode } from "./encoding";
 import { bufferConcat, convertBufferToLines } from "./utils";
 
 export default (url: string | URL, options: WebsocketOptions) => {
-    const { onOpen, onClose, onError, formatMessage } = options;
+    const { onOpen, onClose, onError, formatMessage, protocols } = options;
     const emitter = mitt();
     let encodedLog = new Uint8Array();
     let overage: any = null;
@@ -39,7 +39,7 @@ export default (url: string | URL, options: WebsocketOptions) => {
     emitter.on("start", () => {
         try {
             // try to connect to websocket
-            const socket = new WebSocket(url);
+            const socket = new WebSocket(url, protocols);
 
             socket.addEventListener("open", (e) => {
                 // relay on open events if a handler is registered
