@@ -182,15 +182,8 @@ own `LinePart` and styled separately (colors, text formatting, etc.) from the re
   
 ## Publishing
 
-Adjust the version in the `package.json` if necessary, then
-
-```bash
-npm login
-# This will run npm run build automatically
-npm publish --access public
-```
-
-Then upload code to github, create tag & release.
+Adjust the version in the `package.json` if necessary and commit files.
+Then simply "Publish a Release" and the workflow will handle publishing to NPM.
 
 ## License
 
