@@ -101,7 +101,7 @@ export default class SearchBar extends Component<
     state: SearchBarState = {
         keywords: "",
     };
-    inputRef: RefObject<HTMLInputElement>;
+    inputRef: RefObject<HTMLInputElement | null>;
 
     constructor(props: any) {
         super(props);
