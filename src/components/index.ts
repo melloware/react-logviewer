@@ -1,4 +1,4 @@
-export { default as LazyLog } from "./LazyLog";
+export { default as LazyLog, type LazyLogProps } from "./LazyLog";
 export { default as Line } from "./Line";
 export { default as LineContent } from "./LineContent";
 export { default as LineGutter } from "./LineGutter";
