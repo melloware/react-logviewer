@@ -1,5 +1,5 @@
 import { List, Range } from "immutable";
-import React, { CSSProperties, Component, Fragment, ReactNode } from "react";
+import React, { CSSProperties, Component, ComponentProps, Fragment, ReactNode } from "react";
 import { VList, VListHandle } from "virtua";
 import Line from "../Line";
 import { Loading } from "../Loading";
@@ -332,6 +332,12 @@ export interface LazyLogProps {
      * Defaults to `false`.
      */
     external?: boolean;
+    /**
+     * Object containing internationalization strings for the LazyLog component.
+     */
+    internacionalization?: {
+        searchBar?: ComponentProps<typeof SearchBar>["internacionalization"];
+    };
 }
 type LazyLogState = {
     count: number;
@@ -1286,6 +1292,7 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
                         onShiftEnter={this.handleShiftEnterPressed}
                         resultsCount={resultLines.length}
                         searchMinCharacters={this.props.searchMinCharacters}
+                        internacionalization={this.props.internacionalization?.searchBar}
                     />
                 )}
                 <VList

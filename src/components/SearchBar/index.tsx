@@ -77,6 +77,17 @@ export interface SearchBarProps {
      * Minimum number of characters to trigger a search. Defaults to 2.
      */
     searchMinCharacters?: number;
+    /**
+     * Object containing internationalization strings for the search bar.
+     */
+    internacionalization?: {
+        matchLabel?: string;
+        matchesLabel?: string;
+        filterLinesTitle?: string;
+        previousButtonTitle?: string;
+        nextButtonTitle?: string;
+        searchPlaceholder?: string;
+    };
 }
 type SearchBarState = {
     keywords?: string;
@@ -193,7 +204,7 @@ export default class SearchBar extends Component<
             onEnter,
             onShiftEnter,
         } = this.props;
-        const matchesLabel = `match${resultsCount === 1 ? "" : "es"}`;
+        const matchesLabel = `${resultsCount === 1 ? this.props.internacionalization?.matchLabel || "match" : this.props.internacionalization?.matchesLabel || "matches"}`;
         const filterIcon = filterActive ? styles.active : styles.inactive;
         const arrowIcon = resultsCount ? styles.active : styles.inactive;
 
@@ -215,7 +226,7 @@ export default class SearchBar extends Component<
                     autoComplete="off"
                     type="text"
                     name="search"
-                    placeholder="Search"
+                    placeholder={this.props.internacionalization?.searchPlaceholder || "Search"}
                     className={`react-lazylog-searchbar-input ${styles.searchInput}`}
                     onChange={this.handleSearchChange}
                     onKeyUp={this.handleKeyPress}
@@ -225,7 +236,7 @@ export default class SearchBar extends Component<
                     aria-label="Search Log"
                 />
                 <button
-                    title="Filter Lines"
+                    title={this.props.internacionalization?.filterLinesTitle || "Filter Lines"}
                     disabled={disabled}
                     className={`react-lazylog-searchbar-filter ${
                         filterActive ? "active" : "inactive"
@@ -238,7 +249,7 @@ export default class SearchBar extends Component<
                 {enableSearchNavigation && (
                     <Fragment>
                         <button
-                            title="Previous"
+                            title={this.props.internacionalization?.previousButtonTitle || "Previous"}
                             disabled={disabled}
                             className={`react-lazylog-searchbar-up-arrow ${
                                 resultsCount
@@ -250,7 +261,7 @@ export default class SearchBar extends Component<
                             {this.props.iconFindPrevious || <UpArrowIcon />}
                         </button>
                         <button
-                            title="Next"
+                            title={this.props.internacionalization?.nextButtonTitle || "Next"}
                             disabled={disabled}
                             className={`react-lazylog-searchbar-down-arrow ${
                                 resultsCount
