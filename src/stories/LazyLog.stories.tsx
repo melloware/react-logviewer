@@ -29,6 +29,16 @@ const BaseStory = {
     onLoad: undefined,
     selectableLines: true,
     width: "auto",
+    internacionalization: {
+        searchBar: {
+            matchLabel: "match",
+            matchesLabel: "matches",
+            filterLinesTitle: "Filter lines",
+            previousButtonTitle: "Previous",
+            nextButtonTitle: "Next",
+            searchPlaceholder: "Search...",
+        },
+    },
 };
 
 /*
