@@ -1,6 +1,6 @@
 import { List, Range } from "immutable";
-import React, { CSSProperties, Component, ComponentProps, Fragment, ReactNode } from "react";
-import { VList, VListHandle } from "virtua";
+import React, { CSSProperties, Component, ComponentProps, Fragment, ReactNode, forwardRef } from "react";
+import { CustomItemComponentProps, VList, VListHandle } from "virtua";
 import Line from "../Line";
 import { Loading } from "../Loading";
 import SearchBar from "../SearchBar";
@@ -361,6 +361,24 @@ type LazyLogState = {
 };
 
 /**
+ * Workaround for https://github.com/inokawa/virtua/issues/867:
+ * The 'contain' CSS property applied by Virtua causes blurry text rendering in Chrome,
+ * so we explicitly remove it before passing the style to <li>.
+ */
+const LazyLogListItem = forwardRef<HTMLLIElement, CustomItemComponentProps>(
+  ({ children, style }, ref) => {
+    // Remove 'contain' property injected by Virtua to avoid text blur (see issue #867)
+    // https://github.com/inokawa/virtua/issues/867
+    const { contain, ...styleWithoutContain } = style || {};
+    return (
+      <li ref={ref} style={styleWithoutContain}>
+        {children}
+      </li>
+    );
+  },
+);
+
+/**
  * React component that loads and views remote text in the browser lazily and efficiently.
  * Logs can be loaded from static text, a URL, or a WebSocket and including ANSI highlighting.
  */
@@ -471,6 +489,8 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
     encodedLog: Uint8Array | undefined = undefined;
     searchBarRef = React.createRef<SearchBar>();
     listRef = React.createRef<VListHandle>();
+
+
 
     componentDidMount() {
         this.request();
@@ -1300,6 +1320,7 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
                     className={`react-lazylog ${styles.lazyLog} ${
                         this.props.wrapLines ? styles.wrapLine : ""
                     }`}
+                    item={LazyLogListItem}
                     style={{ height: this.calculateListHeight(true) }}
                     onScroll={(offset) => {
                         this.setState({
