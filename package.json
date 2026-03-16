@@ -50,7 +50,7 @@
     "immutable": "5.1.5",
     "mitt": "3.0.1",
     "react-string-replace": "2.0.1",
-    "virtua": "0.48.6"
+    "virtua": "0.48.8"
   },
   "devDependencies": {
     "@playwright/test": "^1.52.0",
