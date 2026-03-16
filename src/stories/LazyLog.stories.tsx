@@ -864,9 +864,10 @@ export const InfiniteScrolling: Story = {
                 ref={ref}
                 onScroll={async () => {
                     if (!ref.current || !ref.current.listRef.current) return;
+                    const handle = ref.current.listRef.current;
                     if (
                         fetchedCountRef.current < count &&
-                        ref.current.listRef.current.findEndIndex() + 50 > count
+                        handle.findItemIndex(handle.scrollOffset + handle.viewportSize) + 50 > count
                     ) {
                         fetchedCountRef.current = count;
                         await fetchItems();
