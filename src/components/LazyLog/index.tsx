@@ -362,12 +362,12 @@ type LazyLogState = {
 
 /**
  * Workaround for https://github.com/inokawa/virtua/issues/867:
- * The 'contain' CSS property applied by Virtua causes blurry text rendering in Chrome,
+ * The 'contain' CSS property applied by Virtua causes no horizontal scroll,
  * so we explicitly remove it before passing the style to <li>.
  */
 const LazyLogListItem = forwardRef<HTMLLIElement, CustomItemComponentProps>(
   ({ children, style }, ref) => {
-    // Remove 'contain' property injected by Virtua to avoid text blur (see issue #867)
+    // Remove 'contain' property injected by Virtua to avoid no horizontal scroll (see issue #867)
     // https://github.com/inokawa/virtua/issues/867
     const { contain, ...styleWithoutContain } = style || {};
     return (
