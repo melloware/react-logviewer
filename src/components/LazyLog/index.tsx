@@ -107,6 +107,11 @@ export interface LazyLogProps {
      */
     caseInsensitive?: boolean;
     /**
+     * Optional className to append to the `SearchBar` root element.
+     * Only applies when `enableSearch` is true.
+     */
+    searchBarClassName?: string;
+    /**
      * Optional custom inline style to attach to element which contains
      * the interior scrolling container.
      */
@@ -289,6 +294,10 @@ export interface LazyLogProps {
      */
     style?: CSSProperties;
     /**
+     * Optional className to append to the `VList` root element.
+     */
+    className?: string;
+    /**
      * String containing text to display.
      */
     text?: string;
@@ -415,9 +424,11 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
         rowHeight: 19,
         scrollToLine: 0,
         searchMinCharacters: 2,
+        searchBarClassName: "",
         selectableLines: false,
         stream: false,
         style: {},
+        className: "",
         websocket: false,
         websocketOptions: {},
         eventsource: false,
@@ -1293,6 +1304,7 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
                 {enableSearch && (
                     <SearchBar
                         ref={this.searchBarRef}
+                        className={this.props.searchBarClassName}
                         currentResultsPosition={currentResultsPosition}
                         disabled={count === 0}
                         enableHotKeys={this.props.enableHotKeys}
@@ -1319,7 +1331,7 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
                     ref={this.listRef}
                     className={`react-lazylog ${styles.lazyLog} ${
                         this.props.wrapLines ? styles.wrapLine : ""
-                    }`}
+                    } ${this.props.className || ""}`}
                     item={LazyLogListItem}
                     style={{ height: this.calculateListHeight(true) }}
                     onScroll={(offset) => {
