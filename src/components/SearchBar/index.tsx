@@ -10,6 +10,10 @@ import styles from "./index.module.css";
 
 export interface SearchBarProps {
     /**
+     * Optional className to append to the root search bar element.
+     */
+    className?: string;
+    /**
      * If true, adds up and down arrows to search bar to jump
      * to the next and previous result. The down arrow calls
      * "onEnter" and the up arrow calls "onShiftEnter"
@@ -98,6 +102,7 @@ export default class SearchBar extends Component<
     SearchBarState
 > {
     static defaultProps = {
+        className: "",
         currentResultsPosition: 0,
         disabled: false,
         enableHotKeys: false,
@@ -196,6 +201,7 @@ export default class SearchBar extends Component<
 
     render() {
         const {
+            className,
             resultsCount,
             filterActive,
             disabled,
@@ -209,7 +215,11 @@ export default class SearchBar extends Component<
         const arrowIcon = resultsCount ? styles.active : styles.inactive;
 
         return (
-            <div className={`react-lazylog-searchbar ${styles.searchBar}`}>
+            <div
+                className={`react-lazylog-searchbar ${styles.searchBar} ${
+                    className || ""
+                }`}
+            >
                 <span
                     className={`react-lazylog-searchbar-matches ${
                         resultsCount ? "active" : "inactive"
