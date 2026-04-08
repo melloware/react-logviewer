@@ -263,15 +263,17 @@ export const parseLinks = (lines: any[]): LinePartCss[] => {
     lines.forEach((line) => {
         // Split line into words
         const tokens = line.text.split(" ");
+        let lastToken = "";
 
         let found = false; // Tracks if any links were found
         let partial = ""; // Accumulates non-link text
 
         tokens.forEach((token: string) => {
+            lastToken = token;
             // Check if text matches URL pattern
             if (token.search(strictUrlRegex) > -1) {
                 // Push accumulated non-link text if any
-                result.push({ text: partial.trimEnd() });
+                result.push({ text: partial });
                 partial = "";
                 found = true;
 
@@ -307,6 +309,17 @@ export const parseLinks = (lines: any[]): LinePartCss[] => {
         // If no links found, push the entire line
         if (!found) {
             result.push(line);
+        }
+        // Otherwise, add any remainder set by the last iteration of the loop
+        else if (partial.length > 0) {
+            // There is known to be at least one token if partial is set
+            if (lastToken.endsWith(" ")) {
+                result.push({ text: partial });
+            }
+            else {
+                // Don't add a space to the final token if the line didn't end with a space already
+                result.push({ text: partial.trimEnd() });
+            }
         }
     });
 

@@ -56,7 +56,24 @@ describe("", () => {
       },
     ];
     const links = parseLinks(lines);
-    expect(links[0]?.text).toBe("aaa bbb ccc");
+    expect(links).toStrictEqual([
+      {
+        text: "aaa bbb ccc",
+      },
+      {
+        text: "wrap1 ",
+      },
+      {
+        text: "'http://bla.alb/add'",
+        link: true,
+      },
+      {
+        text: "wrap2 wrap3",
+      },
+      {
+        text: "�[31m�[1m>�[22m�[2m�[39m�[90m �[36mthis�[39m�[33m.�[39mextend(�[36mthis",
+      },
+    ]);
     //
   });
 });
