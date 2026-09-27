@@ -89,6 +89,16 @@
 
       window.logRoot = ReactDOM.createRoot(container);
       window.logRoot.render(element);
+      window.logProps = element.props;
+    };
+
+    // Re-render the mounted log with updated props
+    window.rerenderLog = (props = {}) => {
+      const { LazyLog } = window.ReactLogViewer;
+      window.logProps = { ...window.logProps, ...props };
+      window.logRoot.render(
+        React.createElement(LazyLog, { ref: window.logRef, ...window.logProps })
+      );
     };
 
     window.unmountLog = () => {
