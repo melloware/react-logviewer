@@ -731,12 +731,15 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
                 offset,
             });
 
-            this.setState({
-                lines,
-                offset,
-                count,
-                scrollToIndex,
-            });
+            this.setState(
+                {
+                    lines,
+                    offset,
+                    count,
+                    scrollToIndex,
+                },
+                this.forceSearch
+            );
         }
     };
 
@@ -893,7 +896,7 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
         }
     };
 
-    handleSearch = (keywords: string | undefined) => {
+    handleSearch = (keywords: string | undefined, force = false) => {
         const {
             resultLines,
             searchKeywords,
@@ -902,6 +905,7 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
         const { caseInsensitive, stream, websocket, eventsource, external } =
             this.props;
         const currentResultLines =
+            !force &&
             !stream &&
             !websocket &&
             !eventsource &&
@@ -933,7 +937,7 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
             searchKeywords &&
             searchKeywords.length > (searchMinCharacters || 0)
         ) {
-            this.handleSearch(this.state.searchKeywords);
+            this.handleSearch(this.state.searchKeywords, true);
         }
     };
 
@@ -964,16 +968,19 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
     filterLinesWithMatches = () => {
         const { resultLines, lines, isFilteringLinesWithMatches } = this.state;
 
-        if (resultLines.length > 0 && isFilteringLinesWithMatches) {
-            const resultLineUniqueIndexes = [...new Set<number>(resultLines)];
+        if (isFilteringLinesWithMatches) {
+            const lineCount = lines?.size || 0;
+            const resultLineUniqueIndexes = [
+                ...new Set<number>(resultLines),
+            ].filter((lineNumber) => lineNumber <= lineCount);
 
             this.setState({
                 resultLineUniqueIndexes,
-                filteredLines: lines?.filter(
-                    (_line: Uint8Array, index: number) =>
-                        resultLineUniqueIndexes.some(
-                            (resultLineIndex) => index + 1 === resultLineIndex
-                        )
+                // resultLines are 1-based and in ascending order
+                filteredLines: List(
+                    resultLineUniqueIndexes.map(
+                        (lineNumber) => lines!.get(lineNumber - 1)!
+                    )
                 ),
             });
         }

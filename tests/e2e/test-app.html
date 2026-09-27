@@ -74,7 +74,7 @@
       document.getElementById('status').textContent = `Mounted: ${endpoint}`;
     };
 
-    window.mountExternalLog = () => {
+    window.mountExternalLog = (props = {}) => {
       const { LazyLog } = window.ReactLogViewer;
       const container = document.getElementById('root');
       window.logRef = React.createRef();
@@ -83,7 +83,8 @@
         ref: window.logRef,
         external: true,
         enableSearch: true,
-        height: 400
+        height: 400,
+        ...props
       });
 
       window.logRoot = ReactDOM.createRoot(container);
