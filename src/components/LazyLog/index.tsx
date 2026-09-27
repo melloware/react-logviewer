@@ -107,6 +107,18 @@ export interface LazyLogProps {
      */
     caseInsensitive?: boolean;
     /**
+     * Treat the search text as a regular expression, e.g. `error|warn`.
+     * Invalid patterns match nothing. Regex search is slower than the
+     * default plain text search on very large logs. Defaults to `false`.
+     */
+    searchRegex?: boolean;
+    /**
+     * If true, adds a button to the `SearchBar` to switch between plain
+     * text and regular expression search. `searchRegex` sets the initial
+     * mode. Defaults to `false`.
+     */
+    enableRegexToggle?: boolean;
+    /**
      * Optional className to append to the `SearchBar` root element.
      * Only applies when `enableSearch` is true.
      */
@@ -206,6 +218,10 @@ export interface LazyLogProps {
      * Icon for the Find Previous button in the Search Bar. Defaults to ArrowUpIcon SVG.
      */
     iconFindPrevious?: React.ReactNode;
+    /**
+     * Icon for the Regex toggle button in the Search Bar. Defaults to ".*".
+     */
+    iconRegex?: React.ReactNode;
     /**
      * Specify an additional className to append to lines.
      */
@@ -357,6 +373,7 @@ type LazyLogState = {
     /** Range last derived from the `highlight` prop, to detect prop changes */
     highlightProp?: Immutable.Seq.Indexed<number>;
     isFilteringLinesWithMatches: boolean;
+    isRegexSearch: boolean;
     isSearching: boolean;
     lines: List<Uint8Array>;
     loaded?: boolean;
@@ -401,6 +418,8 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
             overflow: "initial",
         },
         caseInsensitive: false,
+        searchRegex: false,
+        enableRegexToggle: false,
         enableGutters: false,
         enableHotKeys: false,
         enableLineNumbers: true,
@@ -497,6 +516,7 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
         count: 0,
         currentResultsPosition: 0,
         isFilteringLinesWithMatches: false,
+        isRegexSearch: !!this.props.searchRegex,
         isSearching: false,
         offset: 0,
         resultLineUniqueIndexes: [],
@@ -596,6 +616,11 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
             scrollToLine && prevProps.scrollToLine !== scrollToLine;
         if (!follow && isScrollToLineChanged) {
             this.handleScrollToLine(scrollToLine);
+        }
+
+        // Handle searchRegex prop changes
+        if (prevProps.searchRegex !== props.searchRegex) {
+            this.handleRegexToggle(!!props.searchRegex);
         }
     }
 
@@ -909,6 +934,7 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
         const {
             resultLines,
             searchKeywords,
+            isRegexSearch,
             currentResultsPosition: previousResultsPosition,
         } = this.state;
         const { caseInsensitive, stream, websocket, eventsource, external } =
@@ -921,7 +947,12 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
             !external &&
             keywords === searchKeywords
                 ? resultLines
-                : searchLines(keywords, this.encodedLog!, caseInsensitive!);
+                : searchLines(
+                      keywords,
+                      this.encodedLog!,
+                      caseInsensitive!,
+                      isRegexSearch
+                  );
 
         let currentResultsPosition = previousResultsPosition;
         if (currentResultsPosition > currentResultLines.length - 1) {
@@ -961,6 +992,10 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
             scrollToIndex: 0,
             currentResultsPosition: 0,
         });
+    };
+
+    handleRegexToggle = (isRegexSearch: boolean) => {
+        this.setState({ isRegexSearch }, this.forceSearch);
     };
 
     handleFilterLinesWithMatches = (isFilterEnabled: boolean) => {
@@ -1039,6 +1074,7 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
                     searchKeywords,
                     nextFormatPart: undefined,
                     caseInsensitive: this.props.caseInsensitive,
+                    isRegex: this.state.isRegexSearch,
                     replaceJsx: (text: React.ReactNode, key: string) => (
                         <span key={key} className={styles.searchMatch}>
                             {text}
@@ -1064,6 +1100,7 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
                 searchKeywords,
                 nextFormatPart: undefined,
                 caseInsensitive: this.props.caseInsensitive,
+                isRegex: this.state.isRegexSearch,
                 replaceJsx: (text: React.ReactNode, key: string) => (
                     <span key={key} className={styles.searchMatch}>
                         {text}
@@ -1330,10 +1367,14 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
                             this.props.enableSearchNavigation
                         }
                         filterActive={isFilteringLinesWithMatches}
+                        enableRegexToggle={this.props.enableRegexToggle}
+                        regexActive={this.state.isRegexSearch}
                         iconFilterLines={this.props.iconFilterLines}
                         iconFindNext={this.props.iconFindNext}
                         iconFindPrevious={this.props.iconFindPrevious}
+                        iconRegex={this.props.iconRegex}
                         onClearSearch={this.handleClearSearch}
+                        onRegexToggle={this.handleRegexToggle}
                         onEnter={this.handleEnterPressed}
                         onFilterLinesWithMatches={
                             this.handleFilterLinesWithMatches
