@@ -147,6 +147,22 @@ And at the end send a mail to react-lazylog@mozilla.org
     },
 };
 
+export const RegexSearch: Story = {
+    args: {
+        ...BaseStory,
+        height: 200,
+        searchRegex: true,
+        enableRegexToggle: true,
+        text: `2024-08-29 10:15:01 INFO  Server started on port 8080
+2024-08-29 10:15:02 DEBUG Loaded 42 routes
+2024-08-29 10:15:07 WARN  Slow query took 1532ms
+2024-08-29 10:15:09 ERROR Connection refused: db-01
+2024-08-29 10:15:12 INFO  Request GET /api/users took 87ms
+2024-08-29 10:15:15 ERROR Timeout after 30000ms
+Try searching: error|warn   \\d+ms   db-\\d+   Press .* to toggle regex`,
+    },
+};
+
 export const AppendLines: Story = {
     args: {
         ...BaseStory,

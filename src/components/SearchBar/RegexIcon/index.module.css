@@ -1,0 +1,9 @@
+.regexIcon {
+  display: inline-block;
+  font-family: "Monaco", monospace;
+  font-size: 13px;
+  font-weight: bold;
+  line-height: 15px;
+  height: 15px;
+  cursor: pointer;
+}

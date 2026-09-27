@@ -6,6 +6,7 @@ import React, { Component, Fragment, RefObject, createRef } from "react";
 import { DownArrowIcon } from "./ArrowIcons/DownArrowIcon";
 import { UpArrowIcon } from "./ArrowIcons/UpArrowIcon";
 import { FilterLinesIcon } from "./FilterLinesIcon";
+import { RegexIcon } from "./RegexIcon";
 import styles from "./index.module.css";
 
 export interface SearchBarProps {
@@ -25,6 +26,15 @@ export interface SearchBarProps {
      * etc.)
      */
     enableHotKeys?: boolean | undefined;
+    /**
+     * If true, adds a button to switch between plain text and
+     * regular expression search. Defaults to false.
+     */
+    enableRegexToggle?: boolean | undefined;
+    /**
+     * If true, the search text is treated as a regular expression.
+     */
+    regexActive?: boolean | undefined;
     /**
      * The current result the browser search is highlighting.
      * Only applicable if searchLikeBrowser is true.
@@ -52,6 +62,10 @@ export interface SearchBarProps {
      */
     iconFindPrevious?: React.ReactNode;
     /**
+     * Icon for the Regex toggle button in the Search Bar. Defaults to ".*".
+     */
+    iconRegex?: React.ReactNode;
+    /**
      * Executes a function when the search input has been cleared.
      */
     onClearSearch?: (() => void) | undefined;
@@ -60,6 +74,10 @@ export interface SearchBarProps {
      * is enable.
      */
     onFilterLinesWithMatches: ((isFiltered: boolean) => void) | undefined;
+    /**
+     * Executes a function when the regex toggle button is pressed.
+     */
+    onRegexToggle?: ((isRegex: boolean) => void) | undefined;
     /**
      * Executes a function when the user starts typing.
      */
@@ -88,6 +106,7 @@ export interface SearchBarProps {
         matchLabel?: string;
         matchesLabel?: string;
         filterLinesTitle?: string;
+        regexTitle?: string;
         previousButtonTitle?: string;
         nextButtonTitle?: string;
         searchPlaceholder?: string;
@@ -106,9 +125,12 @@ export default class SearchBar extends Component<
         currentResultsPosition: 0,
         disabled: false,
         enableHotKeys: false,
+        enableRegexToggle: false,
         filterActive: false,
+        regexActive: false,
         onClearSearch: () => {},
         onFilterLinesWithMatches: () => {},
+        onRegexToggle: () => {},
         onSearch: () => {},
         resultsCount: 0,
         searchMinCharacters: 2,
@@ -133,6 +155,11 @@ export default class SearchBar extends Component<
     handleFilterToggle = () => {
         this.props.onFilterLinesWithMatches &&
             this.props.onFilterLinesWithMatches(!this.props.filterActive);
+    };
+
+    handleRegexToggle = () => {
+        this.props.onRegexToggle &&
+            this.props.onRegexToggle(!this.props.regexActive);
     };
 
     handleKeyPress = (e: React.KeyboardEvent<HTMLElement>) => {
@@ -204,6 +231,8 @@ export default class SearchBar extends Component<
             className,
             resultsCount,
             filterActive,
+            regexActive,
+            enableRegexToggle,
             disabled,
             enableSearchNavigation,
             currentResultsPosition,
@@ -245,6 +274,21 @@ export default class SearchBar extends Component<
                     ref={this.inputRef}
                     aria-label="Search Log"
                 />
+                {enableRegexToggle && (
+                    <button
+                        title={this.props.internacionalization?.regexTitle || "Use Regular Expression"}
+                        aria-pressed={!!regexActive}
+                        disabled={disabled}
+                        className={`react-lazylog-searchbar-regex ${
+                            regexActive ? "active" : "inactive"
+                        } ${styles.button} ${
+                            regexActive ? styles.active : styles.inactive
+                        } ${styles.clickable}`}
+                        onClick={this.handleRegexToggle}
+                    >
+                        {this.props.iconRegex || <RegexIcon />}
+                    </button>
+                )}
                 <button
                     title={this.props.internacionalization?.filterLinesTitle || "Filter Lines"}
                     disabled={disabled}

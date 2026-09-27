@@ -1,5 +1,5 @@
 import { decode, encode } from "./encoding";
-import { getLinesLengthRanges } from "./utils";
+import { buildSearchRegExp, getLinesLengthRanges } from "./utils";
 
 /**
  * Implements the Knuth-Morris-Pratt (KMP) string searching algorithm.
@@ -66,18 +66,61 @@ export const searchIndexes = (
 };
 
 /**
+ * Searches log lines with a regular expression. Slower than the KMP search
+ * on large logs, so it is only used when regex search is enabled.
+ *
+ * @param {string | undefined} pattern - The regular expression pattern.
+ * @param {Uint8Array} rawLog - The log data to search within.
+ * @param {boolean} isCaseInsensitive - Whether the search should be case-insensitive.
+ * @returns {number[]} The line number of each match, so a line with two
+ * matches appears twice. Empty if the pattern is invalid.
+ */
+export const searchLinesRegex = (
+    pattern: string | undefined,
+    rawLog: Uint8Array,
+    isCaseInsensitive: boolean
+) => {
+    const regex = buildSearchRegExp(pattern, isCaseInsensitive, true);
+
+    if (!regex) {
+        return [];
+    }
+
+    const resultLines: number[] = [];
+    // Split the same way as convertBufferToLines so line numbers agree
+    const lines = decode(rawLog).split(/\r\n|\r|\n/);
+
+    lines.forEach((line, index) => {
+        for (const match of line.matchAll(regex)) {
+            // Skip empty matches such as "^" or "a*"
+            if (match[0]) {
+                resultLines.push(index + 1);
+            }
+        }
+    });
+
+    return resultLines;
+};
+
+/**
  * Searches for keywords within log lines, handling case sensitivity.
  *
  * @param {string | undefined} rawKeywords - The search term to look for.
  * @param {Uint8Array} rawLog - The log data to search within.
  * @param {boolean} isCaseInsensitive - Whether the search should be case-insensitive.
+ * @param {boolean} isRegex - Treat the search term as a regular expression.
  * @returns {number[]} An array of line numbers where the keyword is found.
  */
 export const searchLines = (
     rawKeywords: string | undefined,
     rawLog: Uint8Array,
-    isCaseInsensitive: boolean
+    isCaseInsensitive: boolean,
+    isRegex = false
 ) => {
+    if (isRegex) {
+        return searchLinesRegex(rawKeywords, rawLog, isCaseInsensitive);
+    }
+
     let keywords = rawKeywords;
     let log = rawLog;
     let decodedLog = decode(log);
