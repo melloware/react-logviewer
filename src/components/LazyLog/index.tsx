@@ -1,4 +1,4 @@
-import { List, Range } from "immutable";
+import { List, is } from "immutable";
 import React, { CSSProperties, Component, ComponentProps, Fragment, ReactNode, forwardRef } from "react";
 import { CustomItemComponentProps, VList, VListHandle } from "virtua";
 import Line from "../Line";
@@ -354,6 +354,8 @@ type LazyLogState = {
     error?: ErrorStatus;
     filteredLines?: List<Uint8Array>;
     highlight?: Immutable.Seq.Indexed<number>;
+    /** Range last derived from the `highlight` prop, to detect prop changes */
+    highlightProp?: Immutable.Seq.Indexed<number>;
     isFilteringLinesWithMatches: boolean;
     isSearching: boolean;
     lines: List<Uint8Array>;
@@ -451,10 +453,16 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
             url: previousUrl,
             text: previousText,
             highlight: previousHighlight,
+            highlightProp: previousHighlightProp,
             isSearching,
             scrollToIndex,
         }: LazyLogState
     ) {
+        // The `highlight` prop wins when its value changes, otherwise keep
+        // the highlight the user selected by clicking line numbers.
+        const highlightProp = getHighlightRange(highlight);
+        const isHighlightPropChanged =
+            !previousHighlightProp || !is(highlightProp, previousHighlightProp);
         const newScrollToIndex = isSearching
             ? scrollToIndex
             : getScrollIndex({ follow, scrollToLine, count, offset });
@@ -464,10 +472,12 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
 
         return {
             scrollToIndex: newScrollToIndex,
-            highlight:
-                previousHighlight === Range(0, 0)
-                    ? getHighlightRange(highlight)
-                    : previousHighlight || getHighlightRange(previousHighlight),
+            highlight: isHighlightPropChanged
+                ? highlightProp
+                : previousHighlight,
+            highlightProp: isHighlightPropChanged
+                ? highlightProp
+                : previousHighlightProp,
             ...(shouldUpdate
                 ? {
                       url: nextUrl,
@@ -529,7 +539,6 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
             extraLines, // Additional lines to render
             onLoad, // Callback when log loads
             onError, // Callback when error occurs
-            highlight, // Lines to highlight
             onHighlight, // Callback when highlight changes
             scrollToLine, // Line number to scroll to
         } = props;
@@ -576,7 +585,7 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
 
         // Handle highlight prop changes
         const isHighlightChanged =
-            highlight && highlight !== prevProps.highlight;
+            prevState.highlightProp !== state.highlightProp;
         if (isHighlightChanged && onHighlight) {
             onHighlight(state.highlight!);
         }
