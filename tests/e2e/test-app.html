@@ -74,6 +74,22 @@
       document.getElementById('status').textContent = `Mounted: ${endpoint}`;
     };
 
+    window.mountExternalLog = () => {
+      const { LazyLog } = window.ReactLogViewer;
+      const container = document.getElementById('root');
+      window.logRef = React.createRef();
+
+      const element = React.createElement(LazyLog, {
+        ref: window.logRef,
+        external: true,
+        enableSearch: true,
+        height: 400
+      });
+
+      window.logRoot = ReactDOM.createRoot(container);
+      window.logRoot.render(element);
+    };
+
     window.unmountLog = () => {
       if (window.logRoot) {
         window.logRoot.unmount();

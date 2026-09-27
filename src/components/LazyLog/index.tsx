@@ -668,7 +668,10 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
         const newContent = encode(
             content.endsWith("\n") ? content : content + "\n"
         );
-        const encodedLog = bufferConcat(this.encodedLog!, newContent);
+        const encodedLog = bufferConcat(
+            this.encodedLog || new Uint8Array(0),
+            newContent
+        );
         const { lines } = convertBufferToLines(newContent);
         this.handleUpdate({
             lines: lines,
@@ -711,9 +714,7 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
                     count,
                     scrollToIndex,
                 };
-            });
-
-            this.forceSearch();
+            }, this.forceSearch);
         } else {
             // regular text update in normal react hook mode
             const { count: previousCount } = this.state;
@@ -1277,6 +1278,7 @@ export default class LazyLog extends Component<LazyLogProps, LazyLogState> {
      * Clears the log and search
      */
     clear() {
+        this.encodedLog = new Uint8Array(0);
         this.searchBarRef.current?.setState({ keywords: "" });
         this.handleClearSearch();
         this.setState({
