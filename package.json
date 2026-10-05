@@ -49,7 +49,7 @@
     "hotkeys-js": "4.0.8",
     "immutable": "5.1.9",
     "mitt": "3.0.1",
-    "virtua": "0.52.7"
+    "virtua": "0.52.10"
   },
   "devDependencies": {
     "@playwright/test": "^1.52.0",
